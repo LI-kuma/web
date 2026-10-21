@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 中間場景 -->
+<main class="scene">
+  <div class="stage" id="stage">
+    <img class="lace" src="img/lace.png" alt="">
+    <div class="oval">
+      <div class="house-inner"><img src="img/house.jpg" alt="奶油色的維多利亞風小屋"></div>
+    </div>
+    <div class="hit-layer">
+      <div class="house-inner">
+        <button class="door" id="door" aria-label="敲門進入">
+          <span class="door-glow"></span>
+          <span class="dot"></span>
+          <span class="knock-label" id="knockLabel">knock!</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 白白霧霧的圖層：點一下就會散開 -->
+<div class="fog" id="fog" role="button" tabindex="0" aria-label="點一下進入">
+  <span class="fog-hint">— 點一下 進來喝杯茶 —</span>
+</div>
+
+<!-- 標準字 -->
+<img class="logo" id="logo" src="img/logo.png" alt="Tea Time">
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="#world"     style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="#character" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="#worries"   style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<canvas id="particles"></canvas>
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 互動效果都在 script.js -->
+<script src="script.js"></script>
+</body>
+</html>
