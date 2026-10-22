@@ -132,6 +132,28 @@ body.entered .fog{opacity:0; pointer-events:none}
 /* 標準字在左上角的位置和大小（首頁進入後、第二頁共用） */
 .logo.logo-corner{left:22px; top:22px; width:clamp(140px, 17vw, 240px)}
 
+/* ===== 第二頁：關掉紙條後的轉場白幕（在標準字、跑馬燈、選單之下） ===== */
+.fade-white{
+  position:fixed; inset:0; z-index:25;   /* 25：蓋過房子，但在標準字 30、跑馬燈 35、選單 40 之下 */
+  background:#fafbec;   /* ← 轉場白幕的顏色改這裡 */
+  opacity:0; visibility:hidden; pointer-events:none; overflow:hidden;
+}
+/* 白幕上的顆粒：全頁顆粒用 overlay 疊在純白上會看不見，所以白幕自己再鋪一層 */
+.fade-white .grain{
+  opacity:.03; mix-blend-mode:multiply;   /* .06 = 白幕上顆粒的明顯程度 */
+}
+body.leaving .fade-white{
+  visibility:visible; pointer-events:auto;
+  animation:fadeWhite 2.4s ease forwards;   /* 2.4s = 從 20% 白到 100% 白花的時間 */
+}
+@keyframes fadeWhite{from{opacity:.2} to{opacity:1}}
+/* 第三頁一進來：白幕從 100% 慢慢淡到 0%（和上面同一層白幕） */
+body.arriving .fade-white{
+  visibility:visible; opacity:1;
+  animation:fadeWhiteOut 1.8s ease .2s forwards;   /* 1.8s = 淡出花的時間，.2s = 先停一下再開始 */
+}
+@keyframes fadeWhiteOut{from{opacity:1} to{opacity:0; visibility:hidden}}
+
 /* ===== 第二頁：主人的紙條 ===== */
 .note-backdrop{
   position:fixed; inset:0; z-index:45;
@@ -235,10 +257,93 @@ body.entered .fog{opacity:0; pointer-events:none}
   50%{transform:translate(-3%,8%)} 67%{transform:translate(8%,2%)} 83%{transform:translate(-6%,-5%)}
 }
 
+/* ===== 第三頁：客廳 ===== */
+/* 背景客廳：用和照片一樣 4:3 的盒子撐滿整個畫面（像 cover），角色用 % 放在盒子裡，螢幕大小怎麼變都會黏在沙發上 */
+.room{
+  position:fixed; left:50%; top:50%; z-index:0;
+  width:max(100vw, calc(100vh * 4 / 3)); aspect-ratio:4/3;
+  transform:translate(-50%,-50%);
+}
+.room-bg{display:block; width:100%; height:100%; filter:saturate(.85) brightness(1.08) contrast(.95)}
+/* 角色：left/top/width 都是相對整張客廳照片的 %，想移位置就改 page3.html 裡的 --x --y --w */
+.chara{
+  position:absolute; left:calc(var(--x) * 1%); top:calc(var(--y) * 1%); width:calc(var(--w) * 1%);
+  border:0; padding:0; background:none; cursor:pointer;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.chara img{display:block; width:100%; height:auto; filter:drop-shadow(0 4px 6px rgba(120,100,70,.18))}
+.chara:hover{transform:translateY(-6px) scale(1.04)}
+.chara:focus-visible{outline:2px dashed var(--knock); outline-offset:4px; border-radius:12px}
+
+/* 上方蕾絲 Navigation Bar：純裝飾，在標準字和選單下面 */
+.nav-lace{
+  position:fixed; left:0; top:0; z-index:28; width:100%; height:auto; pointer-events:none;
+  filter:drop-shadow(0 4px 8px rgba(120,100,70,.22));   /* 淡淡的陰影，.22 = 陰影深淺 */
+}
+
+/* 共用按鈕：灰色亮面 */
+.tt-btn{
+  font-family:var(--font-body); font-size:clamp(13px, 1.3vw, 17px); font-weight:500; letter-spacing:.04em;
+  color:#5d5d5d; padding:.6em 1.8em; border-radius:10px; cursor:pointer;
+  border:2px solid #6e6e6e;
+  background:linear-gradient(#ffffff 0%, #f1f1f1 45%, #cfcfcf 100%);
+  box-shadow:inset 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,.22);
+  transition:transform .15s ease, filter .15s ease;
+}
+.tt-btn:hover{filter:brightness(1.04)}
+.tt-btn:active{transform:translateY(1px) scale(.98)}
+.tt-btn:focus-visible{outline:2px dashed var(--knock); outline-offset:3px}
+
+/* 下方主人對話框 */
+.dialog{
+  position:fixed; z-index:20; left:50%; bottom:max(16px, 3vh);
+  width:min(94vw, 64vw + 120px, 1180px); aspect-ratio:2200/520; min-height:170px;
+  transform:translateX(-50%);
+  background:url(img/dialog.png) center/100% 100% no-repeat;
+  filter:drop-shadow(0 6px 14px rgba(120,100,70,.18));
+  display:grid; grid-template-columns:auto 1fr; align-items:center; gap:4%;
+  padding:5% 4% 3% 5%;
+  transition:opacity .35s ease, transform .35s ease;
+}
+.dialog.hide{opacity:0; transform:translate(-50%, 12px); pointer-events:none}
+.owner{width:clamp(64px, 9vw, 150px); height:auto; align-self:center}   /* 主人頭像大小 */
+.dialog-body{align-self:start; padding-top:1%; min-width:0}
+.dialog-name{margin:0 0 .3em; font-size:clamp(16px, 1.6vw, 22px); font-weight:700; color:#6b6b6b}
+.dialog-text{margin:0; font-size:clamp(13px, 1.25vw, 18px); line-height:1.6; color:#9a9a9a; white-space:pre-line}
+.dialog .tt-btn{position:absolute; right:3%; bottom:9%}
+
+/* 輸入名字：整頁變暗 + 中間的蕾絲框 */
+.dim{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(40,38,34,.45);   /* 變暗的程度 */
+  display:grid; place-items:center; padding:16px;
+  opacity:0; visibility:hidden; transition:opacity .4s ease, visibility 0s .4s;
+}
+.dim.show{opacity:1; visibility:visible; transition:opacity .4s ease}
+.name-box{
+  width:min(92vw, 48vw + 120px, 900px, 80vh * 1040 / 680); aspect-ratio:1040/680;
+  background:url(img/name-box.png) center/100% 100% no-repeat;
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  padding:17% 10% 15%; text-align:center;
+  transform:scale(.94); transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.dim.show .name-box{transform:scale(1)}
+.name-box h2{margin:0; font-size:clamp(18px, 2vw, 28px); font-weight:500; color:#6b6b6b; letter-spacing:.06em}
+.name-input{
+  width:min(60%, 280px); border:0; border-bottom:2px solid #b9b4a8; background:transparent;
+  font:inherit; font-size:clamp(14px, 1.3vw, 18px); color:#6b6b6b; padding:.3em .2em; outline:none;
+}
+.name-input::placeholder{color:#b0aca3}
+.name-input:focus{border-bottom-color:#8b8473}
+.name-input.shake{animation:shake .4s ease}
+@keyframes shake{20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)}}
+
 @media (max-width:560px){
   :root{--marquee-h:36px; --stage-w:min(94vw, calc((100svh - 150px) * 1.5036))}
   .menu{--s:.3636}
   .marquee-track span{font-size:13px}
+  .dialog{padding:6% 4% 18% 4%}
+  .dialog .tt-btn{bottom:7%}
 }
 @media (prefers-reduced-motion:reduce){
   .grain,.fog::before,.fog::after,.dot::after{animation:none}

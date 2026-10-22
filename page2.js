@@ -11,6 +11,16 @@ setTimeout(() => {
   noteClose.focus({ focusVisible: false });   // 讓鍵盤可以直接按 Enter 關閉，但不畫出虛線框
 }, NOTE_DELAY);
 
-function closeNote(){ note.classList.remove('show'); }
+function closeNote(){
+  if (!note.classList.contains('show')) return;
+  note.classList.remove('show');
+  document.body.classList.add('leaving');   // 開始轉場白幕（style.css 的 .fade-white）
+}
+
+// 白幕變到全白之後要做的事（例如換到下一頁）寫在這裡
+const fadeWhite = document.getElementById('fadeWhite');
+fadeWhite.addEventListener('animationend', e => {
+  if (e.target === fadeWhite) location.href = 'page3.html';
+});
 noteClose.addEventListener('click', closeNote);
 addEventListener('keydown', e => { if (e.key === 'Escape') closeNote(); });

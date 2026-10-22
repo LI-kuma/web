@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（和首頁共用） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="arriving">
+
+<!-- 第三頁：客廳 -->
+<div class="room">
+  <img class="room-bg" src="img/room.jpg" alt="粉色沙發和白色茶几的客廳">
+
+  <!-- ↓↓↓ 角色圖：把圖放進 img 資料夾，改 src 的檔名就好；--x --y --w 是相對客廳照片的 %（左、上、寬） ↓↓↓ -->
+  <button class="chara" data-chara="1" style="--x:19;--y:23.5;--w:11.5" aria-label="角色一"><img src="img/char-1.png" alt=""></button>
+  <button class="chara" data-chara="2" style="--x:32;--y:26.5;--w:13"   aria-label="角色二"><img src="img/char-2.png" alt=""></button>
+  <button class="chara" data-chara="3" style="--x:46.5;--y:21.5;--w:15.5" aria-label="角色三"><img src="img/char-3.png" alt=""></button>
+  <!-- ↑↑↑ 角色圖 ↑↑↑ -->
+</div>
+
+<!-- 上方蕾絲 Navigation Bar（裝飾） -->
+<img class="nav-lace" src="img/nav-lace.png" alt="">
+
+<!-- 標準字（左上角） -->
+<img class="logo logo-corner" src="img/logo.png" alt="Tea Time">
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="#world"     style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="#character" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="#worries"   style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 下方主人對話框（文字在 page3.js 改） -->
+<div class="dialog" id="dialog">
+  <!-- 主人頭像：把圖放進 img 資料夾取名 owner.png -->
+  <img class="owner" src="img/owner.png" alt="主人">
+  <div class="dialog-body">
+    <p class="dialog-name">主人</p>
+    <p class="dialog-text" id="dialogText"></p>
+  </div>
+  <button class="tt-btn" id="dialogBtn"></button>
+</div>
+
+<!-- 輸入名字（整頁變暗） -->
+<div class="dim" id="nameDim">
+  <form class="name-box" id="nameForm" role="dialog" aria-modal="true" aria-labelledby="nameTitle" autocomplete="off">
+    <h2 id="nameTitle">你的名字是?</h2>
+    <input class="name-input" id="nameInput" type="text" maxlength="12" placeholder="在這裡輸入..." aria-label="你的名字">
+    <button class="tt-btn" type="submit">就叫我這個吧★</button>
+  </form>
+</div>
+
+<!-- 進場白幕：從全白慢慢淡出 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果在 common.js，第三頁互動在 page3.js -->
+<script src="common.js"></script>
+<script src="page3.js"></script>
+</body>
+</html>

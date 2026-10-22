@@ -9,7 +9,8 @@
     d.data[i]=v; d.data[i+1]=v*0.50; d.data[i+2]=v*0.50; d.data[i+3]=255;
   }
   g.putImageData(d,0,0);
-  document.getElementById('grain').style.backgroundImage = `url(${c.toDataURL()})`;
+  const url = `url(${c.toDataURL()})`;
+  document.querySelectorAll('.grain').forEach(el => el.style.backgroundImage = url);
 })();
 
 /* ---------- 右上角選單展開 ---------- */
