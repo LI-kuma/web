@@ -100,48 +100,74 @@ body.in-house .door, body.opened .door{opacity:1; visibility:visible}
   opacity:0; transition:opacity 1.2s ease; pointer-events:none;
 }
 body.opened .door-glow{opacity:1}
+/* 門打開（換成開門圖）之後：收起 knock! 字樣和光暈 */
+body.door-open .door{opacity:0; transition-delay:0s}
+body.door-open .knock-label{animation:none}
 
-/* ===== 白白霧霧的正方形圖層 ===== */
+/* ===== 白色半透明遮罩：鋪滿整個畫面 ===== */
 .fog{
-  position:fixed; z-index:20;
-  left:50%; top:calc((100% - var(--marquee-h)) / 2);
-  width:calc(var(--stage-w) * 1.08); max-width:calc(100vw - 16px);
-  aspect-ratio:1051/699;
-  transform:translate(-50%,-50%);
-  background:var(--fog);
-  -webkit-backdrop-filter:blur(14px) saturate(.7); backdrop-filter:blur(14px) saturate(.7);
-  -webkit-mask-image:radial-gradient(ellipse 72% 78% at 50% 50%, #000 62%, transparent 100%);
-          mask-image:radial-gradient(ellipse 72% 78% at 50% 50%, #000 62%, transparent 100%);
+  position:fixed; inset:0; z-index:20;
+  background:rgba(255,255,255,.53);   /* 白色填滿，透明度 53% */
   cursor:pointer; border:0; padding:0;
-  transition:opacity 1.1s ease, transform 1.3s cubic-bezier(.2,.7,.2,1), filter 1.1s ease;
-  overflow:hidden;
+  transition:opacity .8s ease;
 }
-.fog::before,.fog::after{
-  content:""; position:absolute; inset:-20%;
-  background:
-    radial-gradient(40% 30% at 30% 40%, rgba(255,255,255,.9), transparent 70%),
-    radial-gradient(35% 25% at 70% 60%, rgba(255,252,240,.85), transparent 70%),
-    radial-gradient(30% 30% at 50% 80%, rgba(255,255,255,.7), transparent 70%);
-  animation:drift 9s ease-in-out infinite alternate;
-}
-.fog::after{animation-duration:13s; animation-direction:alternate-reverse; opacity:.7}
-@keyframes drift{from{transform:translate(-4%,-2%) rotate(0)}to{transform:translate(4%,3%) rotate(6deg)}}
 .fog:focus-visible{outline:none}
 .fog-hint{
-  position:absolute; left:50%; bottom:20%; transform:translateX(-50%); z-index:1;
+  position:absolute; left:50%; bottom:45%; transform:translateX(-50%); z-index:1;
   font-family:var(--font-body); font-weight:700; letter-spacing:.2em; font-size:clamp(11px,1.4vw,14px);
-  color:#b2a98f; white-space:nowrap; animation:blink 2.2s ease-in-out infinite;
+  color:#ffffff; white-space:nowrap; animation:blink 2.2s ease-in-out infinite;
 }
 @keyframes blink{50%{opacity:.35}}
-body.entered .fog{opacity:0; transform:translate(-50%,-50%) scale(1.15); filter:blur(8px); pointer-events:none}
+body.entered .fog{opacity:0; pointer-events:none}
 
 /* ===== 標準字 Logo ===== */
 .logo{
   position:fixed; z-index:30; left:0; top:0; width:200px; height:auto;
   pointer-events:none;
-  filter:drop-shadow(0 2px 0 rgba(255,255,255,.6));
+  /* grayscale 去掉奶油黃，brightness 讓字面接近白色，保留原本的灰色外框和陰影 */
+  filter:grayscale(1) brightness(1.08) drop-shadow(0 2px 0 rgba(255,255,255,.6));
 }
+/* 首頁點一下遮罩後，標準字從中間滑到左上角 */
 .logo.animate{transition:left 1.1s cubic-bezier(.65,0,.25,1), top 1.1s cubic-bezier(.65,0,.25,1), width 1.1s cubic-bezier(.65,0,.25,1)}
+/* 標準字在左上角的位置和大小（首頁進入後、第二頁共用） */
+.logo.logo-corner{left:22px; top:22px; width:clamp(140px, 17vw, 240px)}
+
+/* ===== 第二頁：主人的紙條 ===== */
+.note-backdrop{
+  position:fixed; inset:0; z-index:45;
+  display:grid; place-items:center; padding:16px;
+  background:rgba(255,255,255,.65);   /* 紙條後面的泛白遮罩，白色透明度 65% */
+  opacity:0; visibility:hidden; transition:opacity .5s ease, visibility 0s .5s;
+}
+.note-backdrop.show{opacity:1; visibility:visible; transition:opacity .5s ease}
+.note{
+  position:relative;
+  width:min(640px, 100%); aspect-ratio:831/595;   /* 紙條圖的比例 */
+  background:url(img/note.png) center/100% 100% no-repeat;
+  filter:drop-shadow(0 8px 18px rgba(120,100,60,.22));
+  transform:scale(.85) rotate(-3deg); transition:transform .6s cubic-bezier(.34,1.56,.64,1);
+}
+.note-backdrop.show .note{transform:scale(1) rotate(0)}
+/* 紙條中間白色紙面的範圍，文字都排在這裡面 */
+.note-paper{
+  position:absolute; left:15%; right:15%; top:20%; bottom:21%;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center; color:#7a7a7a;
+  font-family:var(--font-body); font-weight:700;
+  font-size:clamp(12px, 2.6vw, 17px); line-height:1.8; letter-spacing:.04em;
+}
+.note-paper p{margin:0}
+.note-sign{position:absolute; right:4%; bottom:4%; font-size:.72em}
+.note-close{
+  position:absolute; right:14%; top:17%;
+  width:clamp(26px, 5vw, 36px); aspect-ratio:1; padding:0; cursor:pointer;   /* width = 關閉按鈕大小 */
+  border:0; border-radius:50%;
+  background:url(img/close-btn.png) center/100% 100% no-repeat;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.12));
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.note-close:hover{transform:rotate(90deg) scale(1.08)}
+.note-close:focus-visible{outline:2px dashed var(--knock); outline-offset:3px}
 
 /* ===== 右上角選單 ===== */
 .menu{
@@ -196,8 +222,8 @@ body.entered .fog{opacity:0; transform:translate(-50%,-50%) scale(1.15); filter:
 #particles{position:fixed; inset:0; width:100%; height:100%; z-index:50; pointer-events:none}
 .grain{
   position:fixed; inset:-50%; z-index:60; pointer-events:none;
-  opacity:.16; mix-blend-mode:multiply;
-  background-size:180px 180px;
+  opacity:.20; mix-blend-mode:overlay;
+  background-size:360px 360px;
   animation:grain .6s steps(6) infinite;
 }
 .vignette{

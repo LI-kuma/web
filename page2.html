@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（和首頁共用） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 第二頁：門已經打開的房子 -->
+<main class="scene">
+  <div class="stage">
+    <img class="lace" src="img/lace.png" alt="">
+    <div class="oval">
+      <div class="house-inner"><img src="img/house-open.jpg" alt="大門打開的維多利亞風小屋"></div>
+    </div>
+  </div>
+</main>
+
+<!-- 標準字（左上角） -->
+<img class="logo logo-corner" src="img/logo.png" alt="Tea Time">
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="#world"     style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="#character" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="#worries"   style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 主人的紙條：進來後停一下才跳出來（時間在 page2.js 調） -->
+<div class="note-backdrop" id="note">
+  <div class="note" role="dialog" aria-modal="true" aria-labelledby="noteText">
+    <button class="note-close" id="noteClose" aria-label="關閉紙條"></button>
+    <div class="note-paper" id="noteText">
+      <!-- ↓↓↓ 紙條文字改這裡，一行一個 <p> ↓↓↓ -->
+      <p>歡迎來到It's Tea Time!!</p>
+      <p>我是這棟房子的主人★</p>
+      <p>進去之後請選擇你的煩惱喔~~~</p>
+      <span class="note-sign">主人留</span>
+      <!-- ↑↑↑ 紙條文字改這裡 ↑↑↑ -->
+    </div>
+  </div>
+</div>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果在 common.js，第二頁互動在 page2.js -->
+<script src="common.js"></script>
+<script src="page2.js"></script>
+</body>
+</html>

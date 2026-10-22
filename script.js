@@ -1,21 +1,12 @@
 // It's Tea Time 首頁互動
 /* ===== 可以自己調的設定 ===== */
 const KNOCK_COLOR = '#FF97E9';
-const NEXT_PAGE = '';   // 點門之後要去的下一頁，例如 'living-room.html'；留空就停在這頁
+const NEXT_PAGE = 'page2.html';   // 點門之後要去的下一頁；留空就停在這頁
+const OPEN_HOUSE = 'img/house-open.jpg';   // 敲門後換成的開門房子圖
+const NEXT_PAGE_DELAY = 1000;   // 門打開後停幾毫秒再換頁（1000 = 1 秒）
+// 復古顆粒和右上角選單在 common.js
 
-/* ---------- 1. 全頁復古顆粒：用 canvas 產生一張雜訊圖 ---------- */
-(function makeGrain(){
-  const c = document.createElement('canvas'); c.width = c.height = 180;
-  const g = c.getContext('2d'); const d = g.createImageData(180,180);
-  for (let i=0;i<d.data.length;i+=4){
-    const v = Math.random()*255;
-    d.data[i]=v; d.data[i+1]=v*0.96; d.data[i+2]=v*0.88; d.data[i+3]=255;
-  }
-  g.putImageData(d,0,0);
-  document.getElementById('grain').style.backgroundImage = `url(${c.toDataURL()})`;
-})();
-
-/* ---------- 2. 標準字：中間 → 左上角 ---------- */
+/* ---------- 1. 標準字 ---------- */
 const logo = document.getElementById('logo');
 const fog = document.getElementById('fog');
 const stage = document.getElementById('stage');
@@ -30,10 +21,9 @@ function placeLogo(){
     logo.style.left = (r.left + r.width/2 - w/2) + 'px';
     logo.style.top  = (r.top + r.height/2 - h/2 - r.height*0.04) + 'px';
   } else {
-    const small = innerWidth < 560;
-    logo.style.width = (small ? 140 : Math.min(240, Math.max(170, innerWidth*0.17))) + 'px';
-    logo.style.left = Math.max(16, 22) + 'px';
-    logo.style.top = (small ? 18 : 22) + 'px';
+    // 清掉上面算的位置，改用 style.css 的 .logo-corner（和 page2 同一個左上角位置）
+    logo.style.width = logo.style.left = logo.style.top = '';
+    logo.classList.add('logo-corner');
   }
 }
 placeLogo();
@@ -42,26 +32,15 @@ addEventListener('resize', () => { logo.classList.remove('animate'); placeLogo()
 function enter(){
   if (entered) return;
   entered = true;
-  document.body.classList.add('entered');
-  logo.classList.add('animate');
+  document.body.classList.add('entered');   // 遮罩淡出（style.css）
+  logo.classList.add('animate');            // 標準字滑到左上角
   placeLogo();
   setTimeout(() => document.body.classList.add('in-house'), 700);
 }
 fog.addEventListener('click', enter);
 fog.addEventListener('keydown', e => { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); enter(); } });
 
-/* ---------- 3. 選單展開 ---------- */
-const menu = document.getElementById('menu');
-const menuToggle = document.getElementById('menuToggle');
-menuToggle.addEventListener('click', e => {
-  e.stopPropagation();
-  const open = menu.classList.toggle('open');
-  menuToggle.setAttribute('aria-expanded', open);
-  menuToggle.setAttribute('aria-label', open ? '收起選單' : '打開選單');
-});
-document.addEventListener('click', e => { if (!menu.contains(e.target)) { menu.classList.remove('open'); menuToggle.setAttribute('aria-expanded', false); } });
-
-/* ---------- 4. knock! 粒子 ---------- */
+/* ---------- 2. knock! 粒子 ---------- */
 const cv = document.getElementById('particles');
 const ctx = cv.getContext('2d');
 let dpr = 1;
@@ -128,9 +107,11 @@ function tick(now){
 }
 requestAnimationFrame(tick);
 
-/* ---------- 5. 點門：敲門、停止粒子 ---------- */
+/* ---------- 3. 點門：敲門 → 換成開門的房子 → 進第二頁 ---------- */
 const door = document.getElementById('door');
 const knockLabel = document.getElementById('knockLabel');
+const houseImg = document.getElementById('houseImg');
+new Image().src = OPEN_HOUSE;   // 先偷偷載好開門圖，換圖時才不會閃
 door.addEventListener('click', () => {
   if (document.body.classList.contains('opened')) return;
   const r = door.getBoundingClientRect();
@@ -138,6 +119,10 @@ door.addEventListener('click', () => {
   knockLabel.textContent = 'knock! knock!';
   stage.classList.add('knocking');
   document.body.classList.add('opened');   // 加上這個 class 之後，滑鼠就不會再冒 knock!
-  setTimeout(() => { stage.classList.remove('knocking'); knockLabel.textContent = 'come in~'; }, 1100);
-  if (NEXT_PAGE) setTimeout(() => { location.href = NEXT_PAGE; }, 1800);
+  setTimeout(() => {
+    stage.classList.remove('knocking');
+    houseImg.src = OPEN_HOUSE;
+    document.body.classList.add('door-open');   // 收起 knock! 字樣（style.css）
+    if (NEXT_PAGE) setTimeout(() => { location.href = NEXT_PAGE; }, NEXT_PAGE_DELAY);
+  }, 1100);
 });
