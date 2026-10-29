@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（這頁的樣式在「聊天頁」那段） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<!-- 聊天頁：和選到的角色在下午茶桌邊聊天；網址 chat.html?c=dokimi / gurumi / rabumi 決定是哪一隻 -->
+<!-- ★ 對話內容都在 chat.js 最上面的 SCRIPTS，不用改這個檔案 ★ -->
+<body class="arriving chat-page">
+
+<!-- 背景：下午茶桌（蓋一層白霧，讓角色和對話框比較清楚） -->
+<div class="chat-bg" aria-hidden="true"><img src="img/tea-table.jpg" alt=""></div>
+
+<!-- 角色：站在對話框後面，每說一句話會輕輕跳一下 -->
+<div class="chat-chara" id="chatChara"><div class="chat-chara-bob"><img id="charaImg" src="" alt=""></div></div>
+
+<!-- 玩家的回答選項（輪到你回答時才出現） -->
+<div class="chat-choices" id="chatChoices" role="group" aria-label="你的回答"></div>
+
+<!-- 下方對話框：左邊角色頭像、右邊名字和台詞；點對話框或按「▸」看下一句 -->
+<div class="chat-box" id="chatBox">
+  <div class="chat-avatar"><img id="avatarImg" src="" alt=""></div>
+  <div class="chat-body">
+    <p class="chat-name" id="chatName"></p>
+    <p class="chat-text" id="chatText" aria-live="polite"></p>
+  </div>
+  <button class="tt-btn chat-next" id="chatNext" type="button">▸</button>
+</div>
+
+<!-- 聊完之後跳出來的「今天的小紙條」 -->
+<div class="dim chat-end-dim" id="endDim">
+  <div class="chat-end" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <span class="chat-end-tape" aria-hidden="true"></span>
+    <h2 id="endTitle">今天的小紙條 <small>♡ memo</small></h2>
+    <p class="chat-end-to">to: <b id="endName"></b></p>
+    <dl class="chat-end-list">
+      <dt>我在煩什麼</dt><dd id="endWhat"></dd>
+      <dt>為什麼會煩</dt><dd id="endWhy"></dd>
+      <dt>可以怎麼舒緩</dt><dd id="endHow"></dd>
+    </dl>
+    <p class="chat-end-help">如果煩惱重到喘不過氣，記得找信任的人聊聊，<br>或撥打 <b>1925 安心專線</b>（24 小時、免付費）。</p>
+    <div class="chat-end-btns">
+      <button class="tt-btn" id="endWall" type="button">把煩惱匿名貼到煩惱牆</button>
+      <button class="tt-btn" id="endRoom" type="button">⌂ 回客廳</button>
+      <button class="tt-btn" id="endAgain" type="button">再聊一次</button>
+    </div>
+  </div>
+</div>
+
+<!-- 上方蕾絲 Navigation Bar -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
+
+<!-- 標準字（左上角，點了回首頁） -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<!-- 換頁的白幕 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果在 common.js，這頁的對話在 chat.js -->
+<script src="common.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（這頁的樣式在「世界觀介紹」那段） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<!-- 世界觀介紹：故事、怎麼玩、三大煩惱（角色介紹）、創作理念；文字直接改這個檔案 -->
+<body class="arriving world-page">
+
+<main class="scroll-page" id="scrollPage">
+  <div class="sp-wrap">
+
+    <!-- ===== 開頭 ===== -->
+    <header class="w-hero reveal">
+      <div>
+        <h1 class="sp-title">The World of<br>It's Tea Time</h1>
+        <p class="sp-sub">世界觀介紹</p>
+        <p class="sp-lead">
+          在城市某個安靜的轉角，有一棟只在你需要的時候才會出現的維多利亞老屋。<br>
+          推開門，茶已經泡好了——<br>
+          這裡是讓煩惱可以好好坐下來、喝杯茶的地方。
+        </p>
+        <div class="w-hero-btns">
+          <a class="sp-btn" href="#characters">認識三大煩惱 ♡</a>
+          <a class="sp-btn" href="#concept" style="--b-light:#E6F6F1; --b-main:#D0EDE6">創作理念</a>
+        </div>
+      </div>
+      <div class="w-hero-pic" aria-hidden="true">
+        <img class="w-lace" src="img/lace.png" alt="">
+        <img class="w-maid" src="img/maid-smile.png" alt="">
+      </div>
+    </header>
+
+    <!-- ===== 故事 ===== -->
+    <section class="w-sec reveal" id="story">
+      <h2 class="w-h2">關於這間茶屋 <small>Story</small></h2>
+      <div class="w-story">
+        <article>
+          <h3>☕ 會出現的老屋</h3>
+          <p>每當有人心裡塞滿說不出口的煩惱，街角就會悄悄出現一棟粉色的老屋。只要輕輕敲門，「knock knock」，門就會為你打開。</p>
+        </article>
+        <article>
+          <h3>🎀 主人 莓露露</h3>
+          <p>茶屋的主人是女僕莓露露（メルル）。她記得每一位客人的名字，總是笑咪咪地準備好紅茶和點心，等你慢慢說出今天的心事。</p>
+        </article>
+        <article>
+          <h3>🧸 長成小精靈的煩惱</h3>
+          <p>在這裡，煩惱不是怪獸，而是會坐在沙發上、有點笨拙的小傢伙。牠們和你有一樣的心事，所以最懂你，也最想陪你聊聊。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== 怎麼玩 ===== -->
+    <section class="w-sec reveal" id="howto">
+      <h2 class="w-h2">在茶屋裡可以做什麼 <small>How to play</small></h2>
+      <ol class="w-steps">
+        <li><b>敲門進屋</b><span>在首頁點點老屋的門，走進茶屋</span></li>
+        <li><b>告訴莓露露名字</b><span>名字會被記住，角色們會這樣叫你</span></li>
+        <li><b>選擇你的煩惱</b><span>沙發上的三隻角色，各是一種煩惱</span></li>
+        <li><b>和牠聊聊天</b><span>從「煩什麼」到「怎麼舒緩」慢慢整理</span></li>
+        <li><b>留下煩惱</b><span>匿名貼到煩惱牆，看看別人也一樣</span></li>
+      </ol>
+    </section>
+
+    <!-- ===== 三大煩惱（選單的「角色介紹」會跳到這裡） ===== -->
+    <section class="w-sec reveal" id="characters">
+      <h2 class="w-h2">三大煩惱 <small>Characters</small></h2>
+      <div class="w-charas">
+        <div class="w-card" style="--cl:#FBFEBB; --cm:#FFDF8C">
+          <div class="w-card-pic"><img src="img/char-1.png" alt="Dokimi"></div>
+          <h3>Dokimi</h3><p class="kana">ドキミー</p>
+          <span class="tag">自我懷疑與自卑</span>
+          <p class="desc">總是不自覺地和別人比較，很在意外表與他人的評價。即使已經很努力，還是覺得自己不夠好，渴望被認同與肯定。</p>
+          <a class="sp-btn" href="profile.html?c=dokimi">看牠的檔案 ♡</a>
+        </div>
+        <div class="w-card" style="--cl:#E6F6F1; --cm:#D0EDE6">
+          <div class="w-card-pic"><img src="img/char-2.png" alt="Gurumi"></div>
+          <h3>Gurumi</h3><p class="kana">グルミー</p>
+          <span class="tag">學業壓力</span>
+          <p class="desc">總是被待辦清單追著跑，害怕進度落後或做得不夠好。即使完成了所有事情，仍然無法安心，總擔心自己還能做得更好。</p>
+          <a class="sp-btn" href="profile.html?c=gurumi">看牠的檔案 ♡</a>
+        </div>
+        <div class="w-card" style="--cl:#FAE6F6; --cm:#F1C5C8">
+          <div class="w-card-pic"><img src="img/rabumi.png" alt="Rabumi"></div>
+          <h3>Rabumi</h3><p class="kana">ラブミー</p>
+          <span class="tag">人際關係壓力</span>
+          <p class="desc">總是很在意別人的想法，容易因為一句話或一個小動作想很多。明明沒有發生什麼，卻忍不住懷疑是不是自己做錯了什麼。</p>
+          <a class="sp-btn" href="profile.html?c=rabumi">看牠的檔案 ♡</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 創作理念 ===== -->
+    <section class="w-sec w-concept reveal" id="concept">
+      <h2 class="w-h2">創作理念 <small>Concept</small></h2>
+      <div class="w-flow">
+        <span>我在煩什麼</span><i>→</i><span>為什麼會煩</span><i>→</i><span>可以怎麼舒緩</span>
+      </div>
+      <p>很多時候，我們只知道「好煩」，卻說不出到底在煩什麼。煩惱被悶在心裡，就會越長越大。</p>
+      <p>It's Tea Time 想做的，是一個不用急著變好的地方。把煩惱變成可愛的角色，讓它們先說出自己的心事；當你發現「原來不是只有我這樣」，就比較敢面對自己的情緒。</p>
+      <p>透過和角色一來一往的聊天，從「我在煩什麼」，一步一步找到「為什麼會煩」，再找到「可以怎麼舒緩」。最後，也可以把煩惱匿名留在煩惱牆上，看看大家其實都一樣，在努力地過每一天。</p>
+      <p class="w-sign">— 喝杯茶，休息一下吧 ♡</p>
+    </section>
+
+    <!-- ===== 最後 ===== -->
+    <section class="w-end reveal">
+      <p class="sp-lead">準備好了嗎？莓露露已經把茶泡好了。</p>
+      <div class="w-end-btns">
+        <a class="sp-btn" href="page3.html?back=1">⌂ 回到客廳</a>
+        <a class="sp-btn" href="wall.html" style="--b-light:#FBFEBB; --b-main:#FFDF8C">看看煩惱牆</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- 上方蕾絲 Navigation Bar -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
+
+<!-- 標準字（左上角，點了回首頁） -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<!-- 換頁的白幕 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果（換頁、選單、捲動時浮上來）都在 common.js -->
+<script src="common.js"></script>
+</body>
+</html>

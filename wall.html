@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（這頁的樣式在「匿名煩惱牆」那段） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<!-- 匿名煩惱牆：大家的煩惱便條（範例煩惱在 wall.js 最上面的 SAMPLES 改） -->
+<body class="arriving wall-page">
+
+<main class="scroll-page" id="scrollPage">
+  <div class="sp-wrap">
+    <header class="wl-head reveal">
+      <h1 class="sp-title">Worry Wall</h1>
+      <p class="sp-sub">匿名煩惱牆</p>
+      <p class="sp-lead">不用署名、不用解釋，把心裡的煩惱寫在便條上貼起來吧。<br>看到有共鳴的，就給它一個 ♡ 抱抱。</p>
+    </header>
+
+    <!-- 分類篩選 -->
+    <div class="wl-filter reveal" id="wlFilter" role="group" aria-label="篩選煩惱種類">
+      <button type="button" class="on" data-f="all">全部</button>
+      <button type="button" data-f="self"   data-cat="self">自我懷疑與自卑</button>
+      <button type="button" data-f="study"  data-cat="study">學業壓力</button>
+      <button type="button" data-f="people" data-cat="people">人際關係壓力</button>
+      <button type="button" data-f="other"  data-cat="other">其他</button>
+    </div>
+    <p class="wl-count" id="wlCount"></p>
+
+    <!-- 便條會由 wall.js 放進這裡 -->
+    <div class="wl-board" id="wlBoard"></div>
+
+    <p class="wl-note-local">※ 目前你貼的煩惱和抱抱只會存在這台裝置的瀏覽器裡，其他人看不到。</p>
+  </div>
+</main>
+
+<!-- 右下角：寫下煩惱 -->
+<button class="sp-btn wl-post-btn" id="wlPostBtn" type="button">✎ 寫下我的煩惱</button>
+
+<!-- 寫煩惱的便條紙 -->
+<div class="dim" id="wlDim">
+  <form class="wl-form" id="wlForm" role="dialog" aria-modal="true" aria-labelledby="wlFormTitle" autocomplete="off" data-cat="other">
+    <h2 id="wlFormTitle">寫下你的煩惱 ♡</h2>
+    <p class="hint">完全匿名，不會顯示你的名字。</p>
+    <textarea id="wlText" maxlength="120" placeholder="最近讓你心裡悶悶的事是…" aria-describedby="wlLen"></textarea>
+    <p class="len" id="wlLen">0 / 120</p>
+    <fieldset class="wl-cats">
+      <legend>這是哪一種煩惱？</legend>
+      <label data-cat="self"><input type="radio" name="cat" value="self"><span>自我懷疑與自卑</span></label>
+      <label data-cat="study"><input type="radio" name="cat" value="study"><span>學業壓力</span></label>
+      <label data-cat="people"><input type="radio" name="cat" value="people"><span>人際關係壓力</span></label>
+      <label data-cat="other"><input type="radio" name="cat" value="other" checked><span>其他</span></label>
+    </fieldset>
+    <div class="wl-form-btns">
+      <button class="tt-btn" type="button" id="wlCancel">先不要</button>
+      <button class="tt-btn" type="submit">貼上去 ★</button>
+    </div>
+  </form>
+</div>
+
+<!-- 上方蕾絲 Navigation Bar -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
+
+<!-- 標準字（左上角，點了回首頁） -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<!-- 換頁的白幕 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果在 common.js，煩惱牆的程式在 wall.js -->
+<script src="common.js"></script>
+<script src="wall.js"></script>
+</body>
+</html>

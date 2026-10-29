@@ -6,7 +6,7 @@
   <title>It's Tea Time</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
   <!-- 樣式都在 style.css（和首頁共用） -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,51 +14,113 @@
 
 <!-- 第三頁：客廳 -->
 <div class="room">
-  <img class="room-bg" src="img/room.jpg" alt="粉色沙發和白色茶几的客廳">
+  <img class="room-bg" src="img/living-room.jpg" alt="粉色沙發和白色茶几的客廳">
 
   <!-- ↓↓↓ 角色圖：把圖放進 img 資料夾，改 src 的檔名就好；--x --y --w 是相對客廳照片的 %（左、上、寬） ↓↓↓ -->
-  <button class="chara" data-chara="1" style="--x:19;--y:23.5;--w:11.5" aria-label="角色一"><img src="img/char-1.png" alt=""></button>
-  <button class="chara" data-chara="2" style="--x:32;--y:26.5;--w:13"   aria-label="角色二"><img src="img/char-2.png" alt=""></button>
-  <button class="chara" data-chara="3" style="--x:46.5;--y:21.5;--w:15.5" aria-label="角色三"><img src="img/char-3.png" alt=""></button>
+  <button class="chara" disabled data-chara="1" style="--x:23.5;--y:17.3;--w:10.1" aria-label="角色一"><img src="img/char-1.png" alt=""></button>
+  <button class="chara" disabled data-chara="2" style="--x:35.6;--y:20;--w:9.9" aria-label="角色二"><img src="img/char-2.png" alt=""></button>
+  <button class="chara" disabled data-chara="3" style="--x:48.4;--y:13.9;--w:12.2" aria-label="角色三"><img src="img/rabumi.png" alt=""></button>
+  <!-- 沙發上的角色只用 PNG（GIF 動畫在點開的角色檔案卡裡播，設定在 page3.js 的 CHARAS） -->
+  <!-- disabled = 還沒輸入名字前不能點、沒有動效；輸入名字後 page3.js 會把它拿掉 -->
   <!-- ↑↑↑ 角色圖 ↑↑↑ -->
 </div>
 
-<!-- 上方蕾絲 Navigation Bar（裝飾） -->
-<img class="nav-lace" src="img/nav-lace.png" alt="">
+<!-- 上方蕾絲 Navigation Bar（裝飾）：nav-lace.png 橫向重複拼成一長條，粗細在 style.css 的 .nav-lace 調 -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
 
 <!-- 標準字（左上角） -->
-<img class="logo logo-corner" src="img/logo.png" alt="Tea Time">
+<!-- 點標準字回首頁 -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
 
 <!-- 右上角選單 -->
 <nav class="menu" id="menu" aria-label="選單">
-  <a class="menu-item" href="#world"     style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
-  <a class="menu-item" href="#character" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
-  <a class="menu-item" href="#worries"   style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
   <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
 </nav>
 
 <!-- 下方主人對話框（文字在 page3.js 改） -->
 <div class="dialog" id="dialog">
-  <!-- 主人頭像：把圖放進 img 資料夾取名 owner.png -->
-  <img class="owner" src="img/owner.png" alt="主人">
   <div class="dialog-body">
-    <p class="dialog-name">主人</p>
+    <p class="dialog-name">メルル｜莓露露</p>
     <p class="dialog-text" id="dialogText"></p>
   </div>
   <button class="tt-btn" id="dialogBtn"></button>
+</div>
+
+<!-- 女僕莓露露：站在對話框右上方，對話框出現時一起淡入（位置、大小在 style.css 的 .maid 調） -->
+<div class="maid" id="maid">
+  <div class="maid-bob">
+    <!-- 翻牌卡片：正面 A = 一般表情、背面 B = 笑臉；輸入完名字後會翻到 B -->
+    <div class="maid-card">
+      <img class="maid-a" src="img/maid.png" alt="女僕莓露露">
+      <img class="maid-b" src="img/maid-smile.png" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- 右下角小幫手莓露露：點頭像打開「需要幫忙嗎?」（樣式在 style.css 的「小幫手」、動作在 page3.js 的「5. 小幫手」） -->
+<div class="helper-shade" id="helperShade"></div>
+<div class="helper" id="helper">
+  <div class="helper-panel" id="helperPanel" role="dialog" aria-label="需要幫忙嗎?">
+    <!-- helperName 裡面會自動放進玩家輸入的名字 -->
+    <p class="helper-title">需要幫忙嗎?<span class="helper-name" id="helperName"></span></p>
+    <button class="helper-opt" type="button" data-help="todo">現在我該做甚麼</button>
+    <button class="helper-opt" type="button" data-help="world">想了解世界觀</button>
+  </div>
+  <button class="helper-head" id="helperHead" type="button" aria-expanded="false" aria-controls="helperPanel" aria-label="莓露露小幫手">
+    <img src="img/maid-head.gif" alt="">
+  </button>
+</div>
+
+<!-- 角色檔案卡：點沙發上的角色會跳出來（內容在 page3.js 的 CHARAS、樣式在 style.css 的「角色檔案卡」） -->
+<div class="cc-dim" id="ccDim">
+  <!-- 整張卡片就是一顆蕾絲愛心：愛心（底）→ 角色 GIF + 資訊 → 星星餅乾（最上層，晚 1 秒彈出來） -->
+  <div class="cc-card" id="ccCard" role="dialog" aria-modal="true" aria-labelledby="ccName">
+    <img class="cc-heart" src="img/cc-heart.png" alt="">
+    <div class="cc-pic"><img id="ccImg" src="" alt=""></div>
+    <div class="cc-info">
+      <h2 class="cc-name" id="ccName"></h2>
+      <p class="cc-kana" id="ccKana"></p>
+      <p class="cc-tag"><span class="cc-tag-label">煩惱類型</span><span id="ccTag"></span></p>
+      <p class="cc-desc" id="ccDesc"></p>
+      <button class="cc-pick" id="ccPick" type="button">選擇我! pick me! ♡</button>
+    </div>
+    <img class="cc-stars" src="img/cc-stars.png" alt="">
+    <button class="cc-close" id="ccClose" type="button" aria-label="關閉">×</button>
+  </div>
 </div>
 
 <!-- 輸入名字（整頁變暗） -->
 <div class="dim" id="nameDim">
   <form class="name-box" id="nameForm" role="dialog" aria-modal="true" aria-labelledby="nameTitle" autocomplete="off">
     <h2 id="nameTitle">你的名字是?</h2>
-    <input class="name-input" id="nameInput" type="text" maxlength="12" placeholder="在這裡輸入..." aria-label="你的名字">
+    <div class="name-field">
+      <!-- placeholder = 輸入框裡淡淡的提示字 -->
+      <input class="name-input" id="nameInput" type="text" maxlength="5" placeholder="在這裡輸入..." aria-label="你的名字" aria-describedby="nameHint">
+      <!-- 輸入框下方的小字提醒 -->
+      <p class="name-hint" id="nameHint">最多 5 個字，只能用中文、英文或數字喔～</p>
+    </div>
     <button class="tt-btn" type="submit">就叫我這個吧★</button>
   </form>
 </div>
 
 <!-- 進場白幕：從全白慢慢淡出 -->
+<!-- 按下 pick me 後，從按鈕擴散到全螢幕的白光 -->
+<div class="pick-wipe" id="pickWipe" aria-hidden="true"></div>
 <div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<!-- 跑馬燈：和莓露露對話完才從下面滑上來（page3.js 加上 show） -->
+<div class="marquee marquee-late" id="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
 
 <div class="vignette"></div>
 <div class="grain" id="grain"></div>

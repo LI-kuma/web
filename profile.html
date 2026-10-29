@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Tea Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（和其他頁共用，這頁的樣式在「角色個人檔案頁」那段） -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<!-- 角色個人檔案頁：三隻角色共用這一頁，網址 profile.html?c=dokimi / gurumi / rabumi 決定是哪一隻 -->
+<!-- ★ 文字都在 profile.js 最上面的 PROFILES 填，不用改這個檔案 ★ -->
+<body class="arriving profile-page">
+
+<!-- 翻頁的檔案本：左頁 p1、右頁 p4 固定不動，中間那張會翻（正面 p2、背面 p3） -->
+<main class="pf-main">
+  <div class="pf-book" id="pfBook">
+    <!-- 檔案本的硬殼（單色果凍感，顏色在 profile.js 的 cover） -->
+    <div class="pf-cover" aria-hidden="true"></div>
+
+    <!-- ↓ 夾在「硬殼前面、可翻的紙後面」凌亂露出來的東西；位置在 style.css 的「凌亂的紙」 -->
+    <div class="pf-scraps" aria-hidden="true">
+      <span class="sc sc-torn"></span>
+      <span class="sc sc-grid"></span>
+      <span class="sc sc-sticky">memo ♡</span>
+      <span class="sc sc-tag"></span>
+      <span class="sc sc-ticket">ADMIT ONE ★ TEA TIME</span>
+      <span class="dc dc-label l1">TOP SECRET</span>
+      <span class="dc dc-label l2">♡ cute</span>
+      <span class="dc dc-star">★</span>
+      <span class="dc dc-washi"></span>
+      <!-- 彩色標籤貼（從右頁上面露出一點點） -->
+      <div class="pf-flags"><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <!-- p1（左頁）：名字、照片、喜歡、不喜歡 -->
+    <section class="pf-page pf-left" aria-label="第 1 頁">
+      <div class="pf-head"><span class="pf-no" data-k="no"></span><span class="pf-title">PROFILE</span></div>
+      <div class="pf-field"><span class="pf-label">NAME</span><span class="pf-value"><b data-k="name"></b><small data-k="kana"></small></span></div>
+      <div class="pf-p1">
+        <figure class="pf-photo">
+          <span class="pf-tape t1"></span><span class="pf-tape t2"></span>
+          <div class="pf-photo-inner"><img data-k="img" alt=""></div>
+          <figcaption data-k="tag"></figcaption>
+        </figure>
+        <div class="pf-lists">
+          <div class="pf-list like"><h3>♡ 喜歡 <small>Like</small></h3><ul data-k="likes"></ul></div>
+          <div class="pf-list dislike"><h3>✕ 不喜歡 <small>Dislike</small></h3><ul data-k="dislikes"></ul></div>
+        </div>
+      </div>
+      <span class="pf-num">- 1 -</span>
+    </section>
+
+    <!-- p1 上緣的長尾夾（翻到 p3-p4 時會藏起來） -->
+    <div class="pf-deco-p1" aria-hidden="true"><span class="dc dc-clip"></span></div>
+
+    <!-- p4（右頁，翻過去之後才看得到）：故事後半段 -->
+    <section class="pf-page pf-right" aria-label="第 4 頁">
+      <h2 class="pf-sec">故事 <small>to be continued...</small></h2>
+      <p class="pf-text" data-k="story2"></p>
+      <div class="pf-sign"><span class="pf-stamp" data-k="name"></span><span>with love ♡ It's Tea Time</span></div>
+      <span class="pf-num">- 4 -</span>
+    </section>
+
+    <!-- 會翻的那一張：正面 p2、背面 p3 -->
+    <div class="pf-leaf" id="pfLeaf">
+      <!-- p2（右頁正面）：個性、口頭禪 -->
+      <section class="pf-page pf-face pf-front" aria-label="第 2 頁">
+        <h2 class="pf-sec">個性 <small>Personality</small></h2>
+        <p class="pf-text" data-k="personality"></p>
+        <h2 class="pf-sec">口頭禪 <small>Catchphrase</small></h2>
+        <div class="pf-bubbles" data-k="catchphrase"></div>   <!-- 口頭禪有幾句就會出現幾個對話框 -->
+        <img class="pf-sticker" data-k="img" alt="">
+        <span class="pf-num">- 2 -</span>
+        <span class="pf-corner" aria-hidden="true"></span>
+      </section>
+      <!-- p3（翻過去後的左頁）：故事前半段 -->
+      <section class="pf-page pf-face pf-back" aria-label="第 3 頁">
+        <h2 class="pf-sec">關於他的故事 <small>Story</small></h2>
+        <p class="pf-text" data-k="story1"></p>
+        <span class="pf-num">- 3 -</span>
+      </section>
+      <!-- ↓ 跟著這張紙一起翻的小東西：背面（p3）用迴紋針夾一張小便條 -->
+      <div class="pf-deco pf-deco-back" aria-hidden="true">
+        <span class="dc dc-note">to: you ♡</span>
+        <span class="dc dc-pclip"></span>
+      </div>
+    </div>
+
+    <!-- 中間的金屬環 -->
+    <div class="pf-rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <!-- 右邊的索引標籤：點了跳到那一頁 -->
+    <div class="pf-tabs">
+      <button type="button" data-spread="0">自介 Intro</button>
+      <button type="button" data-spread="1">故事 Story</button>
+    </div>
+  </div>
+
+  <!-- 下面的按鈕：回客廳在左下角、和他聊天在右下角（位置在 style.css 的 .pf-ctrl） -->
+  <div class="pf-ctrl">
+    <button class="pf-btn" id="pfBack" type="button">⌂ 回客廳</button>
+    <!-- 和他聊天：按下去要去哪裡寫在 profile.js 的第 4 段 -->
+    <button class="pf-btn pf-chat" id="pfChat" type="button">和他聊天!!</button>
+  </div>
+</main>
+
+<!-- 上方蕾絲 Navigation Bar（進來時從上面滑下來） -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
+
+<!-- 標準字（左上角，點了回首頁） -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+
+<!-- 右上角選單 -->
+<nav class="menu" id="menu" aria-label="選單">
+  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+</nav>
+
+<!-- 跑馬燈 -->
+<div class="marquee" aria-label="歡迎訊息">
+  <div class="marquee-track">
+    <span>★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span>★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+    <span aria-hidden="true">★歡迎來到IT’S TEA TIME.可以進來喝杯茶~休息一下...了解自己的煩惱!! ★</span>
+    <span aria-hidden="true">★Welcome to IT’S TEA TIME. Come in and have a cup of tea~ Take a break… and understand your worries!! ★</span>
+  </div>
+</div>
+
+<!-- 換頁的白幕：進來時從全白淡出、離開時淡成全白 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
+
+<!-- 共用效果在 common.js，這頁的互動和文字在 profile.js -->
+<script src="common.js"></script>
+<script src="profile.js"></script>
+</body>
+</html>
