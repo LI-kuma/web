@@ -12,11 +12,13 @@ const fog = document.getElementById('fog');
 const stage = document.getElementById('stage');
 let entered = false;
 
+const LOGO_W = 0.5, LOGO_H = 0.62;   // 首頁中間的標準字：最多佔畫面寬的 50%、高的 62%（兩個都不會超過）
 function placeLogo(){
   if (!entered){
     const r = stage.getBoundingClientRect();
-    const w = r.width * 0.68;
-    const h = w * (220/1083);
+    const ratio = (logo.naturalHeight / logo.naturalWidth) || (1831/2164);   // 標準字圖片的 高/寬，換圖會自動跟著變
+    const w = Math.min(r.width * LOGO_W, r.height * LOGO_H / ratio);
+    const h = w * ratio;
     logo.style.width = w + 'px';
     logo.style.left = (r.left + r.width/2 - w/2) + 'px';
     logo.style.top  = (r.top + r.height/2 - h/2 - r.height*0.04) + 'px';
@@ -27,6 +29,7 @@ function placeLogo(){
   }
 }
 placeLogo();
+logo.addEventListener('load', placeLogo);   // 圖片載好、知道真正比例後再排一次
 addEventListener('resize', () => { logo.classList.remove('animate'); placeLogo(); resizeCanvas(); });
 
 function enter(){

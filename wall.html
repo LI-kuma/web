@@ -10,7 +10,7 @@
   <!-- 樣式都在 style.css（這頁的樣式在「匿名煩惱牆」那段） -->
   <link rel="stylesheet" href="style.css">
 </head>
-<!-- 匿名煩惱牆：大家的煩惱便條（範例煩惱在 wall.js 最上面的 SAMPLES 改） -->
+<!-- 匿名煩惱牆：大家和角色聊完後貼上來的「今天的小紙條」；不能自己留言，只能給抱抱（程式在 wall.js，資料存在 Cloudflare） -->
 <body class="arriving wall-page">
 
 <main class="scroll-page" id="scrollPage">
@@ -18,49 +18,27 @@
     <header class="wl-head reveal">
       <h1 class="sp-title">Worry Wall</h1>
       <p class="sp-sub">匿名煩惱牆</p>
-      <p class="sp-lead">不用署名、不用解釋，把心裡的煩惱寫在便條上貼起來吧。<br>看到有共鳴的，就給它一個 ♡ 抱抱。</p>
+      <p class="sp-lead">這裡貼著每個人和孩子們聊完後的「今天的小紙條」。<br>不會顯示名字，也不能留言——看到有共鳴的，就給它一個 ♡ 抱抱吧。</p>
     </header>
 
-    <!-- 分類篩選 -->
+    <!-- 分類篩選（依角色） -->
     <div class="wl-filter reveal" id="wlFilter" role="group" aria-label="篩選煩惱種類">
       <button type="button" class="on" data-f="all">全部</button>
-      <button type="button" data-f="self"   data-cat="self">自我懷疑與自卑</button>
-      <button type="button" data-f="study"  data-cat="study">學業壓力</button>
-      <button type="button" data-f="people" data-cat="people">人際關係壓力</button>
-      <button type="button" data-f="other"  data-cat="other">其他</button>
+      <button type="button" data-f="dokimi" data-cat="self">Dokimi｜自我懷疑與自卑</button>
+      <button type="button" data-f="gurumi" data-cat="study">Gurumi｜學業壓力</button>
+      <button type="button" data-f="rabumi" data-cat="people">Rabumi｜人際關係壓力</button>
     </div>
     <p class="wl-count" id="wlCount"></p>
 
-    <!-- 便條會由 wall.js 放進這裡 -->
+    <!-- 小紙條會由 wall.js 放進這裡 -->
     <div class="wl-board" id="wlBoard"></div>
 
-    <p class="wl-note-local">※ 目前你貼的煩惱和抱抱只會存在這台裝置的瀏覽器裡，其他人看不到。</p>
+    <p class="wl-note-local">※ 小紙條會留下聊天的結果和你想說的話，但不會有你的名字。</p>
   </div>
 </main>
 
-<!-- 右下角：寫下煩惱 -->
-<button class="sp-btn wl-post-btn" id="wlPostBtn" type="button">✎ 寫下我的煩惱</button>
-
-<!-- 寫煩惱的便條紙 -->
-<div class="dim" id="wlDim">
-  <form class="wl-form" id="wlForm" role="dialog" aria-modal="true" aria-labelledby="wlFormTitle" autocomplete="off" data-cat="other">
-    <h2 id="wlFormTitle">寫下你的煩惱 ♡</h2>
-    <p class="hint">完全匿名，不會顯示你的名字。</p>
-    <textarea id="wlText" maxlength="120" placeholder="最近讓你心裡悶悶的事是…" aria-describedby="wlLen"></textarea>
-    <p class="len" id="wlLen">0 / 120</p>
-    <fieldset class="wl-cats">
-      <legend>這是哪一種煩惱？</legend>
-      <label data-cat="self"><input type="radio" name="cat" value="self"><span>自我懷疑與自卑</span></label>
-      <label data-cat="study"><input type="radio" name="cat" value="study"><span>學業壓力</span></label>
-      <label data-cat="people"><input type="radio" name="cat" value="people"><span>人際關係壓力</span></label>
-      <label data-cat="other"><input type="radio" name="cat" value="other" checked><span>其他</span></label>
-    </fieldset>
-    <div class="wl-form-btns">
-      <button class="tt-btn" type="button" id="wlCancel">先不要</button>
-      <button class="tt-btn" type="submit">貼上去 ★</button>
-    </div>
-  </form>
-</div>
+<!-- 右下角：去聊天（牆上的紙條只能從聊天結果貼上來） -->
+<button class="sp-btn wl-post-btn" id="wlPostBtn" type="button">♡ 去找孩子們聊聊</button>
 
 <!-- 上方蕾絲 Navigation Bar -->
 <div class="nav-bar" aria-hidden="true"></div>

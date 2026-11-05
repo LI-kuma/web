@@ -20,7 +20,13 @@
 <!-- 角色：站在對話框後面，每說一句話會輕輕跳一下 -->
 <div class="chat-chara" id="chatChara"><div class="chat-chara-bob"><img id="charaImg" src="" alt=""></div></div>
 
-<!-- 玩家的回答選項（輪到你回答時才出現） -->
+<!-- 左上角：隨時可以換路（不想聊了、想換角色、只想寫下來） -->
+<div class="chat-tools">
+  <button class="chat-tool" id="toolRoom" type="button">⌂ 換一個孩子聊</button>
+  <button class="chat-tool" id="toolWall" type="button">♡ 看看煩惱牆</button>
+</div>
+
+<!-- 玩家的回答選項 / 打字框（輪到你回答時才出現） -->
 <div class="chat-choices" id="chatChoices" role="group" aria-label="你的回答"></div>
 
 <!-- 下方對話框：左邊角色頭像、右邊名字和台詞；點對話框或按「▸」看下一句 -->
@@ -40,16 +46,20 @@
     <h2 id="endTitle">今天的小紙條 <small>♡ memo</small></h2>
     <p class="chat-end-to">to: <b id="endName"></b></p>
     <dl class="chat-end-list">
-      <dt>我在煩什麼</dt><dd id="endWhat"></dd>
-      <dt>為什麼會煩</dt><dd id="endWhy"></dd>
-      <dt>可以怎麼舒緩</dt><dd id="endHow"></dd>
+      <dt>最近發生的事</dt><dd id="endWhat"></dd>
+      <dt>我在意的是</dt><dd id="endCore"></dd>
+      <dt>我的感受</dt><dd id="endFeel"></dd>
+      <dt>我現在需要的</dt><dd id="endNeed"></dd>
     </dl>
-    <p class="chat-end-help">如果煩惱重到喘不過氣，記得找信任的人聊聊，<br>或撥打 <b>1925 安心專線</b>（24 小時、免付費）。</p>
+    <p class="chat-end-say"><b id="endCharaName"></b><span id="endSay"></span></p>
+    <p class="chat-end-say chat-end-tip" id="endTip"><b>✎ 給你的小建議</b><span id="endTipText"></span></p>
+    <p class="chat-end-help" id="endHelp">如果煩惱重到喘不過氣，記得找信任的人聊聊，<br>或撥打 <b>1925 安心專線</b>、<b>1995 生命線</b>（24 小時、免付費）。</p>
     <div class="chat-end-btns">
-      <button class="tt-btn" id="endWall" type="button">把煩惱匿名貼到煩惱牆</button>
+      <button class="tt-btn" id="endWall" type="button">把小紙條匿名貼到煩惱牆</button>
       <button class="tt-btn" id="endRoom" type="button">⌂ 回客廳</button>
       <button class="tt-btn" id="endAgain" type="button">再聊一次</button>
     </div>
+    <p class="chat-end-wallnote">貼到煩惱牆時會拿掉你的名字，但「我現在需要的」會一起貼上去，大家都看得到喔。</p>
   </div>
 </div>
 
