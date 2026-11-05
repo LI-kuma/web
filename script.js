@@ -10,6 +10,7 @@ const NEXT_PAGE_DELAY = 1000;   // 門打開後停幾毫秒再換頁（1000 = 1 
 const logo = document.getElementById('logo');
 const fog = document.getElementById('fog');
 const stage = document.getElementById('stage');
+const fogHint = document.querySelector('.fog-hint');
 let entered = false;
 
 const LOGO_W = 0.5, LOGO_H = 0.62;   // 首頁中間的標準字：最多佔畫面寬的 50%、高的 62%（兩個都不會超過）
@@ -21,7 +22,11 @@ function placeLogo(){
     const h = w * ratio;
     logo.style.width = w + 'px';
     logo.style.left = (r.left + r.width/2 - w/2) + 'px';
-    logo.style.top  = (r.top + r.height/2 - h/2 - r.height*0.04) + 'px';
+    const top = r.top + r.height/2 - h/2 - r.height*0.04;
+    logo.style.top  = top + 'px';
+    // 「點一下 進來喝杯茶」放在標準字下面，才不會被擋住；28 = 和標準字的距離（px）
+    fogHint.style.top = Math.min(top + h + 28, innerHeight - 90) + 'px';
+    fogHint.style.bottom = 'auto';
   } else {
     // 清掉上面算的位置，改用 style.css 的 .logo-corner（和 page2 同一個左上角位置）
     logo.style.width = logo.style.left = logo.style.top = '';
@@ -41,6 +46,7 @@ function enter(){
   setTimeout(() => document.body.classList.add('in-house'), 700);
 }
 fog.addEventListener('click', enter);
+logo.addEventListener('click', enter);   // 點標準字的字母也可以進入
 fog.addEventListener('keydown', e => { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); enter(); } });
 
 /* ---------- 2. knock! 粒子 ---------- */
