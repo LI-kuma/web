@@ -12,7 +12,7 @@ const PROFILES = {
   /* ===== Dokimi｜ドキミー ===== */
   dokimi: {
     no: 'No.01', name: 'Dokimi', kana: 'ドキミー', tag: '自我懷疑與自卑',
-    img: 'img/char-1.png',
+    img: '../img/char-1.png',
     light: '#FBFEBB', main: '#FFDF8C', accent: '#E9FFA3',            // 代表色：淡 / 主 / 點綴
     bg: '#F9F7ED', dot: '#FFDF8C', cover: '#FBFEBB',                   // 整頁背景色 / 波點色 / 檔案本硬殼色
     likes:       ['鏡子', '各種飾品', '化妝品', '讚和留言', '手機', '修圖軟體'],                // ← p1 喜歡
@@ -26,7 +26,7 @@ const PROFILES = {
   /* ===== Gurumi｜グルミー ===== */
   gurumi: {
     no: 'No.02', name: 'Gurumi', kana: 'グルミー', tag: '學業壓力',
-    img: 'img/char-2.png',
+    img: '../img/char-2.png',
     light: '#D0EDE6', main: '#E0D2B7', accent: '#D0EDE6',
     bg: '#F9F7ED', dot: '#D0EDE6', cover: '#E0D2B7',                   // 整頁背景色 / 波點色 / 檔案本硬殼色
     likes:       ['筆記本', '文具', '圖書館', '咖啡', '提神飲料'],                          // ← p1 喜歡
@@ -40,7 +40,7 @@ const PROFILES = {
   /* ===== Rabumi｜ラブミー ===== */
   rabumi: {
     no: 'No.03', name: 'Rabumi', kana: 'ラブミー', tag: '人際關係壓力',
-    img: 'img/rabumi.png',
+    img: '../img/rabumi.png',
     light: '#FAE6F6', main: '#F1C5C8', accent: '#FAE6F6',
     bg: '#F9F7ED', dot: '#F1C5C8', cover: '#FAE6F6',                   // 整頁背景色 / 波點色 / 檔案本硬殼色
     likes:       ['廚師帽', '餅乾和草莓蛋糕', '食譜書', '和朋友一起吃下午茶'],              // ← p1 喜歡

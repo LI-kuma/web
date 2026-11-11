@@ -11,9 +11,9 @@ const LINES = {
 };
 // 莓露露的表情圖：想加新表情就在這裡加一行（圖要和 maid.png 一樣 700×969、人物對齊）
 const FACES = {
-  normal: 'img/maid.png',        // 一般
-  smile:  'img/maid-smile.png',  // 笑臉
-  wink:   'img/maid-wink.png'    // 眨眼
+  normal: '../img/maid.png',        // 一般
+  smile:  '../img/maid-smile.png',  // 笑臉
+  wink:   '../img/maid-wink.png'    // 眨眼
 };
 // 對話順序：按下按鈕後接哪一句（最後一句 choose 按完會收起對話框）
 // ask → 輸入名字 → welcome → guide → choose → 收起
@@ -133,7 +133,7 @@ document.querySelectorAll('.helper-opt').forEach(btn => btn.addEventListener('cl
     dialog.classList.remove('hide');
   } else if (btn.dataset.help === 'world'){
     // 「想了解世界觀」：淡出後換到世界觀介紹頁
-    goTo('world.html');
+    goTo('../world.html');
   }
 }));
 
@@ -143,13 +143,13 @@ document.querySelectorAll('.helper-opt').forEach(btn => btn.addEventListener('cl
 // size = 卡片裡角色的大小倍數（Rabumi 耳朵比較寬，要放大一點身體才會和另外兩隻一樣大）
 // gif = 卡片裡播的動畫；crop = 把 3000×3000 的 GIF 裁到只剩角色用的數字（寬% / 左移% / 上移% / 高寬比），換 GIF 時要一起重算
 const CHARAS = {
-  1: { name: 'Dokimi', kana: 'ドキミー', tag: '自我懷疑與自卑', gif: 'img/char-1.gif', crop: [180.07, -38.78, -38.42, 836/700], size: 1.06,
+  1: { name: 'Dokimi', kana: 'ドキミー', tag: '自我懷疑與自卑', gif: '../img/char-1.gif', crop: [180.07, -38.78, -38.42, 836/700], size: 1.06,
        desc: '總是不自覺地和別人比較，很在意外表與他人的評價。即使已經很努力，還是覺得自己不夠好，渴望被認同與肯定。',
        light: '#FBFEBB', main: '#FFDF8C', accent: '#E9FFA3', glow: '#FFDF8C' },
-  2: { name: 'Gurumi', kana: 'グルミー', tag: '學業壓力', gif: 'img/char-2.gif', crop: [169.11, -35.06, -33.71, 747/700], size: 1.06,
+  2: { name: 'Gurumi', kana: 'グルミー', tag: '學業壓力', gif: '../img/char-2.gif', crop: [169.11, -35.06, -33.71, 747/700], size: 1.06,
        desc: '總是被待辦清單追著跑，害怕進度落後或做得不夠好。即使完成了所有事情，仍然無法安心，總擔心自己還能做得更好。',
        light: '#D0EDE6', main: '#E0D2B7', accent: '#D0EDE6', glow: '#D0EDE6' },
-  3: { name: 'Rabumi', kana: 'ラブミー', tag: '人際關係壓力', gif: 'img/rabumi.gif', crop: [136.36, -17.09, -4.27, 792/700], size: 1.3,
+  3: { name: 'Rabumi', kana: 'ラブミー', tag: '人際關係壓力', gif: '../img/rabumi.gif', crop: [136.36, -17.09, -4.27, 792/700], size: 1.3,
        desc: '總是很在意別人的想法，容易因為一句話或一個小動作想很多。明明沒有發生什麼，卻忍不住懷疑是不是自己做錯了什麼。',
        light: '#FAE6F6', main: '#F1C5C8', accent: '#FAE6F6', glow: '#F1C5C8' }
 };

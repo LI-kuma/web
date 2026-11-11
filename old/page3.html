@@ -8,18 +8,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
   <!-- 樣式都在 style.css（和首頁共用） -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body class="arriving">
 
 <!-- 第三頁：客廳 -->
 <div class="room">
-  <img class="room-bg" src="img/living-room.jpg" alt="粉色沙發和白色茶几的客廳">
+  <img class="room-bg" src="../img/living-room.jpg" alt="粉色沙發和白色茶几的客廳">
 
   <!-- ↓↓↓ 角色圖：把圖放進 img 資料夾，改 src 的檔名就好；--x --y --w 是相對客廳照片的 %（左、上、寬） ↓↓↓ -->
-  <button class="chara" disabled data-chara="1" style="--x:23.5;--y:17.3;--w:10.1" aria-label="角色一"><img src="img/char-1.png" alt=""></button>
-  <button class="chara" disabled data-chara="2" style="--x:35.6;--y:20;--w:9.9" aria-label="角色二"><img src="img/char-2.png" alt=""></button>
-  <button class="chara" disabled data-chara="3" style="--x:48.4;--y:13.9;--w:12.2" aria-label="角色三"><img src="img/rabumi.png" alt=""></button>
+  <button class="chara" disabled data-chara="1" style="--x:23.5;--y:17.3;--w:10.1" aria-label="角色一"><img src="../img/char-1.png" alt=""></button>
+  <button class="chara" disabled data-chara="2" style="--x:35.6;--y:20;--w:9.9" aria-label="角色二"><img src="../img/char-2.png" alt=""></button>
+  <button class="chara" disabled data-chara="3" style="--x:48.4;--y:13.9;--w:12.2" aria-label="角色三"><img src="../img/rabumi.png" alt=""></button>
   <!-- 沙發上的角色只用 PNG（GIF 動畫在點開的角色檔案卡裡播，設定在 page3.js 的 CHARAS） -->
   <!-- disabled = 還沒輸入名字前不能點、沒有動效；輸入名字後 page3.js 會把它拿掉 -->
   <!-- ↑↑↑ 角色圖 ↑↑↑ -->
@@ -31,14 +31,14 @@
 
 <!-- 標準字（左上角） -->
 <!-- 點標準字回首頁 -->
-<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="../img/logo.png" alt="Tea Time"></a>
 
 <!-- 右上角選單 -->
 <nav class="menu" id="menu" aria-label="選單">
-  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
-  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
-  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
-  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+  <a class="menu-item" href="../world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="../img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="../world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="../img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="../wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="../img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="../img/menu-btn.png" alt=""></button>
 </nav>
 
 <!-- 下方主人對話框（文字在 page3.js 改） -->
@@ -55,8 +55,8 @@
   <div class="maid-bob">
     <!-- 翻牌卡片：正面 A = 一般表情、背面 B = 笑臉；輸入完名字後會翻到 B -->
     <div class="maid-card">
-      <img class="maid-a" src="img/maid.png" alt="女僕莓露露">
-      <img class="maid-b" src="img/maid-smile.png" alt="">
+      <img class="maid-a" src="../img/maid.png" alt="女僕莓露露">
+      <img class="maid-b" src="../img/maid-smile.png" alt="">
     </div>
   </div>
 </div>
@@ -71,7 +71,7 @@
     <button class="helper-opt" type="button" data-help="world">想了解世界觀</button>
   </div>
   <button class="helper-head" id="helperHead" type="button" aria-expanded="false" aria-controls="helperPanel" aria-label="莓露露小幫手">
-    <img src="img/maid-head.gif" alt="">
+    <img src="../img/maid-head.gif" alt="">
   </button>
 </div>
 
@@ -79,7 +79,7 @@
 <div class="cc-dim" id="ccDim">
   <!-- 整張卡片就是一顆蕾絲愛心：愛心（底）→ 角色 GIF + 資訊 → 星星餅乾（最上層，晚 1 秒彈出來） -->
   <div class="cc-card" id="ccCard" role="dialog" aria-modal="true" aria-labelledby="ccName">
-    <img class="cc-heart" src="img/cc-heart.png" alt="">
+    <img class="cc-heart" src="../img/cc-heart.png" alt="">
     <div class="cc-pic"><img id="ccImg" src="" alt=""></div>
     <div class="cc-info">
       <h2 class="cc-name" id="ccName"></h2>
@@ -88,7 +88,7 @@
       <p class="cc-desc" id="ccDesc"></p>
       <button class="cc-pick" id="ccPick" type="button">選擇我! pick me! ♡</button>
     </div>
-    <img class="cc-stars" src="img/cc-stars.png" alt="">
+    <img class="cc-stars" src="../img/cc-stars.png" alt="">
     <button class="cc-close" id="ccClose" type="button" aria-label="關閉">×</button>
   </div>
 </div>
@@ -126,7 +126,7 @@
 <div class="grain" id="grain"></div>
 
 <!-- 共用效果在 common.js，第三頁互動在 page3.js -->
-<script src="common.js"></script>
+<script src="../common.js"></script>
 <script src="page3.js"></script>
 </body>
 </html>

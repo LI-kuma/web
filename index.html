@@ -6,52 +6,200 @@
   <title>It's Tea Time</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
-  <!-- 樣式都在 style.css -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+  <!-- 樣式都在 style.css（這頁的樣式在「邀請卡」那段） -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<!-- It's Tea Time（新流程，全部在這一頁）
+     前半段：標準字 + 半透明背景 → 點一下 → 莓露露的邀請卡（拆信封、抽卡片）→ 收下邀請
+     後半段：畫面淡成白色 → 背景換成娃娃屋 → 莓露露歡迎你、問名字、說明玩法 → Rabumi 陪你走四個房間
+       ① 色粉櫃：察覺情緒（選心情的顏色，撒進一碗鮮奶油）
+       ② 包裝檯：知道在煩什麼、釐清它（拌不開的那一團 → 解開纏住的緞帶）
+       ③ 廚房：和煩惱和解（用有顏色的鮮奶油做甜點 → 加一點甜，顏色變柔和 → 吃掉它）
+       ④ 茶桌：收好（茶端上來 → 掰開幸運餅乾 → 小紙條折好、綁緞帶 → 匿名擺上煩惱牆）
+     ★ 邀請卡上的字直接改下面 <div class="inv-text"> 裡面 ★
+     ★ 台詞、表情、色粉、甜點、打結的想法都在 house.js 最上面 ★
+     ★ 信封、卡片、房間和道具現在是程式畫的暫代圖，之後換成畫好的圖 ★ -->
+<body class="invite-page">
 
-<!-- 中間場景 -->
+<!-- ===================== 前半段：邀請卡 ===================== -->
+
+<!-- 背景：和首頁一樣的房子 -->
 <main class="scene">
   <div class="stage" id="stage">
     <img class="lace" src="img/lace.png" alt="">
     <div class="oval">
-      <div class="house-inner"><img id="houseImg" src="img/house.jpg" alt="奶油色的維多利亞風小屋"></div>
-    </div>
-    <div class="hit-layer">
-      <div class="house-inner">
-        <button class="door" id="door" aria-label="敲門進入">
-          <span class="door-glow"></span>
-          <span class="dot"></span>
-          <span class="knock-label" id="knockLabel">knock!</span>
-        </button>
-      </div>
+      <div class="house-inner"><img src="img/house.jpg" alt="奶油色的維多利亞風小屋"></div>
     </div>
   </div>
 </main>
 
-<!-- 白色半透明遮罩（鋪滿畫面）：點一下就會消失 -->
+<!-- 白色半透明遮罩：點一下（或點標準字）就會出現邀請卡 -->
 <div class="fog" id="fog" role="button" tabindex="0" aria-label="點一下進入">
   <span class="fog-hint">— 點一下 進來喝杯茶 —</span>
 </div>
 
-<!-- 標準字 -->
-<!-- 首頁的標準字拆成 11 個字母（img/logo-letters），滑鼠移到哪個字，那個字就會晃一下
-     --x --y --w = 這個字在原本 2164×1831 大圖裡的位置和寬度（px），不用改 -->
-<div class="logo logo-letters" id="logo" role="img" aria-label="It's Tea Time">
-  <img src="img/logo-letters/1-I.png"    style="--x:323;  --y:0;    --w:360" alt="">
-  <img src="img/logo-letters/2-t.png"    style="--x:617;  --y:258;  --w:556" alt="">
-  <img src="img/logo-letters/3-star.png" style="--x:1058; --y:17;   --w:339" alt="">
-  <img src="img/logo-letters/4-s.png"    style="--x:1331; --y:402;  --w:512" alt="">
-  <img src="img/logo-letters/5-T.png"    style="--x:0;    --y:1242; --w:407" alt="">
-  <img src="img/logo-letters/6-e.png"    style="--x:269;  --y:1496; --w:255" alt="">
-  <img src="img/logo-letters/7-a.png"    style="--x:497;  --y:1495; --w:410" alt="">
-  <img src="img/logo-letters/8-T.png"    style="--x:902;  --y:1228; --w:474" alt="">
-  <img src="img/logo-letters/9-i.png"    style="--x:1225; --y:1440; --w:152" alt="">
-  <img src="img/logo-letters/10-m.png"   style="--x:1342; --y:1467; --w:597" alt="">
-  <img src="img/logo-letters/11-e.png"   style="--x:1912; --y:1468; --w:252" alt="">
+<!-- 莓露露的邀請卡 -->
+<div class="inv" id="invite" aria-hidden="true">
+  <div class="inv-env" id="env">
+    <div class="inv-back"></div>
+    <!-- 卡片：往上抽出來 -->
+    <div class="inv-card" id="card" role="dialog" aria-label="莓露露的邀請卡" tabindex="-1">
+      <svg class="inv-edge" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><g id="scallop"></g></svg>
+      <div class="inv-paper">
+        <div class="inv-text">
+          <p class="inv-title">Invitation <span>♡</span></p>
+          <p>親愛的客人：</p>
+          <p>今天下午，娃娃屋要舉辦一場小小的茶會。<br>
+             心裡有點累、有點亂也沒關係，<br>
+             來喝杯茶吧——我們會為你做一份<br>
+             只屬於你的甜點。</p>
+          <p class="inv-meta">時間｜現在　　地點｜It's Tea Time 娃娃屋</p>
+          <p class="inv-sign">茶會主人　莓露露 敬邀</p>
+        </div>
+        <img class="inv-stamp" src="img/maid-head.gif" alt="">
+      </div>
+      <button class="tt-btn inv-accept" id="accept" type="button" tabindex="-1">收下邀請 ♡</button>
+    </div>
+    <div class="inv-front"></div>
+    <!-- 信封蓋：點愛心封蠟打開 -->
+    <div class="inv-flap"></div>
+    <button class="inv-seal" id="seal" type="button" aria-label="拆開信封">♡</button>
+  </div>
+  <p class="inv-hint" id="invHint">點愛心，拆開信封</p>
 </div>
+
+<!-- 標準字：拆成 11 個字母，滑鼠移到哪個字，那個字就會晃一下（和首頁一樣） -->
+<div class="logo logo-letters" id="logo" role="img" aria-label="Its Tea Time">
+  <img src="img/logo-letters/1-I.png"     style="--x:703;  --y:0;    --w:307" alt="">
+  <img src="img/logo-letters/2-t.png"     style="--x:979;  --y:123;  --w:296" alt="">
+  <img src="img/logo-letters/3-s.png"     style="--x:1271; --y:265;  --w:239" alt="">
+  <img src="img/logo-letters/4-T.png"     style="--x:0;    --y:787;  --w:623" alt="">
+  <img src="img/logo-letters/5-e.png"     style="--x:404;  --y:1052; --w:211" alt="">
+  <img src="img/logo-letters/6-a.png"     style="--x:609;  --y:1046; --w:226" alt="">
+  <img src="img/logo-letters/7-T.png"     style="--x:934;  --y:793;  --w:621" alt="">
+  <img src="img/logo-letters/8-i.png"     style="--x:1317; --y:986;  --w:203" alt="">
+  <img src="img/logo-letters/9-m.png"     style="--x:1514; --y:968;  --w:380" alt="">
+  <img src="img/logo-letters/10-e.png"    style="--x:1886; --y:1063; --w:217" alt="">
+  <img src="img/logo-letters/11-star.png" style="--x:2075; --y:1199; --w:138" alt="">
+</div>
+
+
+<!-- ===================== 後半段：娃娃屋（收下邀請後才出現） ===================== -->
+<div class="dh-world">
+  <div class="dh-house" id="house">
+    <!-- 屋頂（只有看整間娃娃屋的時候看得到） -->
+    <div class="dh-roof" aria-hidden="true"><span class="dh-roof-window"></span></div>
+
+    <!-- ① 色粉櫃：察覺情緒（選心情的顏色，撒進鮮奶油） -->
+    <section class="dh-room dh-room-color" data-room="color" style="--c:0; --r:0" aria-label="色粉櫃">
+      <p class="dh-sign">Color pantry ♡ 色粉櫃</p>
+      <div class="dh-floor"></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-props">
+        <!-- 一碗白色鮮奶油：撒進去的色粉會變成大理石紋 -->
+        <div class="dh-mix"><div class="dh-bowl2" id="bowl"></div></div>
+        <!-- 9 罐心情色粉（house.js 的 FEELS），最多選 3 種 -->
+        <div class="dh-jars" id="jars" role="group" aria-label="心情的顏色"></div>
+      </div>
+    </section>
+
+    <!-- ② 包裝檯：知道在煩什麼、釐清它（解開纏住的緞帶） -->
+    <section class="dh-room dh-room-bench" data-room="bench" style="--c:1; --r:0" aria-label="包裝檯">
+      <p class="dh-sign">Wrapping table ✂ 包裝檯</p>
+      <div class="dh-floor"></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-props">
+        <!-- 剛剛那碗鮮奶油：裡面有一小團拌不開 -->
+        <div class="dh-bowl2 dh-lumpbowl" id="lumpBowl"></div>
+        <div class="dh-desk">
+          <div class="dh-knots" id="knots">
+            <svg class="dh-knot-line" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 20C90 6 190 34 300 20S510 6 610 20"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 茶桌：把今天包起來 -->
+    <section class="dh-room dh-room-table" data-room="table" style="--c:0; --r:1" aria-label="茶桌">
+      <p class="dh-sign">Tea table ☕ 茶桌</p>
+      <div class="dh-floor"></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-props">
+        <div class="dh-table" aria-hidden="true"></div>
+        <!-- 端上來的茶 + 幸運餅乾（點一下掰開，裡面是今天的小紙條） -->
+        <div class="dh-teaset" id="teaset">
+          <span class="dh-teacup" id="teacup"></span>
+          <button class="dh-fortune" id="fortune" type="button" aria-label="掰開幸運餅乾" disabled></button>
+        </div>
+        <!-- 今天的小紙條：點一下折起來 → 用緞帶綁好 -->
+        <div class="dh-memo" id="memo">
+          <div class="dh-memo-in">
+            <h3>今天的小紙條 <small>♡ memo</small></h3>
+            <dl class="chat-end-list" id="memoList"></dl>
+          </div>
+          <button class="dh-memo-fold" id="memoFold" type="button" aria-label="把小紙條折起來" disabled></button>
+          <div class="dh-tie" id="tie" hidden>
+            <span class="dh-tie-band"></span>
+            <button class="dh-tie-knob" id="tieKnob" type="button" aria-label="拉緞帶把小紙條綁起來">🎀</button>
+          </div>
+          <span class="dh-memo-bow" aria-hidden="true">🎀</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 廚房：和煩惱和解，一起做甜點（學業＝舒芙蕾鬆餅、人際＝可麗餅、自我＝布丁） -->
+    <section class="dh-room dh-room-bake" data-room="bake" style="--c:1; --r:1" aria-label="廚房">
+      <p class="dh-sign">Kitchen ♡ 廚房</p>
+      <div class="dh-floor"></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-props">
+        <div class="dh-kitchen" id="kitchen">
+          <!-- 甜點（墊著 doily 紙）：house.js 依照做到哪一步重畫 -->
+          <button class="dh-dessert" id="dessert" type="button" aria-label="甜點" disabled></button>
+          <span class="dh-spoon" id="spoon" aria-hidden="true">🥄</span>
+          <div class="ds-card dh-name" id="dessertCard"><small>今天的專屬甜點</small><b id="dessertName"></b></div>
+          <!-- 呼吸按鈕：按住吸氣，等甜點做好 -->
+          <button class="dh-breath" id="breath" type="button" hidden><span id="breathLabel">按住・吸氣</span></button>
+          <!-- 最後一步：按鬆餅／捲可麗餅／倒出布丁 -->
+          <button class="tt-btn dh-act" id="act" type="button" hidden></button>
+          <button class="tt-btn dh-eat" id="eat" type="button" hidden>🥄 吃一口</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 開場：蓋在娃娃屋前面的蕾絲窗簾 -->
+    <div class="dh-curtain" aria-hidden="true"><i></i><i></i></div>
+  </div>
+</div>
+
+<!-- 茶會主人莓露露：開場站在娃娃屋旁邊，打開娃娃屋後退場 -->
+<div class="dh-host" aria-hidden="true"><div class="chat-chara-bob"><img src="img/maid.png" alt=""></div></div>
+
+<!-- 從上面 doily 垂下來的緞帶（JS 畫的，滑鼠撥過去會晃）；右邊那條有蝴蝶結手把，往下拉就去下一個房間 -->
+<svg class="dh-ribbons" id="ribbons" aria-hidden="true"></svg>
+<button class="dh-pull" id="pull" type="button" aria-label="拉一下緞帶">🎀</button>
+<span class="dh-pull-hint" id="pullHint" aria-hidden="true">往下拉 ↓</span>
+
+<!-- 玩家的回答選項 / 打字框 -->
+<div class="chat-choices" id="chatChoices" role="group" aria-label="你的回答"></div>
+
+<!-- 下方對話框：誰在說話，頭像和名字就換成誰；頭像會跟著表情換 -->
+<div class="chat-box" id="chatBox">
+  <div class="chat-avatar"><img id="avatarImg" src="img/maid.png" alt=""></div>
+  <div class="chat-body">
+    <p class="chat-name"><span id="chatName"></span><small class="dh-face-tag" id="faceTag"></small></p>
+    <p class="chat-text" id="chatText" aria-live="polite"></p>
+  </div>
+  <button class="tt-btn chat-next" id="chatNext" type="button" hidden>▸</button>
+</div>
+
+<!-- 上方 doily Navigation Bar -->
+<div class="nav-bar" aria-hidden="true"></div>
+<div class="nav-lace" aria-hidden="true"></div>
+
+<!-- 標準字（左上角，點了回首頁） -->
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
 
 <!-- 右上角選單 -->
 <nav class="menu" id="menu" aria-label="選單">
@@ -71,12 +219,17 @@
   </div>
 </div>
 
-<canvas id="particles"></canvas>
+<!-- 換頁的白幕 -->
+<div class="fade-white" id="fadeWhite"><div class="grain"></div></div>
+
+<div class="vignette"></div>
+<div class="grain" id="grain"></div>
 <div class="vignette"></div>
 <div class="grain" id="grain"></div>
 
-<!-- 共用效果在 common.js，首頁互動在 script.js -->
+<!-- 共用效果在 common.js，娃娃屋的流程在 house.js，邀請卡在 invite.js -->
 <script src="common.js"></script>
-<script src="script.js"></script>
+<script src="house.js"></script>
+<script src="invite.js"></script>
 </body>
 </html>

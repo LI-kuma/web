@@ -2,7 +2,7 @@
 /* ===== 可以自己調的設定 ===== */
 const KNOCK_COLOR = '#FF97E9';
 const NEXT_PAGE = 'page2.html';   // 點門之後要去的下一頁；留空就停在這頁
-const OPEN_HOUSE = 'img/house-open.jpg';   // 敲門後換成的開門房子圖
+const OPEN_HOUSE = '../img/house-open.jpg';   // 敲門後換成的開門房子圖
 const NEXT_PAGE_DELAY = 1000;   // 門打開後停幾毫秒再換頁（1000 = 1 秒）
 // 復古顆粒和右上角選單在 common.js
 
@@ -17,7 +17,7 @@ const LOGO_W = 0.5, LOGO_H = 0.62;   // 首頁中間的標準字：最多佔畫�
 function placeLogo(){
   if (!entered){
     const r = stage.getBoundingClientRect();
-    const ratio = (logo.naturalHeight / logo.naturalWidth) || (1831/2164);   // 標準字圖片的 高/寬，換圖會自動跟著變
+    const ratio = (logo.naturalHeight / logo.naturalWidth) || (1362/2213);   // 標準字圖片的 高/寬，換圖會自動跟著變
     const w = Math.min(r.width * LOGO_W, r.height * LOGO_H / ratio);
     const h = w * ratio;
     logo.style.width = w + 'px';

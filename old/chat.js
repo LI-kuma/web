@@ -7,6 +7,7 @@
      第三輪 你的感受是什麼？（選情緒）
      第四輪 你現在最需要什麼？還有什麼想跟我說？（自由打字）
      第五輪 角色回應：先安慰、再給建議（有接 AI 就由 AI 回；沒接 AI 或 AI 壞掉，就用下面 reply 寫好的話：open + close 當安慰、類型那句當建議）
+   聊完 → invite 邀請去甜點店 → 今天的小紙條 → dessert.html 做甜點、吃甜點（甜點設定在 dessert.js）
    每一輪最後都會自動多一個「✎ 都不是，我想自己說」，玩家可以自己打字
    - {NAME} 玩家名字、{TYPE} 第一輪選的、{CORE} 第二輪選的、{FEEL} 第三輪選的
    - 想換行打 \n；文字裡有單引號 ' 的話，外面改用雙引號 " " 包
@@ -53,7 +54,8 @@ const SCRIPTS = {
       free: '你本來的樣子，就已經有很多別人沒有的好。\n試試看，用對朋友說話的溫柔語氣，對自己說一句話吧。',
       close: '「這個也太好看了吧！」——下次，我希望你也可以這樣稱讚自己♡'
     },
-    bye: '謝謝你陪我聊天，{NAME}！\n你本來的樣子，就已經值得被好好對待喔。'
+    bye: '謝謝你陪我聊天，{NAME}！\n你本來的樣子，就已經值得被好好對待喔。',
+    invite: '對了對了！Rabumi 說要用你今天的心情，做一份專屬甜點送你！\n真的假的！？快去甜點店看看吧！'
   },
 
   /* ===== Gurumi｜學業壓力｜補習班班導師｜做事有條理、喜歡看心靈叢書 ===== */
@@ -92,7 +94,8 @@ const SCRIPTS = {
       free: '壓力大的時候，先把腦袋裡的事全部寫下來，再挑一件最小的開始做。\n事情一件一件來，就不會那麼可怕了。',
       close: '不管成績怎麼樣，你都不只是一個分數喔。'
     },
-    bye: '今天也辛苦了，{NAME}。\n累了就回來這裡，我泡杯茶等你。'
+    bye: '今天也辛苦了，{NAME}。\n累了就回來這裡，我泡杯茶等你。',
+    invite: '對了，Rabumi 說要用你今天的心情做一份專屬甜點。\n休息一下，去甜點店吃點甜的吧。'
   },
 
   /* ===== Rabumi｜人際關係壓力｜糕點師｜容易想太多，但很會聽人說話 ===== */
@@ -149,7 +152,8 @@ const SCRIPTS = {
       free: '人和人之間，本來就很難完全不卡卡的。\n先把「想法」和「真正發生的事」分開寫下來，常常會發現，事情沒有想像中那麼糟。',
       close: '不管怎麼樣，我的甜點店永遠幫你留一個位子♡'
     },
-    bye: '下次再來吃蛋糕吧，{NAME}！\n在這裡，你不用猜別人的心情，只要做你自己就好喔。'
+    bye: '下次再來吃蛋糕吧，{NAME}！\n在這裡，你不用猜別人的心情，只要做你自己就好喔。',
+    invite: '對了！我想用你今天的心情，幫你做一份專屬甜點♡\n跟我一起去甜點店吧！'
   }
 };
 
@@ -161,9 +165,9 @@ const CRISIS_REPLY = '{NAME}……謝謝你願意把這麼重的話說出來。\
 
 // 每隻角色的名字、圖、顏色、煩惱種類（頭像框和選項按鈕會用角色色；wallCat = 貼到煩惱牆時的分類）
 const CHARAS = {
-  dokimi: { name: 'Dokimi', kana: 'ドキミー', img: 'img/char-1.png', light: '#FBFEBB', main: '#FFDF8C', wallCat: 'self' },
-  gurumi: { name: 'Gurumi', kana: 'グルミー', img: 'img/char-2.png', light: '#D0EDE6', main: '#E0D2B7', wallCat: 'study' },
-  rabumi: { name: 'Rabumi', kana: 'ラブミー', img: 'img/rabumi.png', light: '#FAE6F6', main: '#F1C5C8', wallCat: 'people' }
+  dokimi: { name: 'Dokimi', kana: 'ドキミー', img: '../img/char-1.png', light: '#FBFEBB', main: '#FFDF8C', wallCat: 'self' },
+  gurumi: { name: 'Gurumi', kana: 'グルミー', img: '../img/char-2.png', light: '#D0EDE6', main: '#E0D2B7', wallCat: 'study' },
+  rabumi: { name: 'Rabumi', kana: 'ラブミー', img: '../img/rabumi.png', light: '#FAE6F6', main: '#F1C5C8', wallCat: 'people' }
 };
 const TYPE_SPEED = 38;   // 打字速度：每個字幾毫秒，越小越快
 // 第五輪的 AI：之後把 Cloudflare Worker 的網址貼在引號裡就會啟用；空白 = 不用 AI，改用上面 reply 寫好的話
@@ -350,7 +354,8 @@ async function run(){
   for (const p of toPages(reply.comfort)) await say(p);   // 先安慰
   for (const p of toPages(reply.advice)) await say(p);    // 再給建議
 
-  if (!crisis) await say(S.bye, true);
+  if (!crisis) await say(S.bye);
+  await say(S.invite, true);   // 邀請去甜點店
   openEnd(crisis, reply);
 }
 // 回應比較長：按句號、問號、換行切成幾段，一段一段說
@@ -377,34 +382,22 @@ function openEnd(crisis, reply){
   document.getElementById('endTipText').textContent = reply.advice;
   document.getElementById('endTip').hidden = !reply.advice;
   document.getElementById('endHelp').classList.toggle('urgent', crisis);
-  endWallBtn.hidden = crisis;   // 很難受的時候先不貼牆，先照顧自己
   endDim.classList.add('show');
 }
-// 貼到煩惱牆：把今天的小紙條（名字會拿掉）匿名貼上去，再帶你去看
-const noName = s => playerName === '你' ? s : s.replaceAll(new RegExp(playerName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[，,、！!～~ ]*', 'g'), '');
-const endWallBtn = document.getElementById('endWall');
-endWallBtn.addEventListener('click', async () => {
-  if (endWallBtn.disabled) return;
-  endWallBtn.disabled = true; endWallBtn.textContent = '貼上去中…';
+// 去甜點店：把今天聊的結果交給甜點頁（甜點口味、樣子都看這些決定；吃完後在那邊貼到煩惱牆）
+document.getElementById('endDessert').addEventListener('click', () => {
   try {
-    const res = await fetch(AI_URL + '/wall', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chara: key, type: memo.type, core: memo.core, feel: memo.feel, need: noName(memo.need),
-                             comfort: noName(endReply.comfort), advice: noName(endReply.advice) })
-    });
-    const data = await res.json();
-    if (!res.ok) throw 0;
-    goTo('wall.html?new=' + data.note.id + nameQ);
-  } catch (_) {
-    endWallBtn.disabled = false; endWallBtn.textContent = '貼不上去，等一下再試試';
-  }
+    sessionStorage.setItem('teaResult', JSON.stringify({ chara: key, name: playerName === '你' ? '' : playerName,
+                                                        memo, reply: endReply, crisis: endCrisis }));
+  } catch (_) {}
+  goTo('dessert.html');
 });
 document.getElementById('endRoom').addEventListener('click', () => goTo('page3.html?back=1' + nameQ));
 document.getElementById('endAgain').addEventListener('click', () => location.reload());
 
 // 隨時可以換路：左上角的兩個小按鈕
 document.getElementById('toolRoom').addEventListener('click', () => goTo('page3.html?back=1' + nameQ));
-document.getElementById('toolWall').addEventListener('click', () => goTo('wall.html' + (nameQ ? '?' + nameQ.slice(1) : '')));
+document.getElementById('toolWall').addEventListener('click', () => goTo('../wall.html' + (nameQ ? '?' + nameQ.slice(1) : '')));
 
 /* ---------- 6. 開始：等白幕淡出、角色走進來再開口 ---------- */
 setTimeout(() => { box.classList.add('in'); run(); }, 1600);

@@ -8,14 +8,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
   <!-- 樣式都在 style.css（這頁的樣式在「聊天頁」那段） -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <!-- 聊天頁：和選到的角色在下午茶桌邊聊天；網址 chat.html?c=dokimi / gurumi / rabumi 決定是哪一隻 -->
 <!-- ★ 對話內容都在 chat.js 最上面的 SCRIPTS，不用改這個檔案 ★ -->
 <body class="arriving chat-page">
 
 <!-- 背景：下午茶桌（蓋一層白霧，讓角色和對話框比較清楚） -->
-<div class="chat-bg" aria-hidden="true"><img src="img/tea-table.jpg" alt=""></div>
+<div class="chat-bg" aria-hidden="true"><img src="../img/tea-table.jpg" alt=""></div>
 
 <!-- 角色：站在對話框後面，每說一句話會輕輕跳一下 -->
 <div class="chat-chara" id="chatChara"><div class="chat-chara-bob"><img id="charaImg" src="" alt=""></div></div>
@@ -55,11 +55,11 @@
     <p class="chat-end-say chat-end-tip" id="endTip"><b>✎ 給你的小建議</b><span id="endTipText"></span></p>
     <p class="chat-end-help" id="endHelp">如果煩惱重到喘不過氣，記得找信任的人聊聊，<br>或撥打 <b>1925 安心專線</b>、<b>1995 生命線</b>（24 小時、免付費）。</p>
     <div class="chat-end-btns">
-      <button class="tt-btn" id="endWall" type="button">把小紙條匿名貼到煩惱牆</button>
+      <button class="tt-btn" id="endDessert" type="button">♡ 去甜點店領專屬甜點</button>
       <button class="tt-btn" id="endRoom" type="button">⌂ 回客廳</button>
       <button class="tt-btn" id="endAgain" type="button">再聊一次</button>
     </div>
-    <p class="chat-end-wallnote">貼到煩惱牆時會拿掉你的名字，但「我現在需要的」會一起貼上去，大家都看得到喔。</p>
+    <p class="chat-end-wallnote">吃完甜點後，可以把這張小紙條匿名貼到煩惱牆喔。</p>
   </div>
 </div>
 
@@ -68,14 +68,14 @@
 <div class="nav-lace" aria-hidden="true"></div>
 
 <!-- 標準字（左上角，點了回首頁） -->
-<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+<a class="logo-link" href="../index.html" aria-label="回到首頁"><img class="logo logo-corner" src="../img/logo.png" alt="Tea Time"></a>
 
 <!-- 右上角選單 -->
 <nav class="menu" id="menu" aria-label="選單">
-  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
-  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
-  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
-  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+  <a class="menu-item" href="../world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="../img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="../world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="../img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="../wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="../img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="../img/menu-btn.png" alt=""></button>
 </nav>
 
 <!-- 跑馬燈 -->
@@ -95,7 +95,7 @@
 <div class="grain" id="grain"></div>
 
 <!-- 共用效果在 common.js，這頁的對話在 chat.js -->
-<script src="common.js"></script>
+<script src="../common.js"></script>
 <script src="chat.js"></script>
 </body>
 </html>

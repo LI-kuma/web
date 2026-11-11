@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
   <!-- 樣式都在 style.css（和其他頁共用，這頁的樣式在「角色個人檔案頁」那段） -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <!-- 角色個人檔案頁：三隻角色共用這一頁，網址 profile.html?c=dokimi / gurumi / rabumi 決定是哪一隻 -->
 <!-- ★ 文字都在 profile.js 最上面的 PROFILES 填，不用改這個檔案 ★ -->
@@ -112,14 +112,14 @@
 <div class="nav-lace" aria-hidden="true"></div>
 
 <!-- 標準字（左上角，點了回首頁） -->
-<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="img/logo.png" alt="Tea Time"></a>
+<a class="logo-link" href="index.html" aria-label="回到首頁"><img class="logo logo-corner" src="../img/logo.png" alt="Tea Time"></a>
 
 <!-- 右上角選單 -->
 <nav class="menu" id="menu" aria-label="選單">
-  <a class="menu-item" href="world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="img/menu-world.png" alt="世界觀介紹"></a>
-  <a class="menu-item" href="world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="img/menu-character.png" alt="角色介紹"></a>
-  <a class="menu-item" href="wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="img/menu-worry.png" alt="匿名煩惱牆"></a>
-  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="img/menu-btn.png" alt=""></button>
+  <a class="menu-item" href="../world.html"            style="--x:-291;--y:-13.5;--w:315;--i:0"><img src="../img/menu-world.png" alt="世界觀介紹"></a>
+  <a class="menu-item" href="../world.html#characters" style="--x:-232.5;--y:152.5;--w:312;--i:1"><img src="../img/menu-character.png" alt="角色介紹"></a>
+  <a class="menu-item" href="../wall.html"             style="--x:-106.5;--y:283.5;--w:260;--i:2"><img src="../img/menu-worry.png" alt="匿名煩惱牆"></a>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-label="打開選單"><img src="../img/menu-btn.png" alt=""></button>
 </nav>
 
 <!-- 跑馬燈 -->
@@ -139,7 +139,7 @@
 <div class="grain" id="grain"></div>
 
 <!-- 共用效果在 common.js，這頁的互動和文字在 profile.js -->
-<script src="common.js"></script>
+<script src="../common.js"></script>
 <script src="profile.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // It's Tea Time 匿名煩惱牆
 /* ===================================================================
    ★ 煩惱牆的設定 ★
-   - 牆上的小紙條都是大家和角色聊完後，按「把小紙條匿名貼到煩惱牆」貼上來的
+   - 牆上的小紙條都是大家聊完、吃完甜點後，按「把小紙條和甜點匿名貼到煩惱牆」貼上來的
    - 不能自己留言，只能給抱抱
    - 資料存在 Cloudflare（和第五輪 AI 同一個 Worker），所以每個人看到的是同一面牆
    =================================================================== */
@@ -62,6 +62,7 @@ function render(){
     // 角色說了什麼
     const say = el('div', 'wl-say');
     say.append(el('b', '', info.name + ' 想對你說'), el('p', '', n.comfort));
+    if (n.dessert) card.append(el('p', 'wl-dessert', '🍰 今天的甜點：' + n.dessert));
     card.append(dl, say);
     if (n.advice){
       const tip = el('div', 'wl-say wl-tip');
@@ -94,7 +95,7 @@ function render(){
     board.appendChild(card);
   });
   countEl.textContent = list.length ? '牆上有 ' + list.length + ' 張小紙條' : '';
-  if (!list.length) board.innerHTML = '<p class="wl-empty">這裡還沒有小紙條。<br>和孩子們聊完之後，就可以把你的小紙條貼上來喔 ♡</p>';
+  if (!list.length) board.innerHTML = '<p class="wl-empty">這裡還沒有小紙條。<br>參加完茶會之後，就可以把你的小紙條貼上來喔 ♡</p>';
 }
 
 document.querySelectorAll('#wlFilter button').forEach(b => b.addEventListener('click', () => {
@@ -103,9 +104,8 @@ document.querySelectorAll('#wlFilter button').forEach(b => b.addEventListener('c
   render();
 }));
 
-/* ---------- 3. 去聊天（右下角按鈕） ---------- */
-const nameQ = params.get('n') ? '&n=' + encodeURIComponent(params.get('n')) : '';
-document.getElementById('wlPostBtn').addEventListener('click', () => goTo('page3.html?back=1' + nameQ));
+/* ---------- 3. 去參加茶會（右下角按鈕） ---------- */
+document.getElementById('wlPostBtn').addEventListener('click', () => goTo('index.html'));
 
 /* ---------- 4. 開始：從 Cloudflare 拿牆上的小紙條 ---------- */
 board.innerHTML = '<p class="wl-empty">正在把小紙條貼上牆…</p>';
