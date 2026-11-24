@@ -92,15 +92,17 @@
     <div class="dh-roof" aria-hidden="true"><span class="dh-roof-window"></span></div>
 
     <!-- ① 色粉櫃：察覺情緒（選心情的顏色，撒進鮮奶油） -->
-    <section class="dh-room dh-room-color" data-room="color" style="--c:0; --r:0" aria-label="色粉櫃">
+    <section class="dh-room dh-room-color here" data-room="color" style="--c:0; --r:0" aria-label="色粉櫃">
       <p class="dh-sign">Color pantry ♡ 色粉櫃</p>
       <div class="dh-floor"></div>
-      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
-        <!-- 一碗白色鮮奶油：撒進去的色粉會變成大理石紋 -->
-        <div class="dh-mix"><div class="dh-bowl2" id="bowl"></div></div>
-        <!-- 9 罐心情色粉（house.js 的 FEELS），最多選 3 種 -->
-        <div class="dh-jars" id="jars" role="group" aria-label="心情的顏色"></div>
+        <div class="dh-pantry">
+          <!-- 白色色粉櫃：架上 9 罐心情色粉（house.js 的 FEELS 擺上去），選一罐 -->
+          <div class="dh-cab" id="jars" role="group" aria-label="心情的顏色"><img src="img/house/cabinet.png" alt=""></div>
+          <!-- 一碗打發好的白色鮮奶油：色粉倒進去，會從中間暈開成那個顏色 -->
+          <div class="dh-mixcol"><div class="dh-mix"><div class="dh-bowl2" id="bowl"></div></div></div>
+        </div>
       </div>
     </section>
 
@@ -108,7 +110,7 @@
     <section class="dh-room dh-room-bench" data-room="bench" style="--c:1; --r:0" aria-label="包裝檯">
       <p class="dh-sign">Wrapping table ✂ 包裝檯</p>
       <div class="dh-floor"></div>
-      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
         <!-- 剛剛那碗鮮奶油：裡面有一小團拌不開 -->
         <div class="dh-bowl2 dh-lumpbowl" id="lumpBowl"></div>
@@ -124,7 +126,7 @@
     <section class="dh-room dh-room-table" data-room="table" style="--c:0; --r:1" aria-label="茶桌">
       <p class="dh-sign">Tea table ☕ 茶桌</p>
       <div class="dh-floor"></div>
-      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
         <div class="dh-table" aria-hidden="true"></div>
         <!-- 端上來的茶 + 幸運餅乾（點一下掰開，裡面是今天的小紙條） -->
@@ -152,11 +154,32 @@
     <section class="dh-room dh-room-bake" data-room="bake" style="--c:1; --r:1" aria-label="廚房">
       <p class="dh-sign">Kitchen ♡ 廚房</p>
       <div class="dh-floor"></div>
-      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi.png" alt="Rabumi"></div></div>
+      <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
         <div class="dh-kitchen" id="kitchen">
           <!-- 甜點（墊著 doily 紙）：house.js 依照做到哪一步重畫 -->
           <button class="dh-dessert" id="dessert" type="button" aria-label="甜點" disabled></button>
+          <!-- 原宿可麗餅（人際）：一層一層疊起來的圖，house.js 的 makeCrepe 照步驟加 class（spread → rolling → rolled → 放料 → 裝飾） -->
+          <div class="cp" id="crepe" hidden>
+            <img class="cp-doily" src="img/crepe/doily.png" alt="">
+            <div class="cp-open"><img src="img/crepe/crepe-open.png" alt=""><img class="cp-open-cream" src="img/crepe/crepe-open-cream.png" alt=""></div>
+            <img class="cp-stand" src="img/crepe/stand.png" alt="">
+            <div class="cp-rolled" id="crepeRolled">
+              <img class="cp-base" id="crepeBase" src="img/crepe/crepe-empty.png" alt="">
+              <img class="cp-cream" src="img/crepe/fill-cream.png" alt="">
+              <img class="cp-fruit" src="img/crepe/fill-fruit.png" alt="">
+              <div class="cp-ice"><img src="img/crepe/fill-ice.png" alt=""><i></i></div>
+              <canvas class="cp-choco" id="crepeChoco" width="882" height="639"></canvas>
+              <div class="cp-spr" id="crepeSpr"></div>
+            </div>
+            <div class="cp-hit" id="crepeHit"></div>
+          </div>
+          <!-- 可麗餅的裝飾工具 -->
+          <div class="cp-tools" id="crepeTools" role="group" aria-label="裝飾工具" hidden>
+            <button type="button" data-t="choco" aria-pressed="true"><span class="cp-ic cp-ic-choco"></span>巧克力醬</button>
+            <button type="button" data-t="star" aria-pressed="false"><span class="cp-ic"><img src="img/crepe/sprinkles/star0.png" alt=""><img src="img/crepe/sprinkles/star2.png" alt=""></span>星星糖</button>
+            <button type="button" data-t="rod" aria-pressed="false"><span class="cp-ic"><img src="img/crepe/sprinkles/rod6.png" alt=""><img src="img/crepe/sprinkles/rod9.png" alt=""></span>彩色糖</button>
+          </div>
           <span class="dh-spoon" id="spoon" aria-hidden="true">🥄</span>
           <div class="ds-card dh-name" id="dessertCard"><small>今天的專屬甜點</small><b id="dessertName"></b></div>
           <!-- 呼吸按鈕：按住吸氣，等甜點做好 -->

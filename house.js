@@ -5,8 +5,10 @@
    開場       莓露露（茶會主人）：歡迎 → 問你的名字 → 說明怎麼玩 → 拉一下緞帶，打開娃娃屋
    ① 色粉櫃   察覺情緒：像朋友閒聊（最近好嗎 → 掛心的事）→ 選心情的顏色（天然色粉，最多 3 種），撒進一碗白色鮮奶油
    ② 包裝檯   知道在煩什麼、釐清它：鮮奶油裡拌不開的那一小團 = 最放不下的事 → 解開纏住的緞帶（想法換個說法）
-   ③ 廚房     和煩惱和解：用這碗有顏色的鮮奶油做甜點（學業＝舒芙蕾鬆餅、人際＝可麗餅、自我＝布丁）
-              → 呼吸等它做好 → 加一點甜，顏色變柔和 → 最後一步（按鬆餅／捲可麗餅／倒出布丁）→ 吃掉它
+   ③ 廚房     和煩惱和解：用這碗有顏色的鮮奶油做甜點（學業＝舒芙蕾鬆餅、人際＝原宿可麗餅、自我＝布丁）
+              鬆餅／布丁：呼吸等它做好 → 加一點甜，顏色變柔和 → 最後一步（按鬆餅／倒出布丁）→ 吃掉它
+              可麗餅：呼吸把餅皮煎好、抹奶油 → 捲起來 → 放料（冰淇淋 = 心情的顏色）→ 自己淋巧克力醬、撒糖 → 吃掉它
+              （中間都會寫一句話給自己、聽 Rabumi 的安慰和建議）
    ④ 茶桌     收好：茶端上來 → 心情有沒有不一樣 → 下次的自己 → 掰開幸運餅乾，看到小紙條 → 折好、綁緞帶 → 匿名擺上煩惱牆
    每個房間做完，右上的緞帶會多一個小掛飾；往下拉緞帶就去下一個房間
 
@@ -22,8 +24,10 @@
    - Rabumi 的表情：img/rabumi/（檔名看 FACES）
    - 甜點：img/desserts/pancake-line.png + pancake-fill.png、crepe-…、pudding-…（fill = 要上心情顏色的地方，畫白色）
            一開始的樣子：pancake-flat.png、crepe-open.png、pudding-cup.png
+   - 原宿可麗餅（人際）：img/crepe/（餅皮、架子、蕾絲紙、鮮奶油／水果／冰淇淋三層、sprinkles/ 星星糖和彩色糖），冰淇淋會染上心情的顏色
            配料：honey.png、cream.png、candy.png
-   - 其他：img/house/fortune.png、fortune-open.png（幸運餅乾）、teacup.png（茶杯）、jar-line.png + jar-fill.png（色粉罐）
+   - 其他：img/house/fortune.png、fortune-open.png（幸運餅乾）、teacup.png（茶杯）
+   - 色粉櫃：img/house/cabinet.png（櫃子）、jar.png + jar-powder.png（色粉罐 + 換色範圍）、bowl.png + bowl-cream.png（鮮奶油碗 + 換色範圍）
    =================================================================== */
 
 // 對話框上的人：莓露露（茶會主人：歡迎你、問名字、說明玩法）、Rabumi（陪你走完全部房間）
@@ -35,23 +39,25 @@ const SPEAKERS = {
 const MAID_FACES = { 一般: 'img/maid.png', 笑臉: 'img/maid-smile.png', 眨眼: 'img/maid-wink.png' };
 const DEFAULT_NAME = '客人';   // 玩家不想說名字時的稱呼
 
-// Rabumi 的表情：img = 畫好的圖放在 img/rabumi/ 裡的檔名（還沒畫的會先用 rabumi.png）；mark = 頭上跳出來的漫畫符號
+// Rabumi 的表情：img = 畫好的圖放在 img/rabumi/ 裡的檔名（幾個表情可以共用同一張）；mark = 頭上跳出來的漫畫符號
+// fx = 特別動作（有 fx 的表情身體會一直抖；jump：帽子再跳起來一下）；有 fx 的圖沒畫帽子，帽子用 hat.png 另外疊上去
+// 還沒畫的表情先用 basic.png（基本），連 basic 都沒有才用 rabumi.png
 const FACE_DIR = 'img/rabumi/';
 const SHOW_FACE_TAG = true;   // 對話框名字旁邊顯示［表情］小標籤（原型用；正式版改成 false）
 const FACES = {
-  微笑: { img: 'smile',     mark: '' },
-  好奇: { img: 'curious',   mark: '？' },
-  驚訝: { img: 'surprised', mark: '！' },
-  傾聽: { img: 'listen',    mark: '…' },
-  心疼: { img: 'sad',       mark: '💧' },
-  思考: { img: 'think',     mark: '💭' },
-  慌張: { img: 'panic',     mark: '💦' },
-  明白: { img: 'idea',      mark: '💡' },
-  溫柔: { img: 'gentle',    mark: '♡' },
-  害羞: { img: 'shy',       mark: '///' },
-  開心: { img: 'happy',     mark: '♪' },
-  幹勁: { img: 'cheer',     mark: '✦' },
-  擔心: { img: 'worry',     mark: '' }    // 玩家提到想傷害自己時用：不要可愛的符號
+  微笑: { img: 'smile',     mark: '' },      // 瞇眼笑、臉紅
+  好奇: { img: 'curious',   mark: '？' },    // 歪頭、一邊耳朵翹起來
+  驚訝: { img: 'surprised', mark: '！', fx: 'jump' },    // 耳朵豎起來、眼睛圓圓；身體一直抖＋帽子跳起來一下
+  傾聽: { img: 'basic',     mark: '…' },     // 基本
+  心疼: { img: 'sad',       mark: '💧' },    // 眼眶含淚
+  思考: { img: 'think',     mark: '💭' },    // 雙手抱胸、閉眼
+  慌張: { img: 'surprised', mark: '💦', fx: 'shake' },   // 和驚訝同一張；身體一直抖抖抖，帽子跟著抖
+  明白: { img: 'basic',     mark: '💡' },    // 基本
+  溫柔: { img: 'smile',     mark: '♡' },     // 和微笑同一張
+  害羞: { img: 'shy',       mark: '///' },   // 雙手遮臉
+  開心: { img: 'happy',     mark: '♪' },     // > < 舉起手套和鍋鏟
+  幹勁: { img: 'happy',     mark: '✦' },     // 和開心同一張
+  擔心: { img: 'worry',     mark: '' }       // 皺眉、耳朵捲起來；玩家提到想傷害自己時用：不要可愛的符號
 };
 
 const LINES = {
@@ -91,15 +97,14 @@ const LINES = {
     topicFree: ['[傾聽]「{TYPE}」……嗯，我聽到了。'],
     subFree: ['[傾聽]「{TYPE}」……嗯，我記住了。'],
     intro: [
-      '[思考]跟你說，我做甜點的時候，很喜歡用天然的色粉。\n草莓粉、抹茶粉、蝶豆花……每一種都是食物做的顏色。',
+      '[思考]跟你說，我做甜點的時候，很喜歡用天然的色粉。\n草莓粉、焙茶粉、蝶豆花……每一種都是食物做的顏色。',
       '[害羞]我覺得心情好像也有顏色。\n像我今天，大概是焦糖色吧……一直在小火上煮著，靜不下來。',
       '[好奇]那今天的你，是什麼顏色呢？'
     ],
-    pick: '[微笑]點一下色粉罐，就會撒進鮮奶油裡。\n最多選三種，第一個選的，會是最多的顏色喔。',
-    full: '[慌張]啊，碗快裝不下了！\n最多三種喔，可以點一下已經選的，把它拿掉。',
-    empty: '[好奇]還沒有選顏色喔，\n點一下最像你現在心情的色粉罐吧。',
-    reflect: '[傾聽]你的鮮奶油裡，有{COLORS}……',
-    main:    '[心疼]最多的是{MAINCN}的「{MAIN}」。\n心裡裝著這些顏色，一定不輕鬆吧。',
+    pick: '[微笑]今天的心情，是哪一罐呢？\n點一罐色粉，倒進鮮奶油裡吧。',
+    again: '[微笑]好呀，那換一罐看看。\n今天的心情，是哪一罐呢？',
+    stir:    '[微笑]我幫你把色粉拌進鮮奶油裡——\n刷刷、刷刷♪',   // Rabumi 捧著碗攪拌
+    reflect: '[心疼]你的鮮奶油，變成了{MAINCN}的「{MAIN}」。\n心裡裝著這個顏色，一定不輕鬆吧。',
     named:   '[明白]不過你看，顏色被說出名字之後，\n就看得清清楚楚了。',
     brave:   '[溫柔]能看見自己是什麼顏色，已經很了不起了喔。'
   },
@@ -135,6 +140,7 @@ const LINES = {
     rewrite: '[微笑]那我們試著換個說法？\n選一個你比較願意相信的就好。',
     customRewrite: '[好奇]如果換個溫柔一點的說法，你會怎麼對自己說呢？',
     untied: ['[開心]解開了！是個漂亮的蝴蝶結♡', '[明白]你看，鬆開之後，它就沒那麼緊了。', '[開心]又一個蝴蝶結！你越來越會解了耶。'],
+    stir: '[微笑]來，我們再拌一拌看看——',   // Rabumi 捧著碗攪拌，拌著拌著那一團就散開了
     done: [
       '[溫柔]煩惱還在，可是結鬆開之後，\n它就不會越纏越緊了。',
       '[驚訝]啊，你看碗裡——\n那一團{MAINCN}，也拌開了！',
@@ -270,20 +276,19 @@ const FREE_CORES = [
   { t: '事情會不會變得更糟',   re: ['[思考]還沒發生的事，\n有時候最讓人害怕呢。'] }
 ];
 
-// 心情色粉（色粉櫃）：name = 心情、src = 色粉是什麼做的、cn = 顏色的名字、col = 顏色（'marble' = 大理石混色）、say = 選了之後 Rabumi 說的話
+// 心情色粉（色粉櫃）：name = 心情、src = 罐子上的短名字、cn = 顏色的名字、col = 顏色、say = 點了之後 Rabumi 介紹這個口味
 const FEELS = [
-  { name: '難過',     src: '竹炭',   cn: '竹炭灰',         col: '#ADA9B4', say: '[心疼]灰灰的竹炭粉……\n難過的時候，好像什麼顏色都淡掉了。' },
-  { name: '焦慮',     src: '焦糖',   cn: '焦糖色',         col: '#C98F5A', say: '[思考]焦糖色……焦慮的「焦」。\n心裡是不是一直在小火上煮著？' },
-  { name: '煩躁',     src: '南瓜',   cn: '南瓜橘',         col: '#F2A93B', say: '[驚訝]橘黃色的南瓜粉！\n煩躁的時候，心裡好像一直有東西在冒泡。' },
-  { name: '委屈',     src: '草莓',   cn: '草莓粉',         col: '#F4A3B8', say: '[心疼]粉粉的草莓粉……\n委屈的時候，眼眶也會紅紅的吧。' },
-  { name: '生氣',     src: '覆盆子', cn: '覆盆子紅',       col: '#E0525F', say: '[傾聽]紅紅的覆盆子……\n生氣也是一種在乎喔，不用覺得自己不好。' },
-  { name: '好累',     src: '薰衣草', cn: '薰衣草紫',       col: '#CDA6DE', say: '[溫柔]淡紫色的薰衣草，\n是讓人想好好睡一覺的顏色。' },
-  { name: '孤單',     src: '蝶豆花', cn: '蝶豆花藍',       col: '#7FA8E0', say: '[心疼]藍藍的蝶豆花……\n一個人的時候，心裡是不是也有點涼涼的？' },
-  { name: '忌妒',     src: '抹茶',   cn: '抹茶綠',         col: '#8DB86B', say: '[害羞]綠色的抹茶粉……\n偷偷跟你說，英文說忌妒，就叫「green with envy」喔。' },
-  { name: '五味雜陳', src: '大理石', cn: '大理石紋',       col: 'marble',  say: '[思考]什麼顏色都有一點……\n說不清楚也沒關係，五味雜陳本來就是這樣。' }
+  { name: '孤單',     src: '藍莓',     cn: '藍莓藍',       col: '#A9C4F5', say: '[心疼]接骨木莓藍莓粉，深深的紫藍色，酸酸甜甜的。\n就像孤單時，身邊明明有人，卻還是覺得有點遠。' },
+  { name: '難過',     src: '蝶豆花',   cn: '蝶豆花蘇打藍', col: '#C9E2EE', say: '[心疼]蝶豆花蘇打粉，藍藍的蘇打一直冒小氣泡，\n就像難過時，一顆一顆浮上來的眼淚。' },
+  { name: '委屈',     src: '黑醋栗',   cn: '黑醋栗紫',     col: '#E9C8DA', say: '[心疼]薰衣草黑醋栗粉，淡淡花香底下藏著酸。\n就像委屈時，表面上沒事，心裡卻很難受。' },
+  { name: '焦慮',     src: '焦糖',     cn: '焦糖黃',       col: '#FDE5A7', say: '[思考]香草焦糖粉，焦糖加熱時會一直冒泡、翻滾，\n就像焦慮時，腦袋裡停不下來的擔心。' },
+  { name: '生氣',     src: '草莓',     cn: '草莓粉',       col: '#FDD8DD', say: '[傾聽]草莓覆盆子粉，顏色鮮明，酸甜很直接，\n就像生氣時，一下子湧上來、藏不住的情緒。' },
+  { name: '煩躁',     src: '血橙',     cn: '血橙橘',       col: '#FEC6AE', say: '[思考]西柚血橙粉，酸酸澀澀的，\n就像煩躁時，什麼小事都看不順眼。' },
+  { name: '忌妒',     src: '薄荷萊姆', cn: '薄荷萊姆綠',   col: '#E6F3A8', say: '[害羞]薄荷萊姆粉，涼涼的，又帶點酸，\n就像忌妒時，裝作不在意，心裡卻酸酸的。' },
+  { name: '疲憊',     src: '焙茶',     cn: '焙茶色',       col: '#BA9E6C', say: '[溫柔]蜂蜜焙茶粉，暖暖的茶香，微苦又有一點甜，\n就像疲憊時，提不起精神，只想好好休息。' },
+  { name: '五味雜陳', src: '巧克力',   cn: '巧克力色',     col: '#C89C87', say: '[思考]巧克力粉，有苦也有甜，\n就像五味雜陳時，好多心情混在一起，說不清楚。' }
 ];
 const MARBLE = ['#F4A3B8', '#F2A93B', '#7FA8E0', '#8DB86B', '#CDA6DE'];   // 大理石紋用的顏色
-const MAX_COLORS = 3;   // 最多選幾種顏色
 
 // 纏住的緞帶（包裝檯）：t = 結上寫的想法、re = 可以換成的說法
 const KNOTS = {
@@ -322,14 +327,18 @@ const DESSERTS = {
     acted: ['[驚訝]壓下去了……', '[開心]又彈回來了！\n被壓著的時候，也可以像這樣，慢慢彈回來喔。'],
     desc: '[溫柔]蓬蓬的舒芙蕾鬆餅，要小火慢慢煎才好吃。\n努力也是，不用一次做完全部。'
   },
-  crepe: {     // 人際：捲起來、包住、分不開，熱餅皮包冰淇淋＝忽冷忽熱
-    name: '可麗餅',
+  crepe: {     // 人際：捲起來、包住、分不開，熱餅皮包冰淇淋＝忽冷忽熱（流程在 makeCrepe：攤開 → 捲起來 → 放料 → 裝飾）
+    name: '原宿可麗餅',
     intro: ['[思考]你的煩惱，讓我想到原宿的可麗餅。', '[傾聽]好多人、好多事，全部捲在一起，\n分也分不開……'],
-    color: '[微笑]我們用這碗鮮奶油做成冰淇淋，\n一球一球放在餅皮上。',
-    breathe: '[微笑]餅皮要用小火，慢慢煎到金黃色。',
+    color: '[微笑]你那碗有顏色的鮮奶油，\n等一下會變成一球冰淇淋喔。',
+    breathe: '[微笑]先來煎餅皮，要用小火，慢慢煎到金黃色。',
     formed: '[開心]餅皮煎得金金黃黃的了！',
-    actAsk: '[好奇]最後，把它捲起來吧？', act: '🌀 捲起來',
-    acted: ['[開心]捲好了！', '[溫柔]熱熱的餅皮，包著冰冰的冰淇淋……\n關係也是，一冷一熱都沒關係，有好好包住就好。'],
+    spread: '[微笑]餅皮抹好奶油了，我們把它捲起來吧！', act: '🌀 捲起來',
+    rolled: '[開心]捲好了！現在還空空的，來放料吧。', fillAct: '🍓 放料',
+    fill: ['[微笑]先擠一圈鮮奶油……', '[開心]再擺上草莓和香蕉……', '[驚訝]最後，冰淇淋！'],
+    filled: ['[微笑]這球冰淇淋，就是你那碗{MAINCN}的鮮奶油做的。', '[溫柔]熱熱的餅皮，包著冰冰的冰淇淋……\n關係也是，一冷一熱都沒關係，有好好包住就好。'],
+    deco: '[幹勁]最後換你來裝飾，淋醬、撒糖都可以喔！\n選一個工具，在餡料上按住拖拖看。', decoDone: '✓ 裝飾好了',
+    decoSay: '[開心]好可愛！這是只屬於你的可麗餅。', decoNone: '[微笑]原本的樣子也很好看呢。',
     desc: '[溫柔]可麗餅把好多東西捲在一起，\n每一口吃到的都不一樣，就像身邊每一個不一樣的人。'
   },
   pudding: {   // 自我：晃動、凝固、Q彈、冰涼，倒出來歪歪的也沒關係
@@ -367,12 +376,9 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 /* ---------- 0. 畫好的圖：有放進資料夾就用，沒有就用程式畫的 ---------- */
 const ART = {};
 function probe(key, url){ const im = new Image(); im.onload = () => { ART[key] = url; }; im.src = url; }
-['pancake', 'crepe', 'pudding'].forEach(t => { probe(t + '-line', `img/desserts/${t}-line.png`); probe(t + '-fill', `img/desserts/${t}-fill.png`); });
-['pancake-flat', 'crepe-open', 'pudding-cup', 'honey', 'cream', 'candy'].forEach(k => probe(k, `img/desserts/${k}.png`));
+['pancake', 'pudding'].forEach(t => { probe(t + '-line', `img/desserts/${t}-line.png`); probe(t + '-fill', `img/desserts/${t}-fill.png`); });
+['pancake-flat', 'pudding-cup', 'honey', 'cream', 'candy'].forEach(k => probe(k, `img/desserts/${k}.png`));
 ['fortune', 'fortune-open', 'teacup'].forEach(k => probe(k, `img/house/${k}.png`));
-const jarProbe = new Image();   // 色粉罐有畫好的圖：換成圖（style.css 的 .has-jar-img）
-jarProbe.onload = () => document.body.classList.add('has-jar-img');
-jarProbe.src = 'img/house/jar-line.png';
 
 /* ---------- 1. 玩家名字、今天整理的內容 ---------- */
 const params = new URLSearchParams(location.search);
@@ -410,17 +416,42 @@ function setSpeaker(who){
   $('chatName').textContent = S.name;
 }
 const faceOk = {};   // 這張表情圖畫好了沒（有放進 img/rabumi/ 就會用）
-Object.values(FACES).forEach(f => { const im = new Image(); im.onload = () => { faceOk[f.img] = true; }; im.src = FACE_DIR + f.img + '.png'; });
-document.querySelectorAll('.dh-chara').forEach(c => { const m = document.createElement('span'); m.className = 'dh-mark'; m.setAttribute('aria-hidden', 'true'); c.appendChild(m); });
+['basic', 'surprised-full', ...Object.values(FACES).map(f => f.img)].forEach(n => { const im = new Image(); im.onload = () => { faceOk[n] = true; }; im.src = FACE_DIR + n + '.png'; });
+document.querySelectorAll('.dh-chara').forEach(c => {
+  const m = document.createElement('span'); m.className = 'dh-mark'; m.setAttribute('aria-hidden', 'true'); c.appendChild(m);
+  // 分開的帽子（驚訝/慌張的圖沒有畫帽子，帽子另外疊上去才能跳起來）
+  const h = document.createElement('span'); h.className = 'dh-hat'; h.setAttribute('aria-hidden', 'true'); h.innerHTML = '<span></span>';
+  c.querySelector('.chat-chara-bob').appendChild(h);
+  // 捧著碗攪拌的樣子：身體＋碗（鮮奶油會變色）＋捧碗的手＋拿打蛋器的手（左右攪）疊在一起
+  const s = document.createElement('span'); s.className = 'dh-stir'; s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = `<img src="${FACE_DIR}stir-body.png" alt=""><span class="dh-stir-bowl"></span>` +
+                `<img src="${FACE_DIR}stir-hold.png" alt=""><img class="dh-stir-hand" src="${FACE_DIR}stir-hand.png" alt="">`;
+  c.querySelector('.chat-chara-bob').appendChild(s);
+});
+// Rabumi 捧著碗攪拌：cols = 碗裡鮮奶油的顏色；setStir(false) 變回一般的樣子
+function setStir(on, cols = []){
+  document.querySelectorAll('.dh-chara').forEach((c, i) => {
+    if (on) c.querySelector('.dh-stir-bowl').innerHTML = bowlSvg(cols, 's' + i);
+    c.classList.toggle('stirring', on);
+  });
+}
 function setFace(name){
   $('faceTag').textContent = SHOW_FACE_TAG ? '［' + name + '］' : '';
   if (speaker === 'maid'){ avatar.src = host.querySelector('img').src = MAID_FACES[name] || SPEAKERS.maid.img; return; }
   const f = FACES[name] || FACES.微笑;
-  const src = faceOk[f.img] ? FACE_DIR + f.img + '.png' : SPEAKERS.rabumi.img;
-  avatar.src = src;
-  document.querySelectorAll('.dh-chara img').forEach(im => { im.src = src; });
+  const drawn = faceOk[f.img];
+  const src = drawn ? FACE_DIR + f.img + '.png' : faceOk.basic ? FACE_DIR + 'basic.png' : SPEAKERS.rabumi.img;
+  avatar.src = drawn && f.fx && faceOk[f.img + '-full'] ? FACE_DIR + f.img + '-full.png' : src;   // 小頭像用帽子已經疊好的那張
+  // 房間裡的 Rabumi（看整間娃娃屋的遠景時一律用 basic）
+  const roomSrc = where === 'all' && faceOk.basic ? FACE_DIR + 'basic.png' : src;
+  document.querySelectorAll('.dh-chara .chat-chara-bob > img').forEach(im => { im.src = roomSrc; });
+  document.querySelectorAll('.dh-chara').forEach(c => c.classList.toggle('has-hat', !!(drawn && f.fx)));
   if (name === face) return;
   face = name;
+  // 驚訝：帽子跳起來一下（身體一直抖是 style.css 的 .has-hat）
+  document.querySelectorAll('.dh-chara').forEach(c => c.classList.remove('fx-jump', 'fx-shake'));
+  const who = document.querySelector('.dh-room.on .dh-chara');
+  if (who && drawn && f.fx){ void who.offsetWidth; who.classList.add('fx-' + f.fx); }
   const m = document.querySelector('.dh-room.on .dh-mark');
   if (!m || !f.mark) return;
   m.textContent = f.mark;
@@ -575,6 +606,8 @@ function layout(){
 function view(w){
   where = w;
   document.querySelectorAll('.dh-room').forEach(r => r.classList.toggle('on', r.dataset.room === w));
+  // Rabumi 只出現在她現在待的房間（一開始在色粉櫃；看整間的時候留在原本的房間）
+  if (w !== 'all') document.querySelectorAll('.dh-room').forEach(r => r.classList.toggle('here', r.dataset.room === w));
   layout();
   return wait(1700);
 }
@@ -729,84 +762,98 @@ const marbleDefs = id => `<pattern id="${id}-mbl" width="24" height="24" pattern
   MARBLE.map((c, i) => `<rect x="${i * 4.8}" width="4.8" height="24" ${tint(c, id)}/>`).join('') + '</pattern>';
 const expand = cols => cols.flatMap(c => c === 'marble' ? MARBLE.slice(0, 3) : [c]);   // 漸層裡不能用花紋：大理石拆成幾個顏色
 
-// 一碗鮮奶油：cols = 撒進去的顏色（第一個是主色，畫最多）；lump = 拌不開的那一團
-function bowlSvg(cols, id, lump){
-  // 鮮奶油表面：每個顏色畫成一條彎彎的紋路（主色最粗，再加一大片淡淡的主色）
-  const swirl = cols.map((c, i) => {
-    const y = 50 + [0, -12, 12][i];
-    return `<path d="M20 ${y + 6} C50 ${y - 18} 78 ${y + 16} 108 ${y} S162 ${y - 18} 200 ${y + 2}" fill="none" stroke-width="${i ? 8 : 13}" stroke-linecap="round" opacity=".85" ${tint(c, id, 'stroke')}/>`;
-  }).join('');
-  const blob = cols.length ? `<ellipse cx="80" cy="58" rx="40" ry="14" opacity=".4" ${tint(cols[0], id)}/>` : '';
-  const lumpEl = lump ? `<g class="dh-lump"><path d="M132 50 Q134 36 148 38 Q162 38 160 50 Q162 60 146 61 Q130 61 132 50Z" ${tint(lump, id)}/><circle cx="141" cy="44" r="3.5" fill="#fff" opacity=".6"/></g>` : '';
-  return `<svg viewBox="0 0 220 150" aria-hidden="true"><defs>${marbleDefs(id)}<clipPath id="${id}-cream"><ellipse cx="110" cy="50" rx="88" ry="32"/></clipPath></defs>
-    <ellipse cx="110" cy="50" rx="98" ry="40" fill="#fff" stroke="#F1C5C8" stroke-width="2"/>
-    <ellipse cx="110" cy="50" rx="88" ry="32" fill="#FFFBF5"/>
-    <g clip-path="url(#${id}-cream)">${blob}${swirl}</g>${lumpEl}
-    <path d="M12 54 Q16 142 110 146 Q204 142 208 54 Q190 90 110 90 Q30 90 12 54Z" fill="#fff" stroke="#F1C5C8" stroke-width="2"/>
-    <path d="M32 106 Q110 132 188 106" fill="none" stroke="#F6C9D4" stroke-width="5" stroke-dasharray="1 10" stroke-linecap="round"/>
-  </svg>`;
+// 一碗鮮奶油（img/house/bowl.png，碗裡是白色鮮奶油）：cols[0] = 鮮奶油的顏色；lump = 拌不開的那一團
+// 換色：在白色鮮奶油上疊一層顏色（multiply），只染 bowl-cream.png 的範圍（style.css 的 .dh-cream）
+// grow = 顏色從中間慢慢暈開；座標用原圖的 884×606（圖有縮小過，用比例對齊）
+const BOWL_W = 884, BOWL_H = 606;
+function bowlSvg(cols, id, lump, grow){
+  const W = BOWL_W, H = BOWL_H, c = cols[0];
+  const cream = c ? `<mask id="${id}-cm" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" style="mask-type:alpha"><image href="img/house/bowl-cream.png" width="${W}" height="${H}"/></mask>
+    <rect class="dh-cream${grow ? '' : ' on'}" width="${W}" height="${H}" fill="${c}" mask="url(#${id}-cm)"/>` : '';
+  const lumpEl = lump ? `<g transform="translate(560 150) scale(3.4) translate(-146 -50)"><g class="dh-lump"><path d="M132 50 Q134 36 148 38 Q162 38 160 50 Q162 60 146 61 Q130 61 132 50Z" fill="${lump}"/><circle cx="141" cy="44" r="3.5" fill="#fff" opacity=".6"/></g></g>` : '';
+  return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><image href="img/house/bowl.png" width="${W}" height="${H}"/>${cream}${lumpEl}</svg>`;
 }
 
-/* ---------- 7. ① 色粉櫃：選心情的顏色（最多 3 種），撒進鮮奶油 ---------- */
-const jarsEl = $('jars'), bowlEl = $('bowl');
-let picked = [];   // 選的心情（照順序；第一個 = 主色）
-FEELS.forEach(f => {
+/* ---------- 7. ① 色粉櫃：點一罐色粉 → 飛到碗上倒進去 → 鮮奶油暈開成那個顏色 ---------- */
+// 罐子擺在 cabinet.png 上的位置（原圖 663×1153 的單位）：三層架子的地板 y、每層三罐的中心 x、罐子寬（高照 jar.png 634×839 的比例）
+const CAB_W = 663, CAB_H = 1153, SHELF_Y = [486, 704, 920], SHELF_X = [165, 331, 497], JAR_W = 118, JAR_H = JAR_W * 839 / 634;
+const jarsEl = $('jars'), bowlEl = $('bowl'), panelHome = panel.parentElement;
+let picked = [];          // 選的心情（只有一罐）
+let pickedJar = null, pouring = false, inProps = false, finishColors = null;
+// 一罐色粉：白色色粉疊上心情的顏色（只染 jar-powder.png 的範圍），標籤寫心情
+const jarHTML = f => `<span class="dh-tint" style="--c:${f.col}"><img src="img/house/jar.png" alt=""><i></i></span>` +
+  `<span class="dh-jar-lbl${f.name.length > 2 ? ' long' : ''}">${f.name}</span>`;
+FEELS.forEach((f, i) => {
   const b = document.createElement('button');
-  b.type = 'button'; b.className = 'dh-jar' + (f.col === 'marble' ? ' marble' : ''); b.dataset.name = f.name;
-  if (f.col !== 'marble') b.style.setProperty('--col', f.col);
-  b.innerHTML = '<i aria-hidden="true"></i><b></b><small></small>';
-  b.querySelector('b').textContent = f.name;
-  b.querySelector('small').textContent = f.src;
-  b.setAttribute('aria-pressed', 'false');
-  b.addEventListener('click', () => pickJar(f, b));
+  b.type = 'button'; b.className = 'dh-jar'; b.innerHTML = jarHTML(f);
+  b.setAttribute('aria-label', f.name + '（' + f.src + '）');
+  b.style.width = JAR_W / CAB_W * 100 + '%';
+  b.style.left = (SHELF_X[i % 3] - JAR_W / 2) / CAB_W * 100 + '%';
+  b.style.top = (SHELF_Y[Math.floor(i / 3)] - JAR_H) / CAB_H * 100 + '%';
+  b.addEventListener('click', () => pour(f, b));
   jarsEl.appendChild(b);
 });
-function pickJar(f, b){
-  if (!jarsEl.classList.contains('live')) return;
-  const i = picked.indexOf(f);
-  if (i >= 0) picked.splice(i, 1);
-  else {
-    if (picked.length >= MAX_COLORS){ b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); type(LINES.color.full); return; }
-    picked.push(f);
-    sprinkle(f);
-    type(f.say);
-  }
-  drawJars(); drawBowl();
-}
-function drawJars(){
-  jarsEl.querySelectorAll('.dh-jar').forEach(b => {
-    const n = picked.findIndex(f => f.name === b.dataset.name);
-    b.classList.toggle('on', n >= 0);
-    b.dataset.n = n >= 0 ? (n ? n + 1 : '主') : '';
-    b.setAttribute('aria-pressed', n >= 0);
-  });
-}
-function drawBowl(){ bowlEl.innerHTML = bowlSvg(picked.map(f => f.col), 'b'); }
-// 撒色粉：一小撮粉從上面飄進碗裡
-function sprinkle(f){
-  const wrap = bowlEl.parentElement;
-  for (let i = 0; i < 16; i++){
-    const s = document.createElement('i');
-    s.className = 'dh-dust';
-    s.style.setProperty('--col', f.col === 'marble' ? MARBLE[i % MARBLE.length] : f.col);
-    s.style.setProperty('--x', (35 + Math.random() * 30) + '%');
-    s.style.setProperty('--d', (Math.random() * .35) + 's');
-    wrap.appendChild(s);
-    setTimeout(() => s.remove(), 1400);
-  }
+function drawBowl(col, grow){
+  bowlEl.innerHTML = bowlSvg(col ? [col] : [], 'b', null, grow);
+  if (grow){ void bowlEl.offsetWidth; bowlEl.querySelector('.dh-cream').classList.add('on'); }
 }
 drawBowl();
+async function pour(f, b){
+  if (!jarsEl.classList.contains('live') || pouring) return;
+  pouring = true;
+  if (pickedJar) pickedJar.classList.remove('used');   // 換一罐：前一罐放回架上
+  pickedJar = b; picked = [f];
+  drawBowl();
+  // 複製一罐，從架上飛到碗的上方（原本那罐變半透明 = 被拿走了）
+  const jr = b.getBoundingClientRect(), br = bowlEl.getBoundingClientRect();
+  const w = br.width * .27, h = w * JAR_H / JAR_W;
+  const fly = document.createElement('div');
+  fly.className = 'dh-fly'; fly.innerHTML = jarHTML(f);
+  Object.assign(fly.style, { left: jr.left + 'px', top: jr.top + 'px', width: jr.width + 'px' });
+  document.body.appendChild(fly);
+  b.classList.add('used');
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    Object.assign(fly.style, { left: br.left + (br.width - w) / 2 + 'px', top: br.top - h * .8 + 'px', width: w + 'px' })));
+  await wait(750);
+  fly.style.transform = 'rotate(-120deg)';   // 倒過來
+  await wait(300);
+  for (let k = 0; k < 26; k++){              // 色粉灑進碗裡
+    const s = document.createElement('i');
+    s.className = 'dh-dust';
+    Object.assign(s.style, { left: br.left + br.width * (.4 + Math.random() * .12) + 'px', top: br.top - h * .1 + Math.random() * 10 + 'px', background: f.col, animationDelay: k * .03 + 's' });
+    s.style.setProperty('--fall', br.height * .3 + 'px');
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1600);
+  }
+  await wait(200);
+  drawBowl(f.col, true);                     // 鮮奶油從中間暈開
+  await wait(450);
+  fly.classList.add('gone');
+  await wait(600);
+  fly.remove();
+  type(f.say);                               // Rabumi 介紹這罐色粉
+  pouring = false;
+  showColorChoices();
+}
+// 倒好之後：「就是這罐」或「換一罐」（手機：按鈕排在碗下面，不然會被對話框蓋住）
+function showColorChoices(){
+  if (inProps) bowlEl.closest('.dh-mixcol').appendChild(panel);
+  panelButtons([
+    { t: '就是這罐 ♡', on: () => {
+        if (pouring) return;
+        jarsEl.classList.remove('live'); clearPanel(); panelHome.appendChild(panel); finishColors();
+      } },
+    { t: '換一罐', free: true, on: () => {
+        if (pouring) return;
+        pickedJar.classList.remove('used'); pickedJar = null; picked = [];
+        drawBowl(); clearPanel(); type(LINES.color.again);
+      } }
+  ]);
+}
 function chooseColors(){
   jarsEl.classList.add('live');
-  return new Promise(done => {
-    panelButtons([
-      { t: '就是這些顏色了 ♡', on: () => {
-          if (!picked.length){ type(LINES.color.empty); return; }
-          jarsEl.classList.remove('live'); clearPanel(); done();
-        } },
-      { t: '倒掉重來', free: true, on: () => { picked = []; drawJars(); drawBowl(); } }
-    ]);
-  });
+  inProps = matchMedia('(max-width:640px)').matches;
+  return new Promise(done => { finishColors = done; });
 }
 
 async function roomColor(){
@@ -838,8 +885,10 @@ async function roomColor(){
   memo.main = picked[0];
   memo.feel = picked.map(f => f.name).join('、');
   memo.colors = picked.map(f => f.cn + '的「' + f.name + '」').join('、');
+  setStir(true, picked.map(f => f.col));   // Rabumi 捧著碗攪拌
+  await say(LINES.color.stir);
+  setStir(false);
   await say(LINES.color.reflect);
-  await say(LINES.color.main);
   await say(LINES.color.named);
   await say(LINES.color.brave);
   await nextRoom('🎨');
@@ -885,7 +934,7 @@ function chooseKnot(canFinish){
 
 async function roomBench(){
   const lumpBowl = $('lumpBowl');
-  lumpBowl.innerHTML = bowlSvg(memo.feels.map(f => f.col), 'l', memo.main.col === 'marble' ? MARBLE[0] : memo.main.col);
+  lumpBowl.innerHTML = bowlSvg([memo.main.col], 'l', mix(memo.main.col, '#7A5A60', .35));   // 拌不開的那一團：深一點的同色
   await view('bench');
   await sayAll(LINES.bench.hello);
 
@@ -932,8 +981,11 @@ async function roomBench(){
     await type(LINES.bench.more);
   }
   await say(LINES.bench.done[0]);
+  setStir(true, memo.feels.map(f => f.col));   // Rabumi 捧著碗攪拌
+  await say(LINES.bench.stir);
   lumpBowl.classList.add('mixed');   // 拌不開的那一團，拌開了
   await wait(600);
+  setStir(false);
   await sayAll(LINES.bench.done.slice(1));
   await nextRoom('🎀');
 }
@@ -1020,7 +1072,7 @@ function toPages(text){
 }
 
 // 甜點的樣子：type = 哪一種、cols = 心情的顏色、colored = 加了鮮奶油沒、form = 呼吸了幾次、top = 加的甜、done = 做完最後一步
-const D = { type: 'crepe', cols: [], colored: false, form: 0, top: null, done: false };
+const D = { type: 'pancake', cols: [], colored: false, form: 0, top: null, done: false };
 const img = (key, x, y, w, h, extraAttr = '') => `<image href="${ART[key]}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMax meet" ${extraAttr}/>`;
 // 畫好的甜點圖：fill 那張染上心情的顏色，再疊上 line 那張
 let tintN = 0;
@@ -1030,9 +1082,6 @@ function imgTint(name, x, y, w, h, c){
     img(name + '-fill', x, y, w, h, `filter="url(#${id})"`) + img(name + '-line', x, y, w, h);
 }
 const hasArt = name => ART[name + '-line'] && ART[name + '-fill'];
-const scoop = (x, y, r, c) => `<circle cx="${x}" cy="${y}" r="${r}" ${tint(c, 'd')}/>
-  <path d="M${x - r} ${y + 3} q${r / 3} 7 ${r * 2 / 3} 1 t${r * 2 / 3} 1 t${r * 2 / 3} -1" ${tint(c, 'd')}/>
-  <circle cx="${x - r * .35}" cy="${y - r * .35}" r="${r * .26}" fill="#fff" opacity=".5"/>`;
 const PAN_Y = i => 142 - i * 36;   // 第 i 片鬆餅的上緣（片和片之間留空間夾鮮奶油）
 const BODY = {
   // 舒芙蕾鬆餅：一開始塌塌的；每呼吸一次膨起來一層，中間夾心情顏色的鮮奶油
@@ -1058,26 +1107,6 @@ const BODY = {
       <ellipse cx="110" cy="${top - 7}" rx="7" ry="3" fill="#fff" opacity=".45"/>`;
     return s;
   },
-  // 可麗餅：攤開的餅皮（呼吸 = 慢慢煎到金黃）→ 放上心情顏色的冰淇淋 → 捲起來
-  crepe(){
-    const n = D.cols.length;
-    if (!D.done){
-      const g = Math.min(1, D.form / BREATHS);
-      let s = ART['crepe-open'] ? img('crepe-open', 20, 120, 200, 64)
-        : `<ellipse cx="120" cy="160" rx="98" ry="22" fill="${mix('#FBF1DC', '#F0C57C', g)}"/>
-           <ellipse cx="120" cy="158" rx="88" ry="17" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>` +
-          (g > .3 ? `<g fill="#D9A15A" opacity="${g * .5}"><circle cx="70" cy="160" r="4"/><circle cx="160" cy="154" r="3"/><circle cx="104" cy="168" r="3"/><circle cx="178" cy="166" r="2.5"/></g>` : '');
-      if (D.colored) [[120], [100, 140], [86, 120, 154]][n - 1].forEach((x, i) => { s += scoop(x, 146, 16, D.cols[i]); });
-      return s;
-    }
-    if (hasArt('crepe')) return imgTint('crepe', 56, 22, 128, 160, D.cols[0]);
-    const at = [[[120, 80]], [[105, 84], [135, 82]], [[100, 88], [140, 88], [120, 68]]][n - 1];
-    return `<path d="M98 140 L142 140 L120 184Z" fill="#F8D4DC"/><path d="M104 150h32M110 162h20" stroke="#fff" stroke-width="2" stroke-dasharray="2 4"/>
-      <path d="M120 180 L80 98 Q120 86 160 98Z" fill="#EFC27A"/><path d="M92 124 L152 104" stroke="#D9A463" stroke-width="2" opacity=".5"/>
-      ${at.map(([x, y], i) => scoop(x, y, 18, D.cols[i])).join('')}
-      <path d="M80 98 q5 -7 10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0" fill="none" stroke="#F7DCA6" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="84" cy="94" r="8" fill="#fff"/><circle cx="156" cy="94" r="8" fill="#fff"/>`;
-  },
   // 布丁：杯子裡的布丁液（呼吸 = 慢慢凝固）→ 倒扣到盤子上
   pudding(){
     const grad = D.colored ? 'url(#d-pud)' : '#FBE6A8';
@@ -1098,7 +1127,6 @@ const BODY = {
 // 加的甜放在哪裡
 const TOP_AT = {
   pancake: () => [120, PAN_Y(Math.max(1, D.form) - 1) - 18],
-  crepe:   () => D.done ? [120, D.cols.length === 3 ? 52 : 64] : [120, 128],
   pudding: () => [120, 88]
 };
 const TOPS = {
@@ -1139,19 +1167,150 @@ function softenAll(){
   softNow = true;
   dessertEl.querySelectorAll('.tint').forEach(e => { if (e.dataset.c !== 'marble') e.style.setProperty(e.dataset.p, soften(e.dataset.c)); });
 }
-// 最後一步：按鬆餅、捲可麗餅、倒出布丁（點甜點或按鈕都可以）
+// 最後一步：按鬆餅、倒出布丁（點甜點或按鈕都可以）
 function finishStep(T){
   return new Promise(done => {
     const go = () => {
       dessertEl.onclick = actBtn.onclick = null; actBtn.hidden = true; dessertEl.disabled = true; kitchen.classList.remove('acting');
       if (D.type === 'pancake'){ dessertEl.classList.add('squish'); }
-      else { D.done = true; render(); dessertEl.classList.add(D.type === 'pudding' ? 'flip' : 'roll'); }
+      else { D.done = true; render(); dessertEl.classList.add('flip'); }
       setTimeout(done, 1300);
     };
     actBtn.textContent = T.act; actBtn.hidden = false; dessertEl.disabled = false; kitchen.classList.add('acting');
     dessertEl.onclick = actBtn.onclick = go;
   });
 }
+// 顯示右下角的按鈕，等玩家按下去
+function press(label){
+  return new Promise(done => {
+    actBtn.textContent = label; actBtn.hidden = false; actBtn.focus({ preventScroll: true });
+    actBtn.onclick = () => { actBtn.onclick = null; actBtn.hidden = true; done(); };
+  });
+}
+
+/* ---------- 原宿可麗餅（人際）：① 攤開 → ② 捲起來 → ③ 放料 → ④ 裝飾 ---------- */
+// 圖層在 index.html 的 #crepe；只有冰淇淋會染上心情的顏色，其他都是原本的顏色
+const crepeEl = $('crepe'), crepeRolled = $('crepeRolled'), crepeBase = $('crepeBase'), crepeTools = $('crepeTools'), crepeHit = $('crepeHit'), crepeSpr = $('crepeSpr');
+const choco = $('crepeChoco').getContext('2d');
+const CP_W = 882, CP_H = 639;   // 捲好的可麗餅圖的大小：巧克力醬和糖的位置都用這張圖的像素來算
+// 巧克力醬和糖只能在開口的餡料上（不能跑到餅皮外面或折起來的那片上）
+const CP_FILL = new Path2D();
+[[38, 274], [73, 149], [153, 69], [293, 19], [463, 4], [643, 39], [723, 79], [653, 169], [563, 339], [473, 529], [383, 489], [243, 419], [103, 359]]
+  .forEach(([x, y], i) => i ? CP_FILL.lineTo(x, y) : CP_FILL.moveTo(x, y));
+CP_FILL.closePath();
+// 糖：list = sprinkles/ 裡的檔名、n = 一次撒幾顆、size = 大小（原圖像素）
+const SPRINKLES = {
+  star: { list: ['star0', 'star1', 'star2', 'star3', 'star4', 'star5'], n: 2, size: [37, 51] },
+  rod:  { list: ['rod6', 'rod7', 'rod8', 'rod9', 'rod10', 'rod11', 'rod12', 'rod13'], n: 4, size: [32, 43] }
+};
+const SPRINKLE_MAX = 220;
+// 吃一口：每一口咬掉的地方 [x, y, 半徑]（都是捲好的可麗餅寬度的 %）；最後一口吃光光
+const CREPE_BITES = [[[46, 4, 14], [64, 7, 13]], [[80, 24, 12], [93, 42, 17]], [[10, 38, 14], [24, 62, 15]]];
+let cpTool = 'choco', cpUsed = {}, cpDown = false, cpLast = null, cpDrop = null;
+new Image().src = 'img/crepe/crepe-full.png';   // 先載好，放料完換圖的時候才不會閃一下
+
+function crepeReset(){
+  crepeEl.className = 'cp';
+  crepeEl.style.removeProperty('--g');
+  crepeBase.src = 'img/crepe/crepe-empty.png';
+  crepeEl.querySelectorAll('.cp-cream, .cp-fruit, .cp-ice').forEach(e => e.classList.remove('show', 'away'));
+  crepeEl.querySelector('.cp-ice').style.setProperty('--c', memo.main ? memo.main.col : '#fff');
+  choco.clearRect(0, 0, CP_W, CP_H);
+  crepeSpr.innerHTML = '';
+  crepeRolled.style.maskImage = crepeRolled.style.webkitMaskImage = '';
+  cpUsed = {};
+}
+async function makeCrepe(T){
+  // ① 攤開：跟著呼吸把餅皮煎到金黃 → 抹上奶油
+  await say(T.color);
+  await type(T.breathe + LINES.bake.breatheHow);
+  await breathe(BREATHS, k => crepeEl.style.setProperty('--g', k / BREATHS));
+  await say(T.formed);
+  crepeEl.classList.add('spread');
+  await type(T.spread);
+  await press(T.act);
+  // ② 捲起來：攤開的餅皮往中間收，架子和空的可麗餅浮上來
+  crepeEl.classList.add('rolling');
+  await wait(350);
+  crepeEl.classList.add('rolled');
+  await wait(750);
+  await type(T.rolled);
+  await press(T.fillAct);
+  // ③ 放料：鮮奶油 → 草莓和香蕉 → 冰淇淋，自動一層一層放（不讓玩家自己擺，畫面才不會亂掉）
+  for (const [i, cls] of ['.cp-cream', '.cp-fruit', '.cp-ice'].entries()){
+    crepeEl.querySelector(cls).classList.add('show');
+    await Promise.all([type(T.fill[i]), wait(900)]);
+  }
+  crepeBase.src = 'img/crepe/crepe-full.png';   // 換成料都放好的圖；冰淇淋那層留著，因為要換色
+  crepeEl.querySelectorAll('.cp-cream, .cp-fruit').forEach(e => e.classList.add('away'));
+  await sayAll(T.filled);
+  // ④ 裝飾：玩家自由淋巧克力醬、撒糖
+  setTool('choco');
+  crepeTools.hidden = false;
+  crepeEl.classList.add('decorating');
+  type(T.deco);
+  await press(T.decoDone);
+  crepeTools.hidden = true;
+  crepeEl.classList.remove('decorating');
+  const used = [cpUsed.choco && '巧克力醬', cpUsed.star && '星星糖', cpUsed.rod && '彩色糖'].filter(Boolean).join('、');
+  memo.sweet = { t: used || '原味', sweet: used || '冰淇淋' };   // 可麗餅的「加進去的甜」= 玩家加的裝飾
+  await say(used ? T.decoSay : T.decoNone);
+}
+function setTool(t){
+  cpTool = t;
+  crepeTools.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t));
+}
+crepeTools.querySelectorAll('button').forEach(b => { b.onclick = () => setTool(b.dataset.t); });
+// 巧克力醬：深咖啡色的線，上面再疊一條細細的亮線當反光
+function chocoLine(a, b){
+  choco.save();
+  choco.clip(CP_FILL);
+  choco.lineCap = choco.lineJoin = 'round';
+  [['#4a2a1d', 14, 0, 0], ['rgba(140,90,66,.55)', 4.3, -2.7, -3.7]].forEach(([c, w, dx, dy]) => {
+    choco.strokeStyle = c; choco.lineWidth = w;
+    choco.beginPath(); choco.moveTo(a[0] + dx, a[1] + dy); choco.lineTo(b[0] + dx, b[1] + dy); choco.stroke();
+  });
+  choco.restore();
+  if (choco.isPointInPath(CP_FILL, b[0], b[1])) cpUsed.choco = true;
+}
+// 星星糖／彩色糖：在手指附近隨機撒幾顆
+function cpSprinkle([x, y]){
+  const S = SPRINKLES[cpTool];
+  for (let j = 0; j < S.n && crepeSpr.children.length < SPRINKLE_MAX; j++){
+    const ox = x + (Math.random() - .5) * 70, oy = y + (Math.random() - .5) * 48;
+    if (!choco.isPointInPath(CP_FILL, ox, oy)) continue;
+    const w = S.size[0] + Math.random() * (S.size[1] - S.size[0]);
+    const im = document.createElement('img');
+    im.src = `img/crepe/sprinkles/${S.list[Math.floor(Math.random() * S.list.length)]}.png`;
+    im.className = 'cp-sp'; im.alt = '';
+    Object.assign(im.style, { width: w / CP_W * 100 + '%', left: (ox - w / 2) / CP_W * 100 + '%', top: (oy - w / 2) / CP_H * 100 + '%' });
+    im.style.setProperty('--r', Math.random() * 360 + 'deg');
+    crepeSpr.appendChild(im);
+    cpUsed[cpTool] = true;
+  }
+}
+const cpAt = e => { const r = crepeRolled.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * CP_W, (e.clientY - r.top) / r.height * CP_H]; };
+crepeHit.addEventListener('pointerdown', e => {
+  cpDown = true;
+  crepeHit.setPointerCapture(e.pointerId);
+  const p = cpAt(e);
+  cpLast = cpDrop = p;
+  if (cpTool === 'choco') chocoLine(p, [p[0] + .1, p[1] + .1]); else cpSprinkle(p);
+});
+crepeHit.addEventListener('pointermove', e => {
+  if (!cpDown) return;
+  const p = cpAt(e);
+  if (cpTool === 'choco'){ chocoLine(cpLast, p); cpLast = p; }
+  else if (Math.hypot(p[0] - cpDrop[0], p[1] - cpDrop[1]) > 37){ cpSprinkle(p); cpDrop = p; }   // 每移動一小段撒一次
+});
+['pointerup', 'pointercancel'].forEach(v => crepeHit.addEventListener(v, () => { cpDown = false; }));
+// 可麗餅被咬掉的地方：一個洞一個 radial-gradient，疊起來當遮罩
+function crepeBite(n){
+  if (n >= CREPE_BITES.length){ crepeEl.classList.add('gone'); return; }
+  const holes = CREPE_BITES.slice(0, n + 1).flat().map(([x, y, r]) => `radial-gradient(${r}% ${r * CP_W / CP_H}% at ${x}% ${y}%, transparent 97%, #000 100%)`).join(', ');
+  Object.assign(crepeRolled.style, { maskImage: holes, webkitMaskImage: holes, maskComposite: 'intersect', webkitMaskComposite: 'source-in' });
+}
+
 // 吃一口：每一口咬掉的地方 [x, y, 半徑]
 const BITES = [
   [[120, 64, 30], [146, 84, 22], [98, 84, 20]],
@@ -1160,6 +1319,7 @@ const BITES = [
   [[120, 120, 90]]
 ];
 function eatAll(){
+  const isCrepe = D.type === 'crepe', target = isCrepe ? crepeEl : dessertEl;
   return new Promise(done => {
     let bites = 0, chewing = false;
     const bite = async () => {
@@ -1167,20 +1327,23 @@ function eatAll(){
       chewing = true;
       spoon.classList.remove('scoop'); void spoon.offsetWidth; spoon.classList.add('scoop');
       await wait(420);
-      const mask = $('dhBite');
-      BITES[bites].forEach(([x, y, r]) => svg('circle', { cx: x, cy: y, r, fill: '#000' }, mask));
-      const crumbs = dessertEl.querySelector('.ds-crumbs');
-      const c = memo.main.col === 'marble' ? MARBLE[0] : memo.main.col;
-      for (let i = 0; i < 3; i++) svg('circle', { cx: 70 + Math.random() * 100, cy: 164 + Math.random() * 10, r: 1.5 + Math.random() * 2, fill: soften(c) }, crumbs);
-      dessertEl.classList.remove('chomp'); void dessertEl.offsetWidth; dessertEl.classList.add('chomp');
+      if (isCrepe) crepeBite(bites);
+      else {
+        const mask = $('dhBite');
+        BITES[bites].forEach(([x, y, r]) => svg('circle', { cx: x, cy: y, r, fill: '#000' }, mask));
+        const crumbs = dessertEl.querySelector('.ds-crumbs');
+        const c = memo.main.col === 'marble' ? MARBLE[0] : memo.main.col;
+        for (let i = 0; i < 3; i++) svg('circle', { cx: 70 + Math.random() * 100, cy: 164 + Math.random() * 10, r: 1.5 + Math.random() * 2, fill: soften(c) }, crumbs);
+      }
+      target.classList.remove('chomp'); void target.offsetWidth; target.classList.add('chomp');
       const line = LINES.bake.bites[bites];
       bites++;
-      if (bites >= BITES.length){ dessertEl.disabled = true; eatBtn.hidden = true; kitchen.classList.remove('eating'); }
+      if (bites >= BITES.length){ dessertEl.disabled = true; target.onclick = null; eatBtn.hidden = true; kitchen.classList.remove('eating'); }
       if (bites < BITES.length){ await type(line); chewing = false; return; }
       await say(line);   // 最後一口：等玩家按 ▸
       done();
     };
-    dessertEl.onclick = bite; eatBtn.onclick = bite;
+    target.onclick = bite; eatBtn.onclick = bite;
     kitchen.classList.add('eating'); dessertEl.disabled = false; eatBtn.hidden = false;
   });
 }
@@ -1189,41 +1352,49 @@ let reply = null;
 async function roomBake(){
   const T = DESSERTS[memo.topic.dessert] || DESSERTS.crepe;
   Object.assign(D, { type: memo.topic.dessert || 'crepe', cols: memo.feels.map(f => f.col), colored: false, form: 0, top: null, done: false });
-  extra.dessert = memo.main.src + T.name;
-  render();
+  const isCrepe = D.type === 'crepe';   // 可麗餅用畫好的圖層（makeCrepe），鬆餅和布丁還是原本的做法
+  extra.dessert = isCrepe ? T.name : memo.main.src + T.name;
+  dessertEl.hidden = isCrepe; crepeEl.hidden = !isCrepe;
+  if (isCrepe) crepeReset(); else render();
   await view('bake');
   await sayAll(LINES.bake.invite);
   await react(await ask(LINES.bake.inviteAsk, LINES.bake.inviteOpts, null));
 
-  // 這個甜點為什麼像你的煩惱 → 把有顏色的鮮奶油加進去
+  // 這個甜點為什麼像你的煩惱
   await sayAll(T.intro);
-  await say(T.color);
-  D.colored = true; render();
-  await wait(400);
+  if (isCrepe) await makeCrepe(T);
+  else {
+    // 把有顏色的鮮奶油加進去
+    await say(T.color);
+    D.colored = true; render();
+    await wait(400);
 
-  // 呼吸：等它做好（鬆餅膨起來／餅皮煎好／布丁凝固）
-  await type(T.breathe + LINES.bake.breatheHow);
-  await breathe(BREATHS, k => { D.form = k; render(); });
-  await say(T.formed);
+    // 呼吸：等它做好（鬆餅膨起來／布丁凝固）
+    await type(T.breathe + LINES.bake.breatheHow);
+    await breathe(BREATHS, k => { D.form = k; render(); });
+    await say(T.formed);
 
-  // 加一點甜（= 現在需要的東西）→ 顏色變柔和
-  const s = await ask(LINES.bake.sweetAsk, LINES.bake.sweets, '✎ 我想要別的甜');
-  memo.sweet = s.free ? { t: s.t, sweet: '一匙糖' } : { t: s.t, sweet: s.sweet };
-  D.top = s.free ? 'sugar' : s.id;
-  render();
-  await react(s, LINES.bake.sweetFree);
-  softenAll();
-  await sayAll(LINES.bake.soften);
+    // 加一點甜（= 現在需要的東西）→ 顏色變柔和
+    const s = await ask(LINES.bake.sweetAsk, LINES.bake.sweets, '✎ 我想要別的甜');
+    memo.sweet = s.free ? { t: s.t, sweet: '一匙糖' } : { t: s.t, sweet: s.sweet };
+    D.top = s.free ? 'sugar' : s.id;
+    render();
+    await react(s, LINES.bake.sweetFree);
+    softenAll();
+    await sayAll(LINES.bake.soften);
+  }
 
   // 寫一句話給自己
   memo.words = await askInput(LINES.bake.askCard, LINES.bake.cardPh, false, '不寫了，就這樣');
   if (!await checkCrisis(memo.words)) await say(memo.words ? LINES.bake.cardSay : LINES.bake.cardSkip);
 
-  // 最後一步（等的時候，AI 在後面想要說的話）
+  // 最後一步（等的時候，AI 在後面想要說的話）；可麗餅已經捲好了，直接等 AI
   const replyP = crisis ? Promise.resolve({ comfort: fill(CRISIS_AGAIN), advice: '' }) : getReply();
-  await type(T.actAsk);
-  await finishStep(T);
-  await sayAll(T.acted);
+  if (!isCrepe){
+    await type(T.actAsk);
+    await finishStep(T);
+    await sayAll(T.acted);
+  }
   thinking();
   reply = await replyP;
   const comfort = toPages(reply.comfort), advice = toPages(reply.advice);
@@ -1269,7 +1440,8 @@ function fillMemo(){
     ['拌不開的那一團', memo.core],
     ['心情的顏色', memo.colors],
     ['解開的結', memo.knots.map(k => '「' + k.from + '」→「' + k.to + '」').join('\n')],
-    ['加進去的甜', memo.sweet ? memo.sweet.t + '（' + memo.sweet.sweet + '）' : ''],
+    D.type === 'crepe' ? ['可麗餅的裝飾', memo.sweet ? memo.sweet.t : '']
+                       : ['加進去的甜', memo.sweet ? memo.sweet.t + '（' + memo.sweet.sweet + '）' : ''],
     ['寫給自己的話', memo.words],
     ['今天的甜點', extra.dessert],
     ['下次的我', memo.next]
