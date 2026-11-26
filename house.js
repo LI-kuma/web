@@ -27,13 +27,19 @@
    - 原宿可麗餅（人際）：img/crepe/（餅皮、架子、蕾絲紙、鮮奶油／水果／冰淇淋三層、sprinkles/ 星星糖和彩色糖），冰淇淋會染上心情的顏色
            配料：honey.png、cream.png、candy.png
    - 其他：img/house/fortune.png、fortune-open.png（幸運餅乾）、teacup.png（茶杯）
-   - 色粉櫃：img/house/cabinet.png（櫃子）、jar.png + jar-powder.png（色粉罐 + 換色範圍）、bowl.png + bowl-cream.png（鮮奶油碗 + 換色範圍）
+   - 色粉櫃：img/house/cabinet.png（櫃子）、jar.png + jar-powder.png（色粉罐 + 換色範圍）、bowl-top.png（俯視的鮮奶油碗）
+   - 對話框：img/ui/name-rabumi.png（餅乾名牌）、img/lace-ribbon.png（框裡的蕾絲）；上面的荷葉邊 img/ui/lace-tile.png
    =================================================================== */
 
 // 對話框上的人：莓露露（茶會主人：歡迎你、問名字、說明玩法）、Rabumi（陪你走完全部房間）
 const SPEAKERS = {
   maid:   { name: 'メルル｜莓露露',   img: 'img/maid.png',   light: '#FFF1F4', main: '#F6C9D4' },
   rabumi: { name: 'Rabumi｜ラブミー', img: 'img/rabumi.png', light: '#FAE6F6', main: '#F1C5C8' }
+};
+// 說話者 → 餅乾名牌圖：有圖的用圖，沒有的沿用白色文字名牌（之後做好莓露露的名牌，加一行就好）
+const SPEAKER_TAG = {
+  rabumi: { src: 'img/ui/name-rabumi@1x.png', src2x: 'img/ui/name-rabumi.png', alt: 'Rabumi' },
+  // maid: { src: 'img/ui/name-meruru@1x.png', src2x: 'img/ui/name-meruru.png', alt: 'メルル 莓露露' },  之後補
 };
 // 莓露露的表情（和客廳 page3 一樣的三張圖）
 const MAID_FACES = { 一般: 'img/maid.png', 笑臉: 'img/maid-smile.png', 眨眼: 'img/maid-wink.png' };
@@ -405,15 +411,22 @@ function fill(s){
           .replaceAll('{DESSERT}', extra.dessert || '').replaceAll('{X}', extra.x || '').replaceAll('{NEXT}', memo.next);
 }
 
-/* ---------- 2. 誰在說話、表情：換頭像、房間裡的圖，Rabumi 頭上跳出漫畫符號 ---------- */
-const avatar = $('avatarImg'), host = document.querySelector('.dh-host');
+/* ---------- 2. 誰在說話、表情：換對話框左邊的大角色、房間裡的圖，頭上跳出漫畫符號 ---------- */
+// avatar = 對話框左邊的大角色（Rabumi／莓露露）；它也是一個 .dh-chara，所以帽子、攪拌碗、漫畫符號都跟房間裡的一樣
+const avatar = $('avatarImg'), avatarChara = avatar.closest('.dh-chara'), host = document.querySelector('.dh-host');
 let speaker = 'maid', face = '';
 function setSpeaker(who){
   speaker = who; face = '';
-  const S = SPEAKERS[who];
+  const S = SPEAKERS[who], tag = SPEAKER_TAG[who], nameEl = $('chatName');
   document.body.style.setProperty('--pc-light', S.light);
   document.body.style.setProperty('--pc-main', S.main);
-  $('chatName').textContent = S.name;
+  avatarChara.classList.toggle('is-maid', who === 'maid');
+  nameEl.parentElement.classList.toggle('is-img', !!tag);
+  $('chatBox').classList.toggle('tag-img', !!tag);
+  if (!tag){ nameEl.textContent = S.name; return; }
+  const im = document.createElement('img');
+  im.className = 'speaker-tag'; im.src = tag.src; im.srcset = tag.src + ' 1x, ' + tag.src2x + ' 2x'; im.alt = tag.alt;
+  nameEl.replaceChildren(im);
 }
 const faceOk = {};   // 這張表情圖畫好了沒（有放進 img/rabumi/ 就會用）
 ['basic', 'surprised-full', ...Object.values(FACES).map(f => f.img)].forEach(n => { const im = new Image(); im.onload = () => { faceOk[n] = true; }; im.src = FACE_DIR + n + '.png'; });
@@ -437,22 +450,26 @@ function setStir(on, cols = []){
 }
 function setFace(name){
   $('faceTag').textContent = SHOW_FACE_TAG ? '［' + name + '］' : '';
-  if (speaker === 'maid'){ avatar.src = host.querySelector('img').src = MAID_FACES[name] || SPEAKERS.maid.img; return; }
+  if (speaker === 'maid'){
+    avatar.src = host.querySelector('img').src = MAID_FACES[name] || SPEAKERS.maid.img;
+    avatarChara.classList.remove('has-hat', 'fx-jump', 'fx-shake');
+    return;
+  }
   const f = FACES[name] || FACES.微笑;
   const drawn = faceOk[f.img];
   const src = drawn ? FACE_DIR + f.img + '.png' : faceOk.basic ? FACE_DIR + 'basic.png' : SPEAKERS.rabumi.img;
-  avatar.src = drawn && f.fx && faceOk[f.img + '-full'] ? FACE_DIR + f.img + '-full.png' : src;   // 小頭像用帽子已經疊好的那張
+  avatar.src = src;   // 對話框左邊的大 Rabumi（驚訝／慌張的帽子另外疊上去，和房間裡的一樣）
   // 房間裡的 Rabumi（看整間娃娃屋的遠景時一律用 basic）
   const roomSrc = where === 'all' && faceOk.basic ? FACE_DIR + 'basic.png' : src;
-  document.querySelectorAll('.dh-chara .chat-chara-bob > img').forEach(im => { im.src = roomSrc; });
+  document.querySelectorAll('.dh-room .dh-chara .chat-chara-bob > img').forEach(im => { im.src = roomSrc; });
   document.querySelectorAll('.dh-chara').forEach(c => c.classList.toggle('has-hat', !!(drawn && f.fx)));
   if (name === face) return;
   face = name;
   // 驚訝：帽子跳起來一下（身體一直抖是 style.css 的 .has-hat）
   document.querySelectorAll('.dh-chara').forEach(c => c.classList.remove('fx-jump', 'fx-shake'));
-  const who = document.querySelector('.dh-room.on .dh-chara');
+  const who = avatarChara;
   if (who && drawn && f.fx){ void who.offsetWidth; who.classList.add('fx-' + f.fx); }
-  const m = document.querySelector('.dh-room.on .dh-mark');
+  const m = avatarChara.querySelector('.dh-mark');
   if (!m || !f.mark) return;
   m.textContent = f.mark;
   m.classList.toggle('shy', name === '害羞');
@@ -473,7 +490,7 @@ function type(text){
     const full = fill(line);
     setFace(f);
     box.classList.remove('next'); void box.offsetWidth; box.classList.add('next');
-    const who = speaker === 'maid' ? host : document.querySelector('.dh-room.on .dh-chara');   // 說話的人跳一下
+    const who = avatarChara;   // 說話的人（對話框左邊的大角色）跳一下
     if (who){ who.classList.remove('talk'); void who.offsetWidth; who.classList.add('talk'); }
     nextBtn.hidden = true;
     textEl.classList.remove('thinking');
@@ -775,11 +792,11 @@ function bowlSvg(cols, id, lump, grow){
 }
 
 /* ---------- 7. ① 色粉櫃：點一罐色粉 → 飛到碗上倒進去 → 鮮奶油暈開成那個顏色 ---------- */
-// 罐子擺在 cabinet.png 上的位置（原圖 663×1153 的單位）：三層架子的地板 y、每層三罐的中心 x、罐子寬（高照 jar.png 634×839 的比例）
-const CAB_W = 663, CAB_H = 1153, SHELF_Y = [486, 704, 920], SHELF_X = [165, 331, 497], JAR_W = 118, JAR_H = JAR_W * 839 / 634;
-const jarsEl = $('jars'), bowlEl = $('bowl'), panelHome = panel.parentElement;
+// 罐子擺在 cabinet.png 上的位置（原圖 663×1153 的單位）：三層架子的地板 y、每層三罐的中心 x、罐子寬（高照 jar.png 240×318 的比例）
+const CAB_W = 663, CAB_H = 1153, SHELF_Y = [486, 704, 920], SHELF_X = [165, 331, 497], JAR_W = 160, JAR_H = JAR_W * 318 / 240;
+const jarsEl = $('jars'), bowlEl = $('bowl'), topCream = bowlEl.querySelector('.dh-topcream');
 let picked = [];          // 選的心情（只有一罐）
-let pickedJar = null, pouring = false, inProps = false, finishColors = null;
+let pickedJar = null, pouring = false, finishColors = null;
 // 一罐色粉：白色色粉疊上心情的顏色（只染 jar-powder.png 的範圍），標籤寫心情
 const jarHTML = f => `<span class="dh-tint" style="--c:${f.col}"><img src="img/house/jar.png" alt=""><i></i></span>` +
   `<span class="dh-jar-lbl${f.name.length > 2 ? ' long' : ''}">${f.name}</span>`;
@@ -787,61 +804,66 @@ FEELS.forEach((f, i) => {
   const b = document.createElement('button');
   b.type = 'button'; b.className = 'dh-jar'; b.innerHTML = jarHTML(f);
   b.setAttribute('aria-label', f.name + '（' + f.src + '）');
-  b.style.width = JAR_W / CAB_W * 100 + '%';
-  b.style.left = (SHELF_X[i % 3] - JAR_W / 2) / CAB_W * 100 + '%';
-  b.style.top = (SHELF_Y[Math.floor(i / 3)] - JAR_H) / CAB_H * 100 + '%';
+  // 罐子在架子上的位置（% ；style.css 的 .dh-jar 用；手機版櫃子收起來時改成排兩排）
+  b.style.setProperty('--w', JAR_W / CAB_W * 100 + '%');
+  b.style.setProperty('--x', (SHELF_X[i % 3] - JAR_W / 2) / CAB_W * 100 + '%');
+  b.style.setProperty('--y', (SHELF_Y[Math.floor(i / 3)] - JAR_H) / CAB_H * 100 + '%');
   b.addEventListener('click', () => pour(f, b));
   jarsEl.appendChild(b);
 });
+// 俯視的鮮奶油碗：col = 鮮奶油的顏色（沒有 = 白色）；grow = 從中間暈開、一邊轉一下（像被攪開）
 function drawBowl(col, grow){
-  bowlEl.innerHTML = bowlSvg(col ? [col] : [], 'b', null, grow);
-  if (grow){ void bowlEl.offsetWidth; bowlEl.querySelector('.dh-cream').classList.add('on'); }
+  topCream.classList.remove('on', 'swirl');
+  if (!col){ topCream.style.removeProperty('--c'); return; }
+  topCream.style.setProperty('--c', col);
+  void topCream.offsetWidth;
+  topCream.classList.add('on');
+  if (grow) topCream.classList.add('swirl'); else topCream.classList.add('now');
 }
-drawBowl();
 async function pour(f, b){
   if (!jarsEl.classList.contains('live') || pouring) return;
-  pouring = true;
+  pouring = true; clearPanel();
   if (pickedJar) pickedJar.classList.remove('used');   // 換一罐：前一罐放回架上
   pickedJar = b; picked = [f];
   drawBowl();
   // 複製一罐，從架上飛到碗的上方（原本那罐變半透明 = 被拿走了）
   const jr = b.getBoundingClientRect(), br = bowlEl.getBoundingClientRect();
-  const w = br.width * .27, h = w * JAR_H / JAR_W;
+  const w = br.width * .22, h = w * JAR_H / JAR_W;
   const fly = document.createElement('div');
   fly.className = 'dh-fly'; fly.innerHTML = jarHTML(f);
   Object.assign(fly.style, { left: jr.left + 'px', top: jr.top + 'px', width: jr.width + 'px' });
   document.body.appendChild(fly);
   b.classList.add('used');
   requestAnimationFrame(() => requestAnimationFrame(() =>
-    Object.assign(fly.style, { left: br.left + (br.width - w) / 2 + 'px', top: br.top - h * .8 + 'px', width: w + 'px' })));
+    Object.assign(fly.style, { left: br.left + br.width * .52 + 'px', top: br.top + br.height * .12 - h * .5 + 'px', width: w + 'px' })));
   await wait(750);
   fly.style.transform = 'rotate(-120deg)';   // 倒過來
   await wait(300);
-  for (let k = 0; k < 26; k++){              // 色粉灑進碗裡
+  for (let k = 0; k < 34; k++){              // 色粉灑進碗的中間
     const s = document.createElement('i');
     s.className = 'dh-dust';
-    Object.assign(s.style, { left: br.left + br.width * (.4 + Math.random() * .12) + 'px', top: br.top - h * .1 + Math.random() * 10 + 'px', background: f.col, animationDelay: k * .03 + 's' });
-    s.style.setProperty('--fall', br.height * .3 + 'px');
+    Object.assign(s.style, { left: br.left + br.width * (.44 + Math.random() * .14) + 'px', top: br.top + br.height * (.18 + Math.random() * .06) + 'px',
+      background: f.col, boxShadow: '0 0 0 1px rgba(255,255,255,.6)', animationDelay: k * .025 + 's' });
+    s.style.setProperty('--fall', br.height * (.22 + Math.random() * .12) + 'px');
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1600);
+    setTimeout(() => s.remove(), 1800);
   }
-  await wait(200);
+  await wait(250);
   drawBowl(f.col, true);                     // 鮮奶油從中間暈開
   await wait(450);
   fly.classList.add('gone');
-  await wait(600);
+  await wait(500);
   fly.remove();
   type(f.say);                               // Rabumi 介紹這罐色粉
   pouring = false;
   showColorChoices();
 }
-// 倒好之後：「就是這罐」或「換一罐」（手機：按鈕排在碗下面，不然會被對話框蓋住）
+// 倒好之後：「就是這罐」或「換一罐」（按鈕在對話框右邊）
 function showColorChoices(){
-  if (inProps) bowlEl.closest('.dh-mixcol').appendChild(panel);
   panelButtons([
     { t: '就是這罐 ♡', on: () => {
         if (pouring) return;
-        jarsEl.classList.remove('live'); clearPanel(); panelHome.appendChild(panel); finishColors();
+        jarsEl.classList.remove('live'); clearPanel(); finishColors();
       } },
     { t: '換一罐', free: true, on: () => {
         if (pouring) return;
@@ -852,7 +874,6 @@ function showColorChoices(){
 }
 function chooseColors(){
   jarsEl.classList.add('live');
-  inProps = matchMedia('(max-width:640px)').matches;
   return new Promise(done => { finishColors = done; });
 }
 

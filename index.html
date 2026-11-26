@@ -97,12 +97,10 @@
       <div class="dh-floor"></div>
       <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
-        <div class="dh-pantry">
-          <!-- 白色色粉櫃：架上 9 罐心情色粉（house.js 的 FEELS 擺上去），選一罐 -->
-          <div class="dh-cab" id="jars" role="group" aria-label="心情的顏色"><img src="img/house/cabinet.png" alt=""></div>
-          <!-- 一碗打發好的白色鮮奶油：色粉倒進去，會從中間暈開成那個顏色 -->
-          <div class="dh-mixcol"><div class="dh-mix"><div class="dh-bowl2" id="bowl"></div></div></div>
-        </div>
+        <!-- 一大碗打發好的白色鮮奶油（俯視，放正中間）：色粉倒進去，會從中間暈開成那個顏色 -->
+        <div class="dh-bowltop" id="bowl"><img src="img/house/bowl-top.png" alt="一大碗白色鮮奶油"><i class="dh-topcream"></i></div>
+        <!-- 白色色粉櫃（靠右、站在地板上）：架上 9 罐心情色粉（house.js 的 FEELS 擺上去），選一罐；手機：櫃子收起來，罐子排兩排 -->
+        <div class="dh-cab" id="jars" role="group" aria-label="心情的顏色"><img src="img/house/cabinet.png" alt=""></div>
       </div>
     </section>
 
@@ -207,14 +205,16 @@
 <!-- 玩家的回答選項 / 打字框 -->
 <div class="chat-choices" id="chatChoices" role="group" aria-label="你的回答"></div>
 
-<!-- 下方對話框：誰在說話，頭像和名字就換成誰；頭像會跟著表情換 -->
+<!-- 下方對話框（毛玻璃）：誰在說話，左邊的大角色和名牌就換成誰；角色會跟著表情換
+     Rabumi 用餅乾名牌圖（house.js 的 SPEAKER_TAG），莓露露先用白色文字名牌 -->
 <div class="chat-box" id="chatBox">
-  <div class="chat-avatar"><img id="avatarImg" src="img/maid.png" alt=""></div>
+  <div class="chat-lace" aria-hidden="true"><img src="img/lace-ribbon.png" alt=""></div>
+  <p class="chat-name"><span id="chatName"></span><small class="dh-face-tag" id="faceTag"></small></p>
+  <div class="chat-avatar dh-chara"><div class="chat-chara-bob"><img id="avatarImg" src="img/maid.png" alt=""></div></div>
   <div class="chat-body">
-    <p class="chat-name"><span id="chatName"></span><small class="dh-face-tag" id="faceTag"></small></p>
     <p class="chat-text" id="chatText" aria-live="polite"></p>
   </div>
-  <button class="tt-btn chat-next" id="chatNext" type="button" hidden>▸</button>
+  <button class="chat-next" id="chatNext" type="button" hidden aria-label="下一句">▼</button>
 </div>
 
 <!-- 上方 doily Navigation Bar -->

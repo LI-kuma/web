@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>色粉櫃 試用版</title>
+<!-- 色粉櫃「新排版」試用 demo：鮮奶油碗在正中間（俯視）、色粉櫃在右邊、Rabumi 壓在毛玻璃對話框左端、木地板
+     index.html 的色粉櫃房間和對話框已經照這頁換好了；這頁留著當調整用的草稿，刪掉這個檔案不會影響正式網站（但 img/house/bowl-top.png、img/lace-ribbon.png、img/ui/ 正式網站也在用，不要刪） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+*{box-sizing:border-box}
+:root{
+  /* ↓↓↓ 對話框配色（想換顏色改這裡就好） ↓↓↓ */
+  --dlg-bg:rgba(233, 227, 219, 0.877);     /* 對話框底色：玫瑰粉（最後一個數字越小越透明） */
+  --dlg-text:#5B3A44;                 /* 對話框文字：深莓咖啡 */
+  --accent:#6b4f57;                 /* 強調色：名字標籤文字、▼ */
+  --tag-bg:rgba(255,255,255,.92);     /* 名字標籤底色 */
+  --dlg-glow:225,214,200;             /* 對話框外面的發光和下緣陰影顏色（R,G,B 三個數字；換底色時跟著換成同色系） */
+  --btn-bg:#F7F2EB;                   /* 選項按鈕（就是這罐／換一罐）底色：比對話框淺一點的奶灰 */
+  --btn-text:#6B5A50;                 /* 選項按鈕的字：可可灰 */
+  --btn-border:#FFFDF9;               /* 選項按鈕的外框 */
+  --btn-hover:#EDE5DA;                /* 滑鼠移上去時的底色：深一點的奶灰 */
+  /* ↑↑↑ 對話框配色 ↑↑↑ */
+  --float:drop-shadow(0 4px 8px rgba(150,90,110,.3));   /* 碗、櫃子、色粉罐的陰影：讓它們從背景浮出來 */
+
+  /* 牆壁：米灰色，由下（靠近地板）深 → 往上淡，做出景深 */
+  --wall-top:#fdfaf4;    /* 牆壁最上面：很淡的米白 */
+  --wall:#f5e5c3;        /* 牆壁中間：米灰 */
+  --wall-bottom:#DDD5C5; /* 牆壁最下面（地平線旁）：深一點的米灰 */
+  /* 條紋壁紙（現在用的是這個）：奶油底 + 粉紅、淡藍直條紋 */
+  --stripe-base:#FCF8EF; /* 底色：奶油白 */
+  --stripe-pink:#F4D7E0; /* 粉紅條紋 */
+  --stripe-blue:#D3E8EF; /* 淡藍條紋 */
+  --baseboard:#FBF8F2;   /* 踢腳板（牆壁和地板之間那條白色木條） */
+  --counter:#F9F7ED;     /* 手機版地板：米白 */
+  --floor-top:71%;       /* 地板從畫面 71% 的地方開始（地平線） */
+  /* 木地板：從 #ac9375 延伸的暖灰棕 */
+  --wood:#AC9375;        /* 木地板底色（主色） */
+  --wood-2:#A48A6C;      /* 木地板深一點的木板（只比主色深一點點，才不會太花） */
+  --wood-line:#8A735A;   /* 木板之間的縫 + 牆和地板的交界線 */
+  --pink:#F1C5C8;        /* Rabumi 粉紅 */
+  --c-title:#595252; --c-sub:#A99C9B;
+  --font-pop:"Mochiy Pop One","Zen Maru Gothic","Noto Sans TC",system-ui,sans-serif;
+  --font-body:"Zen Maru Gothic","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+
+  /* 版面尺寸 */
+  --top:clamp(84px, 11vh, 130px);        /* 上面蕾絲 + 標題佔的高度 */
+  --dlg-room:calc(5vh + 170px);          /* 下面留給對話框的高度（碗、櫃子的架子都在這條線上面） */
+  --rabumi-w:22vw;                       /* ★ 電腦版 Rabumi 的寬度：改大 = 變大（例如 18vw），高度會照比例自動算 */
+  --rabumi-x:4.5vw;                        /* ★ 電腦版 Rabumi 離畫面左邊多遠：改大 = 往右移（例如 6vw），改小 = 往左移 */
+  --rabumi-y:9.5vh;                       /* ★ 電腦版 Rabumi 腳離畫面底部多遠：改大 = 往上移（例如 16vh），改小 = 往下移 */
+  --rb-w:min(var(--rabumi-w), var(--rabumi-max-h) * 700 / 758);   /* Rabumi 實際的寬度（自動算，不用改） */
+  --rabumi-max-h:50vh;            /* ★ 電腦版 Rabumi 最高不超過畫面高的幾 %（矮螢幕時才會用到） */
+
+  /* ★ 電腦版對話框（跟 Rabumi 分開，各調各的，不會互相影響） */
+  --dlg-left:14vw;                       /* ★ 對話框左邊離畫面左邊多遠：改大 = 左邊縮短，改小 = 往左變長 */
+  --dlg-top:68vh;                        /* ★ 對話框頂端離畫面上面多遠：改大 = 往下移 */
+  --dlg-h:22vh;                          /* ★ 對話框高度：改大 = 變高 */
+  --dlg-text-x:13vw;                     /* ★ 名字標籤和文字離對話框左邊多遠：改小 = 往左靠，改大 = 往右 */
+  --lace-w:510px;                        /* ★ 蕾絲大小：改大 = 變大 */
+  --lace-tilt:-30deg;                    /* ★ 蕾絲斜的角度：-30 → -45 更斜，0 = 不斜，正數 = 往另一邊斜 */
+  --lace-x:5px;                        /* ★ 蕾絲左右：改大 = 往左移，改小（負更多）= 往右移、被框切掉更多 */
+  --lace-y:25px;                          /* ★ 蕾絲上下：正數 = 往下移，負數 = 往上移（例如 -20px） */
+  --lace-op:.45;                         /* ★ 蕾絲深淺：0 = 看不見，1 = 最清楚 */
+  --btn-right:40px;                    /* ★ 選項按鈕（就是這罐／換一罐）離對話框右邊多遠：改小 = 往右靠，改大 = 往左 */
+  --tag-w:200px;                         /* ★ 餅乾名牌的寬度（高度照比例自動算）；手機版在下面手機那段改 */
+
+  --rh:min(48vh, 34vw);                  /* 手機版 Rabumi 的高度（在下面手機那段改成 16vh） */
+  --rw:calc(var(--rh) * 700 / 758);      /* Rabumi 的寬度（照圖片比例自動算） */
+
+  /* 色粉櫃：用「高度」決定大小，寬度照圖片比例自動算（663×1153），不會變形 */
+  --cab-h:min(62vh, 21vw * 1153 / 663);  /* 櫃子高度：畫面高的 62%（螢幕太窄時改用寬度限制） */
+  --cab-w:calc(var(--cab-h) * 663 / 1153);
+  --cab-right:2.5vw;                     /* 櫃子離右邊的距離 */
+}
+html,body{height:100%; margin:0}
+body{overflow:hidden; font-family:var(--font-body); color:var(--dlg-text);
+  /* 條紋壁紙 + 立體感（想換回米灰漸層牆：把這段 background 換成下面註解裡那兩行） */
+  background:
+    linear-gradient(to right, rgba(120,95,80,.16), transparent 12%, transparent 88%, rgba(120,95,80,.16)),   /* 左右兩邊暗一點：像房間的牆角 */
+    linear-gradient(rgba(120,95,80,.10), transparent 18%, transparent 55%, rgba(120,95,80,.14)),           /* 天花板下和踢腳板上方暗一點：光從中間照 */
+    linear-gradient(90deg, rgba(255,255,255,.35), transparent 50%) 0 0 / 76px 100%,                        /* 每條壁紙左亮右暗：有一點紙的凹凸感 */
+    repeating-linear-gradient(90deg,
+      var(--stripe-base) 0 22px, var(--stripe-pink) 22px 40px, var(--stripe-base) 40px 48px,
+      var(--stripe-blue) 48px 56px, var(--stripe-base) 56px 64px, var(--stripe-pink) 64px 68px, var(--stripe-base) 68px 76px)}   /* 奶油・粉・藍 直條紋（每 76px 重複一次） */
+  /* 米灰漸層牆（舊版）：
+    radial-gradient(circle, rgba(255,255,255,.7) 2.5px, transparent 3px) 0 0 / 26px 26px,
+    linear-gradient(to top, var(--wall-bottom) calc(100% - var(--floor-top)), var(--wall) 85%, var(--wall-top))} */
+/* 木地板：從 top 71% 開始；先用 CSS 直條紋模擬淡木紋（之後換圖片：把 background 改成 url(圖片) 就好） */
+body::before{content:""; position:fixed; left:0; right:0; top:var(--floor-top); bottom:0; z-index:0;
+  border-top:calc(.8vh + 8px) solid var(--baseboard);   /* 踢腳板：牆和地板之間的白色木條 */
+  box-shadow:0 -4px 8px rgba(120,95,80,.18), inset 0 -2px 0 rgba(120,95,80,.12);   /* 踢腳板在牆上的影子 */
+  background:
+    linear-gradient(rgba(70,50,30,.22), transparent 6%),          /* 踢腳板下面的影子 */
+    linear-gradient(rgba(255,250,240,.14), rgba(70,50,30,.12)),   /* 景深：靠牆（遠）亮一點、靠近畫面（近）暗一點 */
+    repeating-linear-gradient(90deg, transparent 0 calc(18vw - 2px), var(--wood-line) calc(18vw - 2px) 18vw),   /* 每 18% 一條木板縫 */
+    repeating-linear-gradient(90deg, var(--wood) 0 9vw, var(--wood-2) 9vw 18vw),                              /* 一深一淺的木板 */
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(90,65,40,.07) 7px 9px)}                       /* 細細的木頭紋路 */
+
+/* ---------- 上面：蕾絲帷幔 + 標題 ---------- */
+.valance{position:fixed; left:0; right:0; top:0; z-index:3;
+  height:120px;   /* ★ 上面荷葉邊蕾絲的高度：想大一點小一點改這裡（寬度會照比例自動算） */
+  background:url(img/ui/lace-tile.png) repeat-x left top / auto 100%;   /* 同一張荷葉邊橫向重複，不會被拉扁 */
+  filter:drop-shadow(0 3px 4px rgba(120,95,90,.15))}   /* 下緣淡淡的影子，像真的布垂在牆上 */
+.sign{position:fixed; z-index:4; left:50%; top:2%; translate:-50% 0;   /* 標題：水平置中、top 2% */ margin:0; white-space:nowrap;
+  padding:.3em 1.3em; border-radius:999px; background:rgba(255,255,255,.92); box-shadow:0 0 0 2px var(--pink), 0 4px 10px rgba(120,95,90,.12);
+  font-family:"Fuzzy Bubbles", var(--font-pop); font-weight:700; font-size:clamp(15px, 1.6vw, 24px); color:var(--c-title)}
+
+/* ---------- 中間：大碗 + 色粉櫃（位置都用 %，螢幕大小不同也不會跑版） ---------- */
+.scene{position:fixed; inset:0; z-index:1}
+/* 主角：鮮奶油碗（俯視）：寬 20%、水平置中、top 17%（高度照圖片比例自動算） */
+.bowl{position:absolute; left:50%; translate:-50% 0; top:17%; width:20%; aspect-ratio:891/910; isolation:isolate; filter:var(--float)}
+.bowl img{display:block; width:100%; height:100%}
+/* 奶油範圍（照 bowl-top.png 量的）：疊一層心情色 × multiply，紋路會留著；從中間暈開 */
+.cream{position:absolute; left:7.6%; top:7.9%; width:84.4%; height:84.2%; border-radius:50%;
+  background:var(--c, #fff); mix-blend-mode:multiply;
+  -webkit-mask:radial-gradient(closest-side, #000 93%, transparent 100%); mask:radial-gradient(closest-side, #000 93%, transparent 100%);
+  clip-path:circle(0% at 50% 50%)}
+.cream.on{clip-path:circle(75% at 50% 50%); transition:clip-path 1.8s cubic-bezier(.3,.7,.4,1)}
+.cream.swirl{animation:swirl 1.8s ease-out}
+@keyframes swirl{from{rotate:-40deg}}
+
+/* 色粉櫃：靠右、站在地板上（櫃腳在地平線 71% 再往下一點，看起來有前後距離）
+   大小用 :root 的 --cab-h 控制，罐子的位置、大小都是櫃子的 %，會跟著等比例縮放
+   對話框的右邊會自動讓開櫃子，所以櫃子不會被蓋住 */
+.tray{position:absolute; right:var(--cab-right); bottom:calc(100% - var(--floor-top) - 4vh); height:var(--cab-h); aspect-ratio:663/1153; filter:var(--float)}
+.cab{display:block; width:100%; height:100%}
+.tray .jar{position:absolute; left:var(--x); top:var(--y); width:var(--w)}   /* 罐子在架子上的位置（JS 算好的 %） */
+.jar{position:relative; padding:0; border:0; background:none; cursor:pointer; container-type:inline-size; filter:var(--float);
+  font-family:var(--font-body); color:var(--c-title); transform-origin:50% 100%; transition:transform .25s cubic-bezier(.3,1.6,.5,1), opacity .3s}
+.jar:hover{transform:translateY(-6%) scale(1.06)}
+.jar:focus-visible{outline:2px dashed var(--accent); outline-offset:4px; border-radius:8px}
+.jar canvas, .fly canvas{display:block; width:100%; height:auto}
+/* 罐子上的標籤字：照罐子寬度縮放（cqw），罐子變大字就跟著變大 */
+.lbl{position:absolute; left:49.2%; top:69%; transform:translate(-50%, -50%); font-size:23cqw; font-weight:700; line-height:1; white-space:nowrap}
+.lbl.long{font-size:15cqw}   /* 五味雜陳：四個字小一點 */
+.jar.used{opacity:.25; pointer-events:none}
+.tray.lock .jar{pointer-events:none}
+/* 選好的 +1 貼紙回饋 */
+.plus{position:absolute; left:-.4em; top:-1.1em; z-index:2; padding:.25em .8em; border-radius:999px; background:#fff;
+  box-shadow:0 0 0 2px var(--pink), 0 4px 10px rgba(120,95,90,.18); font-family:var(--font-pop); font-size:clamp(13px, 1.2vw, 17px); color:var(--accent);
+  rotate:-8deg; opacity:0; scale:.4; pointer-events:none}
+.plus.pop{animation:plus 1.8s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes plus{20%{opacity:1; scale:1.15} 35%, to{opacity:1; scale:1} 80%, to{translate:0 -6px}}
+
+/* 倒色粉：複製一罐飛到碗上、倒過來，色粉一顆顆掉進碗裡 */
+.fly{position:fixed; z-index:30; pointer-events:none; container-type:inline-size; font-family:var(--font-body); color:var(--c-title);
+  transition:left .7s ease-in-out, top .7s ease-in-out, width .7s ease-in-out, transform .5s, opacity .4s}
+.fly.gone{opacity:0}
+.dust{position:fixed; z-index:29; width:7px; height:7px; border-radius:50%; pointer-events:none; animation:dust .8s ease-in both}
+@keyframes dust{from{transform:translateY(0); opacity:1} to{transform:translateY(var(--fall)) scale(.6); opacity:0}}
+
+/* ---------- 下面：Rabumi + 毛玻璃對話框 ---------- */
+/* Rabumi：left 2%、寬 16%（高照圖片比例自動算，最高不超過畫面 40%）；腳踩在對話框下半部，z-index 最高
+   想再放大：改最上面 :root 的 --rabumi-w（和 --rabumi-max-h） */
+.rabumi{position:fixed; z-index:20; left:var(--rabumi-x); bottom:var(--rabumi-y); width:var(--rb-w);   /* 左右在 :root 的 --rabumi-x 改、上下在 --rabumi-y 改、大小在 --rabumi-w 改 */ pointer-events:none;
+  filter:drop-shadow(0 6px 10px rgba(120,95,90,.2)); animation:bob 3.2s ease-in-out infinite; transform-origin:50% 100%}
+@keyframes bob{50%{transform:translateY(-6px) scale(1.01, .99)}}
+.rabumi.hop{animation:hop .45s ease-out}
+@keyframes hop{40%{transform:translateY(-14px)}}
+
+/* 對話框：半透明玫瑰粉毛玻璃；位置和大小都在最上面 :root 的 --dlg-… 改；右邊停在櫃子左邊再留一點空隙 */
+.dlg{position:fixed; z-index:10; top:var(--dlg-top); height:var(--dlg-h);
+  left:var(--dlg-left);                                    /* 左邊：在 :root 的 --dlg-left 改 */
+  right:calc(var(--cab-right) + var(--cab-w) + 1.5vw);     /* 右邊：停在櫃子左邊 */
+  --pl:var(--dlg-text-x);                                  /* 文字和名字標籤的位置：在 :root 的 --dlg-text-x 改 */
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:24px;
+  padding:clamp(18px, 3.4vh, 30px) var(--btn-right) clamp(12px, 2.4vh, 24px) var(--pl);   /* 右邊留白 = 選項按鈕離對話框右邊多遠（在 :root 的 --btn-right 改） */
+  border-radius:16px;
+  background:var(--dlg-bg);                  /* 底色＋透明度 */
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);   /* 毛玻璃：把後面的東西模糊 */
+  border:2px solid rgba(255,255,255,.85);    /* 白色 2px 邊框 */
+  box-shadow:
+    inset 0 0 18px rgba(255,255,255,.75),    /* 內陰影：框內側一圈白色光暈 */
+    inset 0 -6px 14px rgba(var(--dlg-glow),.45), /* 內陰影：下緣一點粉色，增加厚度 */
+    0 0 18px rgba(var(--dlg-glow),.55),      /* 外發光 */
+    0 0 40px rgba(var(--dlg-glow),.6)}       /* 外發光（更大更淡） */
+/* 蕾絲緞帶：框內右側的印花；外層 overflow:hidden 讓蕾絲被框切齊 */
+.lace-clip{position:absolute; inset:0; border-radius:14px; overflow:hidden; pointer-events:none}
+.lace-clip img{position:absolute; right:var(--lace-x); top:calc(50% + var(--lace-y)); transform:translateY(-50%) rotate(var(--lace-tilt)); width:var(--lace-w);
+  opacity:var(--lace-op)}                   /* 蕾絲的設定都在最上面 :root 的 --lace-… 改 */
+.dlg > *:not(.lace-clip):not(.name):not(.next){position:relative}   /* 讓文字、按鈕、罐子格子在蕾絲上面 */
+/* 名字標籤：跨在對話框上緣（一半在框外），跟對話文字同一條線開始（Rabumi 變大會一起往右讓），白底小標籤 */
+.name{position:absolute; left:var(--pl); top:0; translate:0 -50%; margin:0; padding:4px 20px;
+  border-radius:10px; background:var(--tag-bg); box-shadow:0 0 10px rgba(255,200,220,.8);
+  font-family:"Fuzzy Bubbles", var(--font-pop); font-weight:700; font-size:16px; letter-spacing:.04em; color:var(--accent); white-space:nowrap}
+/* 餅乾名牌（有圖片的說話者用，對照表在 JS 的 SPEAKER_TAG）：拿掉舊的白底框，只放圖片
+   一半壓在對話框上緣，微微歪一點像手別上去的；圖片本身有餅乾形狀和陰影，不加背景、邊框 */
+.name.is-img{padding:0; background:none; box-shadow:none; border-radius:0; translate:0 -55%; rotate:-2deg; z-index:2; pointer-events:none}
+.speaker-tag{display:block; width:var(--tag-w); height:auto; filter:drop-shadow(0 4px 6px rgba(120,60,60,.22))}
+.dlg.tag-img{padding-top:calc(var(--tag-w) * 298 / 1086 * .45 + 14px)}   /* 名牌比較高：上內距加大，才不會擋到第一行字 */
+/* 對話文字：20px、深莓咖啡 */
+.text{margin:0; align-self:start; font-size:20px; font-weight:500; line-height:1.7; letter-spacing:.03em; white-space:pre-line; color:var(--dlg-text)}
+/* 右下角閃爍的 ▼ */
+.next{position:absolute; right:24px; bottom:14px; color:var(--accent); font-size:16px; line-height:1; animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2; transform:translateY(3px)}}
+/* 選項按鈕（就是這罐 / 換一罐） */
+.btns{display:flex; flex-direction:column; gap:10px}
+.btn{padding:.6em 1.4em; border:2px solid var(--btn-border); border-radius:999px; cursor:pointer; white-space:nowrap;
+  font-family:var(--font-body); font-weight:700; font-size:clamp(14px, 1.2vw, 17px); color:var(--btn-text);
+  background:var(--btn-bg); box-shadow:0 2px 8px rgba(var(--dlg-glow),.9), 0 1px 2px rgba(110,90,75,.15);   /* 顏色在最上面 :root 的 --btn-… 改；光暈跟著對話框的 --dlg-glow */
+  animation:btn-in .4s cubic-bezier(.34,1.56,.64,1) backwards; transition:translate .2s, background .2s}
+.btn:nth-child(2){animation-delay:.1s}
+.btn:hover{translate:0 -2px; background:var(--btn-hover)}
+.btn:focus-visible{outline:2px dashed var(--accent); outline-offset:3px}
+@keyframes btn-in{from{opacity:0; transform:translateY(8px)}}
+
+/* ---------- 手機（直的）：罐子排兩排在上、桌子和碗在中間、對話框在最下面 ---------- */
+@media (max-aspect-ratio:1/1){
+  :root{--top:clamp(70px, 10vh, 96px); --dlg-room:calc(3vh + 196px); --rh:min(16vh, 30vw);
+    --jw:min(14.5vw, 8.5vh)}                 /* 一罐色粉的寬度 */
+  /* 櫃子收起來，罐子用白色托盤排兩排，放在標題下面 */
+  .tray{left:50%; right:auto; bottom:auto; translate:-50% 0; top:var(--top); height:auto; aspect-ratio:auto;
+    display:flex; flex-wrap:wrap; justify-content:center; width:calc(var(--jw) * 5 + 64px); gap:6px 10px; padding:10px 12px;
+    border-radius:20px; background:rgba(255,255,255,.8); box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--pink)}
+  .cab{display:none}
+  .tray .jar{position:relative; left:auto; top:auto; width:var(--jw)}
+  /* 碗放在托盤和對話框中間（托盤高 ≈ 兩罐的高 + 留白） */
+  .bowl{left:50%; top:auto; width:auto; bottom:var(--dlg-room); height:min(calc(100% - var(--top) - var(--jw) * 2.65 - 46px - var(--dlg-room)), 74vw)}
+  /* 手機螢幕窄：對話框左右各留 3%，Rabumi 縮小 */
+  .dlg{left:3%; right:3%; top:auto; bottom:3%; height:auto; --pl:calc(var(--rw) - 3vw + 8px);
+    grid-template-columns:1fr auto; grid-template-rows:auto auto; gap:8px; padding:24px 14px 12px var(--pl)}
+  .text{grid-column:1 / -1; font-size:16px}
+  .btns{flex-direction:row; gap:6px; align-self:end}
+  .btn{padding:.5em .8em; font-size:13px}
+  .lace-clip img{width:300px}
+  .name{left:var(--pl); font-size:14px; padding:3px 14px}
+  :root{--tag-w:150px}                   /* 手機版餅乾名牌寬度 */
+  .valance{height:56px}                  /* 手機版上面荷葉邊的高度（太高會蓋到色粉罐） */
+  .next{right:12px; bottom:6px}
+  .rabumi{left:0; top:auto; bottom:3%; width:auto; height:var(--rh)}
+  body{--floor-top:58%}
+}
+@media (prefers-reduced-motion: reduce){ .fly, .cream.on{transition:none} .rabumi, .cream.swirl, .next{animation:none} }
+</style>
+</head>
+<body>
+
+<div class="valance" aria-hidden="true"></div>
+<p class="sign">Color pantry ♡ 色粉櫃</p>
+
+<main class="scene">
+  <div class="bowl" id="bowl"><img src="img/house/bowl-top.png" alt="一大碗白色鮮奶油"><i class="cream" id="cream"></i></div>
+  <!-- 白色色粉櫃：三層架子上 9 罐色粉（手機：櫃子收起來，罐子排兩排） -->
+  <div class="tray" id="tray" role="group" aria-label="心情的顏色"><img class="cab" src="img/house/cabinet.png" alt=""><span class="plus" id="plus">✦ +1 心情貼紙</span></div>
+</main>
+
+<img class="rabumi" id="rabumi" src="img/rabumi/smile.png" alt="Rabumi">
+<!-- 對話框：毛玻璃 + 蕾絲緞帶印花 + 跨在上緣的名字標籤 + 右下角 ▼ -->
+<section class="dlg" aria-live="polite">
+  <div class="lace-clip" aria-hidden="true"><img src="img/lace-ribbon.png" alt=""></div>
+  <p class="name" id="name">Rabumi｜ラブミー</p>
+  <p class="text" id="text"></p>
+  <div class="btns" id="btns"></div>
+  <span class="next" aria-hidden="true">▼</span>
+</section>
+
+<script>
+// 9 罐心情色粉（和 house.js 的 FEELS 一樣）
+const FEELS = [
+  { name: '孤單', cn: '藍莓藍', col: '#A9C4F5', say: '[心疼]接骨木莓藍莓粉，深深的紫藍色，酸酸甜甜的。\n就像孤單時，身邊明明有人，卻還是覺得有點遠。' },
+  { name: '難過', cn: '蝶豆花蘇打藍', col: '#C9E2EE', say: '[心疼]蝶豆花蘇打粉，藍藍的蘇打一直冒小氣泡，\n就像難過時，一顆一顆浮上來的眼淚。' },
+  { name: '委屈', cn: '黑醋栗紫', col: '#E9C8DA', say: '[心疼]薰衣草黑醋栗粉，淡淡花香底下藏著酸。\n就像委屈時，表面上沒事，心裡卻很難受。' },
+  { name: '焦慮', cn: '焦糖黃', col: '#FDE5A7', say: '[思考]香草焦糖粉，焦糖加熱時會一直冒泡、翻滾，\n就像焦慮時，腦袋裡停不下來的擔心。' },
+  { name: '生氣', cn: '草莓粉', col: '#FDD8DD', say: '[傾聽]草莓覆盆子粉，顏色鮮明，酸甜很直接，\n就像生氣時，一下子湧上來、藏不住的情緒。' },
+  { name: '煩躁', cn: '血橙橘', col: '#FEC6AE', say: '[思考]西柚血橙粉，酸酸澀澀的，\n就像煩躁時，什麼小事都看不順眼。' },
+  { name: '忌妒', cn: '薄荷萊姆綠', col: '#E6F3A8', say: '[害羞]薄荷萊姆粉，涼涼的，又帶點酸，\n就像忌妒時，裝作不在意，心裡卻酸酸的。' },
+  { name: '疲憊', cn: '焙茶色', col: '#BA9E6C', say: '[溫柔]蜂蜜焙茶粉，暖暖的茶香，微苦又有一點甜，\n就像疲憊時，提不起精神，只想好好休息。' },
+  { name: '五味雜陳', cn: '巧克力色', col: '#C89C87', say: '[思考]巧克力粉，有苦也有甜，\n就像五味雜陳時，好多心情混在一起，說不清楚。' }
+];
+const LINES = {
+  pick: '[微笑]今天的心情，是哪一罐呢？\n點一罐色粉，倒進鮮奶油裡吧。',
+  again: '[微笑]好呀，那換一罐看看。\n今天的心情，是哪一罐呢？',
+  reflect: '[心疼]你的鮮奶油，變成了{CN}的「{NAME}」。\n心裡裝著這個顏色，一定不輕鬆吧。'
+};
+const FACES = { 微笑: 'smile', 心疼: 'sad', 思考: 'think', 傾聽: 'basic', 害羞: 'shy', 溫柔: 'smile', 開心: 'happy' };
+
+const $ = id => document.getElementById(id);
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const tray = $('tray'), bowl = $('bowl'), cream = $('cream'), btns = $('btns'), textEl = $('text'), rabumi = $('rabumi');
+
+// 說話者 → 名牌：有圖片的用餅乾名牌，沒有的沿用舊的白色文字名牌（之後加新名牌只要加一行）
+const SPEAKER_TAG = {
+  rabumi: { src: 'img/ui/name-rabumi@1x.png', src2x: 'img/ui/name-rabumi.png', alt: 'Rabumi' },
+  // meruru: { src: 'img/ui/name-meruru@1x.png', src2x: 'img/ui/name-meruru.png', alt: 'メルル 莓露露' },  之後補
+};
+const SPEAKER_NAME = { rabumi: 'Rabumi｜ラブミー', meruru: 'メルル｜莓露露' };   // 沒有名牌圖時顯示的字
+function setSpeaker(who){
+  const el = $('name'), tag = SPEAKER_TAG[who];
+  el.classList.toggle('is-img', !!tag);
+  el.closest('.dlg').classList.toggle('tag-img', !!tag);
+  if (!tag){ el.textContent = SPEAKER_NAME[who] || who; return; }
+  const img = document.createElement('img');
+  img.className = 'speaker-tag'; img.src = tag.src; img.srcset = tag.src + ' 1x, ' + tag.src2x + ' 2x'; img.alt = tag.alt;
+  el.replaceChildren(img);
+}
+setSpeaker('rabumi');
+
+// Rabumi 說話：[表情] 換圖，字一個一個打出來
+let typing = 0;
+function type(line){
+  const m = line.match(/^\[(.+?)\]/), s = m ? line.slice(m[0].length) : line;
+  if (m && FACES[m[1]]) rabumi.src = 'img/rabumi/' + FACES[m[1]] + '.png';
+  rabumi.classList.remove('hop'); void rabumi.offsetWidth; rabumi.classList.add('hop');
+  const id = ++typing; let i = 0;
+  textEl.textContent = '';
+  (function step(){ if (id !== typing) return; textEl.textContent = s.slice(0, ++i); if (i < s.length) setTimeout(step, 38); })();
+}
+rabumi.addEventListener('animationend', () => rabumi.classList.remove('hop'));
+function buttons(list){
+  btns.innerHTML = '';
+  list.forEach(o => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.textContent = o.t; b.onclick = o.on; btns.appendChild(b); });
+}
+
+// 一罐色粉：jar.png 上，只在 jar-powder.png 的範圍疊心情色（用 canvas 畫，直接開檔案也能顯示）
+const jarImg = new Image(), powImg = new Image();
+jarImg.src = 'img/house/jar.png'; powImg.src = 'img/house/jar-powder.png';
+const ready = Promise.all([jarImg, powImg].map(im => im.decode().catch(() => {})));
+function jarCanvas(col){
+  const c = document.createElement('canvas'), W = jarImg.naturalWidth || 240, H = jarImg.naturalHeight || 318;
+  c.width = W; c.height = H;
+  const t = document.createElement('canvas'); t.width = W; t.height = H;
+  const tx = t.getContext('2d');
+  tx.drawImage(powImg, 0, 0, W, H); tx.globalCompositeOperation = 'source-in'; tx.fillStyle = col; tx.fillRect(0, 0, W, H);
+  const x = c.getContext('2d');
+  x.drawImage(jarImg, 0, 0, W, H); x.globalCompositeOperation = 'multiply'; x.drawImage(t, 0, 0);
+  return c;
+}
+function jarNode(f, cls){
+  const el = document.createElement(cls === 'jar' ? 'button' : 'div');
+  el.className = cls; el.appendChild(jarCanvas(f.col));
+  const l = document.createElement('span'); l.className = 'lbl' + (f.name.length > 2 ? ' long' : ''); l.textContent = f.name;
+  el.appendChild(l);
+  return el;
+}
+
+// 罐子擺在 cabinet.png 上的位置（原圖 663×1153 的單位）：三層架子的地板 y、每層三罐的中心 x、罐子寬
+const CAB_W = 663, CAB_H = 1153, SHELF_Y = [486, 704, 920], SHELF_X = [165, 331, 497], JAR_W = 160, JAR_H = JAR_W * 318 / 240;
+let pickedJar = null, picked = null, pouring = false;
+ready.then(() => {
+  FEELS.forEach((f, i) => {
+    const b = jarNode(f, 'jar');
+    b.type = 'button'; b.setAttribute('aria-label', f.name + '（' + f.cn + '）');
+    b.style.setProperty('--w', JAR_W / CAB_W * 100 + '%');
+    b.style.setProperty('--x', (SHELF_X[i % 3] - JAR_W / 2) / CAB_W * 100 + '%');
+    b.style.setProperty('--y', (SHELF_Y[Math.floor(i / 3)] - JAR_H) / CAB_H * 100 + '%');
+    b.addEventListener('click', () => pour(f, b));
+    tray.appendChild(b);
+  });
+  type(LINES.pick);
+});
+
+function resetBowl(){ cream.classList.remove('on', 'swirl'); cream.style.removeProperty('--c'); }
+
+async function pour(f, b){
+  if (pouring) return;
+  pouring = true; tray.classList.add('lock'); btns.innerHTML = '';
+  if (pickedJar) pickedJar.classList.remove('used');   // 換一罐：前一罐放回去
+  pickedJar = b; picked = f;
+  resetBowl();
+  // 複製一罐，從托盤飛到碗的上方
+  const jr = b.getBoundingClientRect(), br = bowl.getBoundingClientRect();
+  const w = br.width * .22, h = w * 318 / 240;
+  const fly = jarNode(f, 'fly');
+  Object.assign(fly.style, { left: jr.left + 'px', top: jr.top + 'px', width: jr.width + 'px' });
+  document.body.appendChild(fly);
+  b.classList.add('used');
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    Object.assign(fly.style, { left: br.left + br.width * .52 + 'px', top: br.top + br.height * .12 - h * .5 + 'px', width: w + 'px' })));
+  await wait(750);
+  fly.style.transform = 'rotate(-120deg)';   // 倒過來
+  await wait(300);
+  for (let k = 0; k < 34; k++){              // 色粉灑進碗的中間
+    const s = document.createElement('i');
+    s.className = 'dust';
+    Object.assign(s.style, { left: br.left + br.width * (.44 + Math.random() * .14) + 'px', top: br.top + br.height * (.18 + Math.random() * .06) + 'px',
+      background: f.col, boxShadow: '0 0 0 1px rgba(255,255,255,.6)', animationDelay: k * .025 + 's' });
+    s.style.setProperty('--fall', br.height * (.22 + Math.random() * .12) + 'px');
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1800);
+  }
+  await wait(250);
+  cream.style.setProperty('--c', f.col);     // 鮮奶油從中間暈開（一邊轉一下，像被攪開）
+  void cream.offsetWidth; cream.classList.add('on', 'swirl');
+  await wait(450);
+  fly.classList.add('gone');
+  await wait(500);
+  fly.remove();
+  type(f.say);                               // Rabumi 介紹這罐色粉
+  pouring = false; tray.classList.remove('lock');
+  buttons([
+    { t: '就是這罐 ♡', on: choose },
+    { t: '換一罐', on: () => {
+        if (pouring) return;
+        pickedJar.classList.remove('used'); pickedJar = picked = null;
+        resetBowl(); btns.innerHTML = ''; type(LINES.again);
+      } }
+  ]);
+}
+
+function choose(){
+  tray.classList.add('lock'); btns.innerHTML = '';
+  const p = $('plus'); p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');   // +1 貼紙回饋
+  type(LINES.reflect.replace('{CN}', picked.cn).replace('{NAME}', picked.name));
+  // 試用版：重新玩一次
+  setTimeout(() => buttons([{ t: '再玩一次（試用）', on: () => {
+    pickedJar.classList.remove('used'); pickedJar = picked = null;
+    p.classList.remove('pop'); tray.classList.remove('lock');
+    resetBowl(); btns.innerHTML = ''; type(LINES.pick);
+  } }]), 1800);
+}
+</script>
+</body>
+</html>

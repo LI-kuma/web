@@ -350,8 +350,9 @@ body.leaving.leave-fast .fade-white{animation:fadeWhiteIn 1s ease forwards}   /*
 }
 .nav-lace{
   position:fixed; left:0; top:0; z-index:28; width:100%; pointer-events:none;
-  height:clamp(56px, 5.7vw, 110px);   /* 蕾絲粗細：5.7vw ≈ 大螢幕上剛好拼 2 張；數字越小越細、拼越多張 */
-  background:url(img/nav-lace.png) left bottom / auto 100% repeat-x;   /* 同一張蕾絲橫向重複，不會被拉扁 */
+  height:clamp(56px, 6.3vw, 120px);   /* 荷葉邊高度：想大一點小一點改這裡（6.3vw = 大螢幕約 120px） */
+  background:url(img/ui/lace-tile.png) repeat-x left top / auto 100%;   /* 白色荷葉邊橫向重複，不會被拉扁 */
+  margin-top:-6px;   /* 讓荷葉邊稍微蓋住上面的長條，接得比較自然 */
   filter:drop-shadow(0 4px 8px rgba(120,100,70,.22));   /* 淡淡的陰影，.22 = 陰影深淺 */
 }
 
@@ -1390,15 +1391,12 @@ textarea.chat-input{min-height:110px}
    ★ 房間、道具現在都是 CSS 畫的暫代圖，之後換成畫好的圖 ★
    =================================================================== */
 body.house-page{
-  --navh:clamp(56px, 5.7vw, 110px);   /* 和 .nav-lace 一樣高 */
+  --navh:calc(clamp(56px, 6.3vw, 120px) - 6px);   /* 和 .nav-lace 一樣高（扣掉往上蓋的 6px） */
   --rw:100vw; --rh:100vh;             /* 一個房間的大小 = 一個螢幕（house.js 會換成實際 px） */
   background:#F3E9E1;
 }
-/* 上面的蕾絲改成下午茶墊甜點的 doily 紙：白色紙蕾絲 + 小洞洞（之後換成畫好的 doily 圖） */
+/* 蕾絲後面的長條：粉色（被荷葉邊蓋住，只露一點點）*/
 body.house-page .nav-bar{background:linear-gradient(#FFF7F8, #F7DDE3); box-shadow:0 2px 6px rgba(160,110,110,.15)}
-body.house-page .nav-lace{
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='44' viewBox='0 0 56 44'%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='M0 0H56V22A28 21 0 0 1 0 22Z M25.4 34a2.6 2.6 0 1 0 5.2 0a2.6 2.6 0 1 0-5.2 0Z M12 29a2 2 0 1 0 4 0a2 2 0 1 0-4 0Z M40 29a2 2 0 1 0 4 0a2 2 0 1 0-4 0Z M12.4 11a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0Z M26.4 11a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0Z M40.4 11a1.6 1.6 0 1 0 3.2 0a1.6 1.6 0 1 0-3.2 0Z M5.8 18a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0Z M19.8 18a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0Z M33.8 18a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0Z M47.8 18a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0Z'/%3E%3Cpath d='M50 22A22 15 0 0 1 6 22' fill='none' stroke='%23F1C5C8' stroke-width='1' stroke-dasharray='2 2'/%3E%3C/svg%3E") left top / auto 100% repeat-x;
-}
 
 /* ----- 鏡頭和娃娃屋 ----- */
 .dh-world{position:fixed; inset:0; z-index:1; overflow:hidden}
@@ -1818,3 +1816,190 @@ body.inviting .logo-letters img{pointer-events:none; animation:none}
 /* ----- 邀請卡和娃娃屋在同一頁（index.html）：收下邀請前只看得到邀請卡，收下後換成娃娃屋（invite.js 換 body 的 class） ----- */
 body.invite-page :is(.dh-world, .dh-host, .dh-ribbons, .dh-pull, .dh-pull-hint, .chat-choices, .chat-box, .nav-bar, .nav-lace, .logo-link){display:none}
 body.house-page :is(.scene, .fog, .inv, .logo-letters){display:none}
+
+/* ===================================================================
+   ===== 娃娃屋：照 demo-color.html 換的新樣子 =====
+   1. 對話框：奶灰毛玻璃 + 蕾絲緞帶 + 餅乾名牌 + 左邊壓著一個大 Rabumi（莓露露說話時換成她）+ 選項按鈕在框裡右邊
+   2. ① 色粉櫃房間：奶油・粉・藍條紋壁紙 + 木地板 + 白色踢腳板；鮮奶油碗（俯視）在正中間、色粉櫃靠右站在地板上
+   ★ 想調的數字都在下面 body.house-page{…} 裡，有 ★ 的那幾行 ★
+   =================================================================== */
+body.house-page{
+  /* ↓↓↓ 對話框配色 ↓↓↓ */
+  --dlg-bg:rgba(233,227,219,.877);    /* 對話框底色：奶灰（最後一個數字越小越透明） */
+  --dlg-text:#5B3A44;                 /* 對話框文字：深莓咖啡 */
+  --accent:#6b4f57;                   /* 強調色：名字標籤文字、▼ */
+  --tag-bg:rgba(255,255,255,.92);     /* 莓露露的白色名字標籤底色 */
+  --dlg-glow:225,214,200;             /* 對話框外面的發光和下緣陰影顏色（R,G,B；換底色時跟著換成同色系） */
+  --btn-bg:#F7F2EB;                   /* 選項按鈕底色：比對話框淺一點的奶灰 */
+  --btn-text:#6B5A50;                 /* 選項按鈕的字：可可灰 */
+  --btn-border:#FFFDF9;               /* 選項按鈕的外框 */
+  --btn-hover:#EDE5DA;                /* 滑鼠移上去時的底色 */
+  /* ↑↑↑ 對話框配色 ↑↑↑ */
+
+  /* ★ 大角色（Rabumi／莓露露）：在對話框左邊，壓住對話框左端 */
+  --rabumi-w:22vw;                    /* ★ Rabumi 的寬度：改大 = 變大，高度照比例自動算 */
+  --rabumi-x:4.5vw;                   /* ★ 離畫面左邊多遠：改大 = 往右移 */
+  --rabumi-y:9.5vh;                   /* ★ 腳離畫面底部多遠：改大 = 往上移 */
+  --rabumi-max-h:50vh;                /* ★ 最高不超過畫面高的幾 %（矮螢幕時才會用到） */
+  --rb-w:min(var(--rabumi-w), var(--rabumi-max-h) * 700 / 758);   /* 實際的寬度（自動算，不用改） */
+
+  /* ★ 對話框位置和大小（跟大角色分開，各調各的） */
+  --dlg-left:14vw;                    /* ★ 對話框左邊離畫面左邊多遠：改大 = 左邊縮短 */
+  --dlg-top:68vh;                     /* ★ 對話框頂端離畫面上面多遠：改大 = 往下移 */
+  --dlg-h:22vh;                       /* ★ 對話框高度 */
+  --dlg-text-x:13vw;                  /* ★ 名字標籤和文字離對話框左邊多遠：改小 = 往左靠 */
+  --lace-w:510px;                     /* ★ 框裡蕾絲大小 */
+  --lace-tilt:-30deg;                 /* ★ 蕾絲斜的角度 */
+  --lace-x:5px;                       /* ★ 蕾絲左右：改大 = 往左移 */
+  --lace-y:25px;                      /* ★ 蕾絲上下：正數 = 往下 */
+  --lace-op:.45;                      /* ★ 蕾絲深淺：0 = 看不見，1 = 最清楚 */
+  --btn-right:40px;                   /* ★ 選項按鈕離對話框右邊多遠 */
+  --tag-w:200px;                      /* ★ 餅乾名牌的寬度（高度照比例自動算） */
+
+  /* ★ 色粉櫃：用高度決定大小，寬度照圖片比例自動算（663×1153）；對話框右邊停在櫃子左邊（每個房間都一樣寬） */
+  --cab-h:min(62vh, 21vw * 1153 / 663);
+  --cab-w:calc(var(--cab-h) * 663 / 1153);
+  --cab-right:2.5vw;
+  --dlg-right:calc(var(--cab-right) + var(--cab-w) + 1.5vw);
+
+  /* 舊的對話框尺寸換成新的（房間裡的道具會留在對話框上面） */
+  --cb:calc(100vh - var(--dlg-top) - var(--dlg-h));   /* 對話框離畫面底部多遠 */
+  --ch:var(--dlg-h);
+  --cw:calc(100vw - var(--dlg-left) - var(--dlg-right));
+
+  /* ① 色粉櫃房間的壁紙和地板 */
+  --float:drop-shadow(0 4px 8px rgba(150,90,110,.3));   /* 碗、櫃子、色粉罐的陰影 */
+  --stripe-base:#FCF8EF;              /* 壁紙底色：奶油白 */
+  --stripe-pink:#F4D7E0;              /* 粉紅條紋 */
+  --stripe-blue:#D3E8EF;              /* 淡藍條紋 */
+  --baseboard:#FBF8F2;                /* 踢腳板 */
+  --floor-top:71%;                    /* 地板從房間 71% 的地方開始 */
+  --wood:#AC9375; --wood-2:#A48A6C; --wood-line:#8A735A;   /* 木地板：底色、深一點的木板、木板縫 */
+}
+
+/* ---------- 1. 對話框：奶灰毛玻璃 ---------- */
+body.house-page .chat-box{
+  left:var(--dlg-left); right:var(--dlg-right); top:var(--dlg-top); bottom:auto; height:var(--dlg-h);
+  width:auto; aspect-ratio:auto; translate:none; container-type:normal;
+  --pl:var(--dlg-text-x);
+  display:block; padding:clamp(18px, 3.4vh, 30px) calc(var(--btn-right) + 10px) clamp(12px, 2.4vh, 24px) var(--pl);
+  border-radius:16px; background:var(--dlg-bg);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);   /* 毛玻璃 */
+  border:2px solid rgba(255,255,255,.85);
+  filter:none;
+  box-shadow:
+    inset 0 0 18px rgba(255,255,255,.75),
+    inset 0 -6px 14px rgba(var(--dlg-glow),.45),
+    0 0 18px rgba(var(--dlg-glow),.55),
+    0 0 40px rgba(var(--dlg-glow),.6);
+}
+body.house-page .chat-box.tag-img{padding-top:calc(var(--tag-w) * 298 / 1086 * .45 + 14px)}   /* 餅乾名牌比較高：上內距加大，才不會擋到第一行字 */
+/* 框裡的蕾絲緞帶：被框切齊 */
+.chat-lace{position:absolute; inset:0; border-radius:14px; overflow:hidden; pointer-events:none}
+.chat-lace img{position:absolute; right:var(--lace-x); top:calc(50% + var(--lace-y)); transform:translateY(-50%) rotate(var(--lace-tilt)); width:var(--lace-w); opacity:var(--lace-op)}
+body.house-page .chat-body{position:relative}
+/* 名字標籤：跨在對話框上緣，跟文字同一條線開始；莓露露 = 白色小標籤 */
+body.house-page .chat-name{position:absolute; z-index:2; left:var(--pl); top:0; translate:0 -50%; margin:0; padding:4px 20px;
+  display:flex; align-items:center; border-radius:10px; background:var(--tag-bg); box-shadow:0 0 10px rgba(255,200,220,.8);
+  font-family:"Fuzzy Bubbles", var(--font-pop); font-weight:700; font-size:16px; letter-spacing:.04em; color:var(--accent); white-space:nowrap}
+/* Rabumi = 餅乾名牌圖：拿掉白底框，微微歪一點像手別上去的 */
+body.house-page .chat-name.is-img{padding:0; background:none; box-shadow:none; border-radius:0; translate:0 -55%; rotate:-2deg; pointer-events:none}
+.speaker-tag{display:block; width:var(--tag-w); height:auto; filter:drop-shadow(0 4px 6px rgba(120,60,60,.22))}
+body.house-page .dh-face-tag{font-size:12px}
+/* 對話文字 */
+body.house-page .chat-text{min-height:0; font-size:20px; font-weight:500; line-height:1.7; letter-spacing:.03em; color:var(--dlg-text)}
+/* 右下角閃爍的 ▼（按了 = 下一句） */
+body.house-page .chat-next{position:absolute; right:24px; bottom:14px; padding:0; border:0; background:none; box-shadow:none; cursor:pointer;
+  font-size:16px; line-height:1; color:var(--accent); animation:dh-blink 1s infinite}
+@keyframes dh-blink{50%{opacity:.2; transform:translateY(3px)}}
+
+/* 對話框左邊的大角色：壓住對話框左端（它也是 .dh-chara：帽子、攪拌碗、漫畫符號都一樣） */
+body.house-page .chat-avatar{position:absolute; z-index:3; left:calc(var(--rabumi-x) - var(--dlg-left)); bottom:calc(var(--rabumi-y) - var(--cb));
+  width:var(--rb-w); aspect-ratio:auto; border:0; border-radius:0; overflow:visible; rotate:0deg; box-shadow:none; background:none; pointer-events:none}
+body.house-page .chat-avatar img{height:auto; object-fit:fill; scale:1}
+body.house-page .chat-avatar.is-maid{width:min(var(--rb-w) * .82, 46vh * 700 / 969)}   /* 莓露露的圖比較高：窄一點 */
+/* 房間裡的小 Rabumi 和開場的莓露露收起來（改由對話框左邊的大角色說話） */
+body.house-page .dh-room .dh-chara, body.house-page .dh-host{display:none}
+
+/* 選項按鈕：在對話框裡的右邊（選項多的時候往上長） */
+body.house-page .chat-choices{right:calc(var(--dlg-right) + var(--btn-right)); bottom:calc(var(--cb) + 16px); translate:none; align-items:flex-end}
+body.house-page .chat-choice{padding:.6em 1.4em; border:2px solid var(--btn-border); white-space:nowrap;
+  font-size:clamp(14px, 1.2vw, 17px); color:var(--btn-text); background:var(--btn-bg);
+  box-shadow:0 2px 8px rgba(var(--dlg-glow),.9), 0 1px 2px rgba(110,90,75,.15); transform:translateY(8px); transition:translate .2s, background .2s}
+body.house-page .chat-choice::before{content:none}
+body.house-page .chat-choice:hover{translate:0 -2px; background:var(--btn-hover); box-shadow:0 2px 8px rgba(var(--dlg-glow),.9), 0 1px 2px rgba(110,90,75,.15)}
+body.house-page .chat-input:focus{box-shadow:0 0 0 2.5px rgba(var(--dlg-glow),1), 0 0 16px 3px rgba(var(--dlg-glow),.8)}
+
+/* ---------- 2. ① 色粉櫃房間 ---------- */
+/* 條紋壁紙 + 立體感（牆角、天花板下、踢腳板上方暗一點） */
+body.house-page .dh-room-color::before{background:
+  linear-gradient(to right, rgba(120,95,80,.16), transparent 12%, transparent 88%, rgba(120,95,80,.16)),
+  linear-gradient(rgba(120,95,80,.10), transparent 18%, transparent 55%, rgba(120,95,80,.14)),
+  linear-gradient(90deg, rgba(255,255,255,.35), transparent 50%) 0 0 / 76px 100%,
+  repeating-linear-gradient(90deg,
+    var(--stripe-base) 0 22px, var(--stripe-pink) 22px 40px, var(--stripe-base) 40px 48px,
+    var(--stripe-blue) 48px 56px, var(--stripe-base) 56px 64px, var(--stripe-pink) 64px 68px, var(--stripe-base) 68px 76px)}
+/* 木地板 + 白色踢腳板（之後換圖片：把 background 改成 url(圖片)） */
+body.house-page .dh-room-color .dh-floor{top:var(--floor-top); height:auto;
+  border-top:calc(.8vh + 8px) solid var(--baseboard);
+  box-shadow:0 -4px 8px rgba(120,95,80,.18), inset 0 -2px 0 rgba(120,95,80,.12);
+  background:
+    linear-gradient(rgba(70,50,30,.22), transparent 6%),
+    linear-gradient(rgba(255,250,240,.14), rgba(70,50,30,.12)),
+    repeating-linear-gradient(90deg, transparent 0 calc(18vw - 2px), var(--wood-line) calc(18vw - 2px) 18vw),
+    repeating-linear-gradient(90deg, var(--wood) 0 9vw, var(--wood-2) 9vw 18vw),
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(90,65,40,.07) 7px 9px)}
+/* 道具區 = 整個房間（位置都用 %） */
+body.house-page .dh-room-color .dh-props{inset:0; display:block; container-type:normal}
+/* 鮮奶油碗（俯視）：寬 20%、水平置中、top 17% */
+.dh-bowltop{position:absolute; left:50%; translate:-50% 0; top:17%; width:20%; aspect-ratio:891/910; isolation:isolate; filter:var(--float)}
+.dh-bowltop img{display:block; width:100%; height:100%}
+/* 鮮奶油的範圍（照 bowl-top.png 量的）：疊一層心情色 × multiply，紋路會留著；從中間暈開、一邊轉一下 */
+.dh-topcream{position:absolute; left:7.6%; top:7.9%; width:84.4%; height:84.2%; border-radius:50%;
+  background:var(--c, #fff); mix-blend-mode:multiply;
+  -webkit-mask:radial-gradient(closest-side, #000 93%, transparent 100%); mask:radial-gradient(closest-side, #000 93%, transparent 100%);
+  clip-path:circle(0% at 50% 50%)}
+.dh-topcream.on{clip-path:circle(75% at 50% 50%); transition:clip-path 1.8s cubic-bezier(.3,.7,.4,1)}
+.dh-topcream.now{transition:none}
+.dh-topcream.swirl{animation:dh-swirl 1.8s ease-out}
+@keyframes dh-swirl{from{rotate:-40deg}}
+/* 色粉櫃：靠右、站在地板上（櫃腳在地平線再往下一點） */
+body.house-page .dh-room-color .dh-cab{position:absolute; right:var(--cab-right); bottom:calc(100% - var(--floor-top) - 4vh);
+  width:auto; height:var(--cab-h); aspect-ratio:663/1153; filter:var(--float)}
+body.house-page .dh-room-color .dh-cab > img{height:100%}
+.dh-jar{left:var(--x); top:var(--y); width:var(--w); filter:var(--float, none)}   /* 罐子在架子上的位置（house.js 算好的 %） */
+.dh-dust{width:7px; height:7px}
+@media (prefers-reduced-motion: reduce){ .dh-topcream.on{transition:none} .dh-topcream.swirl, body.house-page .chat-next{animation:none} }
+
+/* ---------- 手機（640px 以下）：對話框在最下面、罐子排兩排在上、碗在中間 ---------- */
+@media (max-width:640px){
+  body.house-page{
+    --dlg-left:3vw; --dlg-right:3vw; --tag-w:150px;
+    --ph-rh:min(16vh, 30vw);                          /* 手機版大角色的高度 */
+    --ph-rw:calc(var(--ph-rh) * 700 / 758);
+    --ch:170px;                                       /* 手機版對話框大約多高（道具會留在它上面） */
+    --cb:calc(var(--marquee-h) + 10px);
+    --jw:min(14.5vw, 8.5vh);                          /* 一罐色粉的寬度 */
+    --floor-top:58%;
+  }
+  body.house-page .chat-box{top:auto; bottom:var(--cb); height:auto; min-height:120px; --pl:calc(var(--ph-rw) - 3vw + 8px); padding:24px 14px 14px var(--pl)}
+  body.house-page .chat-box.tag-img{padding-top:calc(var(--tag-w) * 298 / 1086 * .45 + 10px)}
+  body.house-page .chat-text{font-size:16px}
+  body.house-page .chat-name{font-size:14px; padding:3px 14px}
+  body.house-page .chat-next{right:12px; bottom:6px}
+  .chat-lace img{width:300px}
+  body.house-page .chat-avatar{left:calc(-1 * var(--dlg-left)); bottom:-4px; width:var(--ph-rw)}
+  body.house-page .chat-avatar.is-maid{width:calc(var(--ph-rh) * 700 / 969)}
+  /* 選項：在對話框上面、靠右 */
+  body.house-page .chat-choices{right:var(--dlg-right); bottom:calc(var(--cb) + var(--ch) + 10px); translate:none; align-items:flex-end}
+  body.house-page .chat-choice{padding:.5em .9em; font-size:13px}
+  /* 色粉櫃：櫃子收起來，罐子用白色托盤排兩排，放在房間門牌下面 */
+  body.house-page .dh-room-color .dh-cab{left:50%; right:auto; bottom:auto; translate:-50% 0; top:calc(var(--navh) + 46px); height:auto; aspect-ratio:auto;
+    display:flex; flex-wrap:wrap; justify-content:center; width:calc(var(--jw) * 5 + 64px); gap:6px 10px; padding:10px 12px;
+    border-radius:20px; background:rgba(255,255,255,.8); box-shadow:0 0 0 2px #fff, 0 0 0 4px #F1C5C8}
+  body.house-page .dh-room-color .dh-cab > img{display:none}
+  body.house-page .dh-room-color .dh-jar{position:relative; left:auto; top:auto; width:var(--jw)}
+  /* 碗放在托盤和對話框中間 */
+  .dh-bowltop{top:auto; width:auto; bottom:calc(var(--cb) + var(--ch) + 16px);
+    height:min(calc(100% - var(--navh) - 46px - var(--jw) * 2.65 - 62px - var(--cb) - var(--ch) - 16px), 74vw)}
+}
