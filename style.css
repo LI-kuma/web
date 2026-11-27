@@ -1448,7 +1448,7 @@ body.house-page .nav-bar{background:linear-gradient(#FFF7F8, #F7DDE3); box-shado
 .dh-stir-bowl{position:absolute; left:40%; top:76.1%; width:26.96%}   /* 碗在畫面裡的位置（和畫的原稿一樣） */
 .dh-stir-bowl svg{display:block; width:100%; height:auto; overflow:visible}
 .dh-stir-hand{transform-origin:67% 75%; animation:dh-whisk .45s ease-in-out infinite alternate}
-@keyframes dh-whisk{from{translate:-4% 0; rotate:-5deg} to{translate:3% 0; rotate:5deg}}
+@keyframes dh-whisk{from{translate:-6% 0; rotate:-9deg} to{translate:5% 1%; rotate:8deg}}   /* 打蛋器的手左右攪（數字改大 = 攪得更用力） */
 /* 驚訝／慌張：這兩張圖沒畫帽子，帽子（hat.png）另外疊在同一個位置 */
 .dh-chara .chat-chara-bob{position:relative}
 .dh-hat{position:absolute; inset:0; display:none}
@@ -1515,40 +1515,6 @@ body.host-gone .dh-host{opacity:0; transform:translateX(-60%)}
 .dh-dust{position:fixed; z-index:39; width:6px; height:6px; border-radius:50%; pointer-events:none; animation:dh-dust .7s ease-in both}
 @keyframes dh-dust{from{transform:translateY(0); opacity:1} to{transform:translateY(var(--fall)); opacity:0}}
 @media (prefers-reduced-motion: reduce){ .dh-fly, .dh-cream.on{transition:none} }
-
-/* ----- ② 包裝檯：纏住的緞帶，解開後變成蝴蝶結 ----- */
-.dh-desk{width:100%; padding:18px 10px 24px; border-radius:18px; background:#FFFDF6; box-shadow:0 0 0 2px #E0D2B7, 0 10px 0 #E9DCC2, 0 14px 20px rgba(120,95,90,.15)}
-.dh-knots{position:relative; height:clamp(210px, 30vh, 290px)}
-.dh-knot-line{position:absolute; left:0; top:12px; width:100%; height:40px; overflow:visible}
-.dh-knot-line path{fill:none; stroke:#BFE0D5; stroke-width:11; stroke-linecap:round}
-.dh-knot{position:absolute; left:var(--x); top:0; translate:-50% 0; display:grid; justify-items:center; width:clamp(96px, 10vw, 150px); padding:0;
-  border:0; background:none; font-family:var(--font-body); color:var(--c-text); cursor:default;
-  opacity:0; transform:translateY(-14px); transition:opacity .5s, transform .5s cubic-bezier(.34,1.56,.64,1), left .5s ease}
-.dh-knot.show{opacity:1; transform:none}
-.dh-tangle, .dh-bow{grid-area:1/1; width:64px; height:64px; display:grid; place-items:center; transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
-.dh-tangle svg{width:100%; height:100%; overflow:visible}
-.dh-tangle path{fill:none; stroke:#8FC4B3; stroke-width:7; stroke-linecap:round; stroke-linejoin:round}
-.dh-bow{font-size:44px; transform:scale(0) rotate(-40deg)}
-.dh-knot.undone .dh-tangle{transform:scale(0) rotate(90deg)}
-.dh-knot.undone .dh-bow{transform:none}
-.dh-tag{grid-area:2/1; display:block; width:100%; margin-top:6px; padding:.55em .6em; border-radius:4px 4px 10px 10px; rotate:var(--rot, 0deg);
-  background:#FFFFFF; box-shadow:0 0 0 1.5px #E0D2B7, 0 4px 8px rgba(120,95,90,.15); font-size:clamp(11px, .95vw, 14px); line-height:1.5; text-align:center}
-.dh-tag s{text-decoration:none}
-.dh-tag b{display:none; margin-top:.3em; color:var(--c-title)}
-.dh-knot.undone .dh-tag s{text-decoration:line-through; color:var(--c-faint)}
-.dh-knot.undone .dh-tag b{display:block}
-.dh-knot.mine .dh-tag{background:#FFF8CF}
-.dh-knot.mine .dh-tag::before{content:"Rabumi 的結"; display:block; font-size:.8em; color:var(--c-sub)}
-.dh-knots.live .dh-knot:not(.undone):not(.mine){cursor:pointer}
-.dh-knots.live .dh-knot:not(.undone):not(.mine) .dh-tangle{animation:dh-wiggle 1.6s ease-in-out infinite}
-.dh-knots.live .dh-knot:not(.undone):not(.mine):hover .dh-tag{box-shadow:0 0 0 2px #8FC4B3, 0 0 14px 3px #D0EDE6}
-@keyframes dh-wiggle{25%{rotate:-8deg} 75%{rotate:8deg}}
-.dh-knot:focus-visible{outline:2px dashed var(--knock); outline-offset:3px}
-/* 剛剛那碗鮮奶油：拌不開的那一團，解開緞帶後會拌開 */
-.dh-lumpbowl{width:clamp(130px, 12vw, 190px)}
-.dh-lump{transform-box:fill-box; transform-origin:center; animation:dh-lump 1.6s ease-in-out infinite; transition:opacity 1s, transform 1s}
-@keyframes dh-lump{50%{transform:scale(1.12)}}
-.dh-lumpbowl.mixed .dh-lump{animation:none; opacity:0; transform:scale(2.4)}
 
 /* ----- ③ 廚房：甜點（鬆餅／可麗餅／布丁）、呼吸按鈕、最後一步 ----- */
 .dh-kitchen{position:relative; width:100%; height:100%}
@@ -1638,6 +1604,52 @@ body.host-gone .dh-host{opacity:0; transform:translateX(-60%)}
 @media (prefers-reduced-motion: reduce){ .cp-cream.show, .cp-fruit.show, .cp-ice.show, .cp-sp{animation:none} }
 @media (max-width: 640px){ .cp-tools{right:auto; left:50%; bottom:auto; top:24%; translate:-50% 0; flex-direction:row} }   /* 手機：工具排在可麗餅上面，不要蓋住它 */
 
+/* ----- 舒芙蕾鬆餅（課業）：#pancake；位置照示範頁的 360×420 座標換成 %（house.js 的 PK_W、PK_H），用高度決定大小 ----- */
+.pk{position:absolute; left:46%; top:50%; translate:-50% -50%; height:min(100%, 440px); aspect-ratio:360/420; -webkit-user-select:none; user-select:none}
+.pk[hidden]{display:none}
+.pk img{display:block; width:100%; -webkit-user-drag:none; pointer-events:none}
+/* ① 煎鍋（俯視）+ 麵糊：吸氣時麵糊慢慢擴開（scale，秒數由 house.js 設）、吐氣時冒泡泡 */
+.pk-pan{position:absolute; left:16.67%; top:0; width:66.67%; transition:opacity .6s; filter:drop-shadow(0 8px 12px rgba(120,95,90,.25))}
+.pk-batter{position:absolute; left:50%; top:69.5%; width:58%; aspect-ratio:1; border-radius:50%; transform:translate(-50%, -50%) scale(.35);
+  background:radial-gradient(circle at 40% 38%, #FFF6DC 0%, #F6E2B0 60%, #E9C98A 100%); box-shadow:inset 0 0 12px rgba(180,130,60,.35); transition:transform 4s ease-in-out}
+.pk-bub{position:absolute; width:3.4%; aspect-ratio:1; border-radius:50%; border:1.5px solid rgba(190,140,70,.6); background:rgba(255,250,235,.7);
+  translate:-50% -50%; animation:pk-bub 1.4s ease-out forwards}
+@keyframes pk-bub{0%{transform:scale(0); opacity:0} 30%{opacity:1} 100%{transform:scale(1.2); opacity:0}}
+/* ② 側面：蕾絲紙 + 三片鬆餅、兩層鮮奶油、冰淇淋（.pk-cake 裡，吃的時候整個被咬） */
+.pk-stack{position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .6s}
+.pk.stack .pk-pan{opacity:0}
+.pk.stack .pk-stack{opacity:1}
+.pk-doily{position:absolute; left:0; bottom:0; filter:drop-shadow(0 4px 6px rgba(120,95,90,.15))}
+.pk-cake{position:absolute; inset:0}
+.pk-pc, .pk-sheet{position:absolute; transition:bottom 1s cubic-bezier(.3,1.4,.5,1)}   /* 膨起來時彈一下 */
+.pk-pc img{filter:drop-shadow(0 3px 5px rgba(150,100,60,.18))}
+.pk-sheet img{transform:scaleY(.55); transform-origin:50% 100%}   /* 夾層鮮奶油壓扁到 55% */
+.pk-ice{position:absolute; isolation:isolate; visibility:hidden}
+.pk-ice.show{visibility:visible; animation:pk-drop .7s cubic-bezier(.3,1.6,.5,1)}   /* 冰淇淋從上面掉下來 */
+@keyframes pk-drop{from{transform:translateY(-70%)} to{transform:none}}
+/* 冰淇淋換色：白色冰淇淋 × 心情色，用 icecream.png 自己當遮罩（只染冰淇淋的範圍） */
+.pk-ice i{position:absolute; inset:0; background:var(--c, #fff); mix-blend-mode:multiply;
+  -webkit-mask:url(img/pancake/icecream.png) 0 0 / 100% 100%; mask:url(img/pancake/icecream.png) 0 0 / 100% 100%}
+.pk-item{position:absolute; animation:pk-pop .3s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pk-pop{from{transform:scale(0)}}
+/* 呼吸的倒數字、跳過 */
+.pk-breath{position:absolute; left:-20%; right:-20%; bottom:0; margin:0; text-align:center; pointer-events:none;
+  font-family:var(--font-body); font-weight:700; font-size:clamp(18px, 1.7vw, 26px); letter-spacing:.08em; color:#EE8FAE; text-shadow:0 1px 0 #fff, 0 0 10px #fff}
+.pk-skip{position:absolute; right:-14%; top:2%; padding:.35em .9em; border:1px solid #F2B8CB; border-radius:999px; background:rgba(255,255,255,.85);
+  font-family:var(--font-body); font-size:12px; color:var(--c-sub); cursor:pointer}
+.pk-skip[hidden]{display:none}
+.pk-skip:focus-visible{outline:2px dashed var(--knock); outline-offset:3px}
+/* ③ 裝飾：點鬆餅頂面放配料 */
+.pk-hit{position:absolute; inset:0; z-index:5000; display:none; cursor:crosshair; touch-action:none}
+.pk.decorating .pk-hit{display:block}
+.pk-tools .cp-ic img{height:20px}
+/* 吃掉 */
+.dh-kitchen.eating .pk{cursor:pointer}
+.pk.chomp .pk-cake{animation:ds-chomp .35s ease-out}
+.pk.gone .pk-cake{opacity:0; transition:opacity .8s}
+@media (prefers-reduced-motion: reduce){ .pk-batter, .pk-pc, .pk-sheet{transition:none} .pk-bub, .pk-ice.show, .pk-item{animation:none} }
+@media (max-width: 640px){ .pk-skip{right:0} .pk-tools{top:-4%} }
+
 /* ----- ④ 茶桌：茶 + 幸運餅乾 → 小紙條 → 折起來 → 用緞帶綁好 ----- */
 .dh-teaset{position:absolute; left:50%; bottom:2%; translate:-50% 0; z-index:1; display:flex; align-items:flex-end; gap:clamp(16px, 3vw, 48px); transition:opacity .6s, transform .6s}
 .dh-teaset.away{opacity:0; transform:translateY(30px); pointer-events:none}
@@ -1725,8 +1737,6 @@ body.host-gone .dh-host{opacity:0; transform:translateX(-60%)}
   .dh-mix{width:100%}
   .dh-mixcol > .chat-choices{position:static; translate:none; align-items:stretch; gap:6px}
   .dh-mixcol .chat-choice{font-size:13px; padding:.5em .6em; white-space:nowrap}
-  .dh-knot{width:23vw}
-  .dh-tag{font-size:11px}
 }
 
 /* ===================================================================
@@ -1971,6 +1981,61 @@ body.house-page .dh-room-color .dh-cab > img{height:100%}
 .dh-dust{width:7px; height:7px}
 @media (prefers-reduced-motion: reduce){ .dh-topcream.on{transition:none} .dh-topcream.swirl, body.house-page .chat-next{animation:none} }
 
+/* ----- 色粉結塊（色粉櫃、攪拌檯的碗都有 3 顆；house.js 的 setLumps、stirLump） ----- */
+.dh-lumps{position:absolute; inset:0; pointer-events:none}
+.dh-bowltop.swirl .dh-lumps{animation:dh-swirl 1.8s ease-out}   /* Rabumi 拌一下：結塊跟著轉，可是拌不開 */
+/* 一顆結塊：心情色的一小團色粉，旁邊撒著一點粉；--p = 拌開了多少（0～1），越拌越大、越淡、越糊 */
+.dh-lump{position:absolute; left:var(--lx); top:var(--ly); width:var(--ls); aspect-ratio:1.15; translate:-50% -50%;
+  border-radius:46% 54% 50% 50% / 55% 45% 55% 45%;
+  background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.6) 0 10%, transparent 28%),
+             radial-gradient(circle at 50% 50%, transparent 50%, rgba(90,60,50,.12) 100%), var(--lc, #fff);
+  box-shadow:0 2px 3px rgba(120,90,80,.25), inset 0 -2px 4px rgba(90,60,50,.12);
+  opacity:0; scale:.3; transition:opacity .5s, scale .5s cubic-bezier(.34,1.56,.64,1), filter .5s}
+.dh-lump::after{content:""; position:absolute; inset:-45%; border-radius:50%; opacity:.75;
+  background:radial-gradient(circle, var(--lc, #fff) 1.4px, transparent 2px) 0 0 / 8px 8px;
+  -webkit-mask:radial-gradient(closest-side, #000 30%, transparent); mask:radial-gradient(closest-side, #000 30%, transparent)}
+.dh-lump:nth-child(1){--lx:35%; --ly:37%; --ls:16%}
+.dh-lump:nth-child(2){--lx:64%; --ly:43%; --ls:13%; transition-delay:.15s}
+.dh-lump:nth-child(3){--lx:46%; --ly:66%; --ls:14.5%; transition-delay:.3s}
+.lumpy .dh-lump{opacity:calc(1 - var(--p, 0)); scale:calc(1 + var(--p, 0) * 1.8); filter:blur(calc(var(--p, 0) * 10px))}
+.lumpy .dh-lump.gone{opacity:0}
+
+/* ----- ② 攪拌檯：從上面往下看的木頭檯面（沒有壁紙、地板）；碗放在蕾絲杯墊上、在正中間 ----- */
+.dh-room-bench{--mb-top:22vh; --mb-w:min(20vw, 40vh); --doily:1.3; --plank:14vh}   /* ★ 碗離畫面上面多遠、碗多寬、杯墊是碗的幾倍大、一片木板多寬 */
+.dh-room-bench .dh-sign{z-index:3}   /* 門牌在杯墊上面 */
+/* 檯面：刷白的淡粉木頭，一片一片橫的木板 + 細細的木紋 + 四周暗一點 */
+body.house-page .dh-room-bench::before{background:
+  radial-gradient(ellipse 75% 70% at 50% 42%, transparent 55%, rgba(150,110,90,.14)),
+  repeating-linear-gradient(180deg, transparent 0 calc(var(--plank) - 3px), rgba(165,125,100,.26) calc(var(--plank) - 3px) calc(var(--plank) - 1px), rgba(255,255,255,.55) calc(var(--plank) - 1px) var(--plank)),
+  repeating-linear-gradient(179deg, rgba(185,145,115,.07) 0 2px, transparent 2px 7px, rgba(185,145,115,.05) 7px 8px, transparent 8px 15px),
+  linear-gradient(180deg, #F7EEE6, #EFE1D4)}
+body.house-page .dh-room-bench .dh-props{inset:0; display:block}
+body.house-page .dh-mixbowl{top:var(--mb-top); bottom:auto; width:var(--mb-w); height:auto}
+.dh-doily{position:absolute; left:50%; top:calc(var(--mb-top) + var(--mb-w) * 910 / 891 / 2); width:calc(var(--mb-w) * var(--doily)); translate:-50% -50%;
+  filter:drop-shadow(0 3px 6px rgba(130,95,80,.16)); pointer-events:none}
+/* 攪拌：碗（第一張圖）不動；.dh-spin = 同一張圖只留中間鮮奶油那一圈（邊緣淡出，和下面的碗接得起來），跟著你畫圈的方向轉（角度由 house.js 設） */
+.dh-spin{position:absolute; inset:0; transform-origin:49.8% 50%;
+  -webkit-mask:radial-gradient(circle closest-side at 49.8% 50%, #000 76%, transparent 84%); mask:radial-gradient(circle closest-side at 49.8% 50%, #000 76%, transparent 84%)}
+.dh-mixbowl.live{cursor:none; touch-action:none}   /* 在碗上：滑鼠藏起來，換成攪拌棒 */
+.dh-mixbowl:focus-visible{outline:2px dashed var(--accent, #6b4f57); outline-offset:6px; border-radius:50%}
+/* 攪拌棒（img/house/whisk.png）：跟著滑鼠／手指走；還沒碰碗時（.hint）在碗中間畫圈示範 */
+.dh-whisk{position:fixed; z-index:45; left:0; top:0; width:220px; pointer-events:none; --hr:34px;   /* ★ --hr = 示範畫圈的半徑 */
+  filter:drop-shadow(0 6px 8px rgba(120,90,80,.25))}
+.dh-whisk[hidden]{display:none}
+.dh-whisk img{display:block; width:100%; translate:-25% -72%}   /* 攪拌棒的頭（左下那一圈）對準滑鼠的位置 */
+.dh-whisk.hint{opacity:.9; animation:dh-whisk-hint 1.8s linear infinite}
+@keyframes dh-whisk-hint{
+  0%, 100%{translate:var(--hr) 0} 12.5%{translate:calc(var(--hr) * .7) calc(var(--hr) * .7)} 25%{translate:0 var(--hr)} 37.5%{translate:calc(var(--hr) * -.7) calc(var(--hr) * .7)}
+  50%{translate:calc(var(--hr) * -1) 0} 62.5%{translate:calc(var(--hr) * -.7) calc(var(--hr) * -.7)} 75%{translate:0 calc(var(--hr) * -1)} 87.5%{translate:calc(var(--hr) * .7) calc(var(--hr) * -.7)}}
+/* 「↩ 上一步」：對話框右上角的小按鈕（house.js 的 STEPS 決定哪幾步會出現） */
+.chat-back{position:absolute; z-index:4; right:22px; top:12px; padding:.3em .95em; border:1.5px solid var(--btn-border, #fff); border-radius:999px;
+  background:var(--btn-bg, #F7F2EB); color:var(--btn-text, #6B5A50); font-family:var(--font-body); font-size:clamp(12px, .9vw, 14px); cursor:pointer;
+  box-shadow:0 2px 6px rgba(var(--dlg-glow, 225,214,200), .9); transition:background .15s}
+.chat-back:hover{background:var(--btn-hover, #EDE5DA)}
+.chat-back[hidden]{display:none}
+.chat-back:focus-visible{outline:2px dashed var(--accent, #6b4f57); outline-offset:3px}
+@media (prefers-reduced-motion: reduce){ .dh-bowltop.swirl .dh-lumps, .dh-whisk.hint{animation:none !important} }
+
 /* ---------- 手機（640px 以下）：對話框在最下面、罐子排兩排在上、碗在中間 ---------- */
 @media (max-width:640px){
   body.house-page{
@@ -2002,4 +2067,6 @@ body.house-page .dh-room-color .dh-cab > img{height:100%}
   /* 碗放在托盤和對話框中間 */
   .dh-bowltop{top:auto; width:auto; bottom:calc(var(--cb) + var(--ch) + 16px);
     height:min(calc(100% - var(--navh) - 46px - var(--jw) * 2.65 - 62px - var(--cb) - var(--ch) - 16px), 74vw)}
+  /* 攪拌檯：碗在門牌下面 */
+  .dh-room-bench{--mb-top:calc(var(--navh) + 62px); --mb-w:min(70vw, calc(100vh - var(--navh) - 62px - var(--cb) - var(--ch) - 100px)); --doily:1.2}
 }

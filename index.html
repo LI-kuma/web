@@ -14,7 +14,7 @@
      前半段：標準字 + 半透明背景 → 點一下 → 莓露露的邀請卡（拆信封、抽卡片）→ 收下邀請
      後半段：畫面淡成白色 → 背景換成娃娃屋 → 莓露露歡迎你、問名字、說明玩法 → Rabumi 陪你走四個房間
        ① 色粉櫃：察覺情緒（選心情的顏色，撒進一碗鮮奶油）
-       ② 包裝檯：知道在煩什麼、釐清它（拌不開的那一團 → 解開纏住的緞帶）
+       ② 攪拌檯：知道在煩什麼、釐清它（聊一輪，拌開一顆色粉結塊）
        ③ 廚房：和煩惱和解（用有顏色的鮮奶油做甜點 → 加一點甜，顏色變柔和 → 吃掉它）
        ④ 茶桌：收好（茶端上來 → 掰開幸運餅乾 → 小紙條折好、綁緞帶 → 匿名擺上煩惱牆）
      ★ 邀請卡上的字直接改下面 <div class="inv-text"> 裡面 ★
@@ -92,26 +92,26 @@
       <div class="dh-floor"></div>
       <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
-        <!-- 一大碗打發好的白色鮮奶油（俯視，放正中間）：色粉倒進去，會從中間暈開成那個顏色 -->
-        <div class="dh-bowltop" id="bowl"><img src="img/house/bowl-top.png" alt="一大碗白色鮮奶油"><i class="dh-topcream"></i></div>
+        <!-- 一大碗打發好的白色鮮奶油（俯視，放正中間）：色粉倒進去拌不勻，結成 3 顆結塊（.dh-lumps） -->
+        <div class="dh-bowltop" id="bowl"><img src="img/house/bowl-top.png" alt="一大碗白色鮮奶油"><i class="dh-topcream"></i>
+          <span class="dh-lumps" aria-hidden="true"><i class="dh-lump"></i><i class="dh-lump"></i><i class="dh-lump"></i></span></div>
         <!-- 白色色粉櫃（靠右、站在地板上）：架上 9 罐心情色粉（house.js 的 FEELS 擺上去），選一罐；手機：櫃子收起來，罐子排兩排 -->
         <div class="dh-cab" id="jars" role="group" aria-label="心情的顏色"><img src="img/house/cabinet.png" alt=""></div>
       </div>
     </section>
 
-    <!-- ② 包裝檯：知道在煩什麼、釐清它（解開纏住的緞帶） -->
-    <section class="dh-room dh-room-bench" data-room="bench" style="--c:1; --r:0" aria-label="包裝檯">
-      <p class="dh-sign">Wrapping table ✂ 包裝檯</p>
-      <div class="dh-floor"></div>
+    <!-- ② 攪拌檯：知道在煩什麼、釐清它（聊一輪，拌開一顆結塊）；從上面往下看的木頭檯面，沒有壁紙和地板 -->
+    <section class="dh-room dh-room-bench" data-room="bench" style="--c:1; --r:0" aria-label="攪拌檯">
+      <p class="dh-sign">Mixing table 🥄 攪拌檯</p>
       <div class="dh-chara"><div class="chat-chara-bob"><img src="img/rabumi/basic.png" alt="Rabumi"></div></div>
       <div class="dh-props">
-        <!-- 剛剛那碗鮮奶油：裡面有一小團拌不開 -->
-        <div class="dh-bowl2 dh-lumpbowl" id="lumpBowl"></div>
-        <div class="dh-desk">
-          <div class="dh-knots" id="knots">
-            <svg class="dh-knot-line" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 20C90 6 190 34 300 20S510 6 610 20"/></svg>
-          </div>
-        </div>
+        <!-- 碗下面的蕾絲杯墊（house.js 畫的） -->
+        <svg class="dh-doily" id="doily" viewBox="-115 -115 230 230" aria-hidden="true"></svg>
+        <!-- 上一關那碗鮮奶油（俯視、正中間）：3 顆色粉結塊；在碗裡按住畫圈攪拌，碗不動、裡面的鮮奶油跟著轉，結塊慢慢化開
+             第一張圖 = 不動的碗；.dh-spin 裡是同一張圖只留鮮奶油那一圈（style.css 切成圓形），會轉 -->
+        <div class="dh-bowltop dh-mixbowl" id="mixBowl" aria-label="攪拌碗：在碗裡按住畫圈攪拌（鍵盤：按住空白鍵）"><img src="img/house/bowl-top.png" alt="一碗有色粉結塊的鮮奶油">
+          <div class="dh-spin"><img src="img/house/bowl-top.png" alt="">
+          <span class="dh-lumps" aria-hidden="true"><i class="dh-lump"></i><i class="dh-lump"></i><i class="dh-lump"></i></span></div><i class="dh-topcream"></i></div>
       </div>
     </section>
 
@@ -173,6 +173,22 @@
             <button type="button" data-t="star" aria-pressed="false"><span class="cp-ic"><img src="img/crepe/sprinkles/star0.png" alt=""><img src="img/crepe/sprinkles/star2.png" alt=""></span>星星糖</button>
             <button type="button" data-t="rod" aria-pressed="false"><span class="cp-ic"><img src="img/crepe/sprinkles/rod6.png" alt=""><img src="img/crepe/sprinkles/rod9.png" alt=""></span>彩色糖</button>
           </div>
+          <!-- 舒芙蕾鬆餅（課業）：① 煎鍋（俯視）+ 跟著呼吸 → ② 三片鬆餅疊起來、膨起來（側面）→ ③ 自己放配料；
+               鬆餅、鮮奶油、冰淇淋由 house.js 的 makePancake 放進 #pkCake，只有冰淇淋換成心情的顏色 -->
+          <div class="pk" id="pancake" hidden>
+            <div class="pk-pan" id="pkPan"><img src="img/pancake/pan.png" alt=""><div class="pk-batter" id="pkBatter"></div></div>
+            <div class="pk-stack"><img class="pk-doily" src="img/pancake/doily.png" alt=""><div class="pk-cake" id="pkCake"></div></div>
+            <p class="pk-breath" id="pkBreath" aria-live="polite"></p>
+            <button class="pk-skip" id="pkSkip" type="button" hidden>跳過呼吸 ›</button>
+            <div class="pk-hit" id="pkHit"></div>
+          </div>
+          <!-- 鬆餅的配料 -->
+          <div class="cp-tools pk-tools" id="pancakeTools" role="group" aria-label="配料" hidden>
+            <button type="button" data-t="cream" aria-pressed="true"><span class="cp-ic"><img src="img/pancake/cream-dollop.png" alt=""></span>奶油</button>
+            <button type="button" data-t="berry" aria-pressed="false"><span class="cp-ic"><img src="img/pancake/strawberry.png" alt=""></span>草莓</button>
+            <button type="button" data-t="half" aria-pressed="false"><span class="cp-ic"><img src="img/pancake/strawberry-half.png" alt=""></span>半顆草莓</button>
+            <button type="button" data-t="blue" aria-pressed="false"><span class="cp-ic"><img src="img/pancake/blueberry.png" alt=""></span>藍莓</button>
+          </div>
           <span class="dh-spoon" id="spoon" aria-hidden="true">🥄</span>
           <div class="ds-card dh-name" id="dessertCard"><small>今天的專屬甜點</small><b id="dessertName"></b></div>
           <!-- 呼吸按鈕：按住吸氣，等甜點做好 -->
@@ -198,6 +214,8 @@
 <span class="dh-pull-hint" id="pullHint" aria-hidden="true">往下拉 ↓</span>
 
 <!-- 玩家的回答選項 / 打字框 -->
+<!-- 攪拌棒：在攪拌檯的碗上，滑鼠（手指）變成它；還沒碰碗時在碗上畫圈示範 -->
+<div class="dh-whisk" id="whisk" hidden aria-hidden="true"><img src="img/house/whisk.png" alt=""></div>
 <div class="chat-choices" id="chatChoices" role="group" aria-label="你的回答"></div>
 
 <!-- 下方對話框（毛玻璃）：誰在說話，左邊的大角色和名牌就換成誰；角色會跟著表情換
@@ -210,6 +228,7 @@
     <p class="chat-text" id="chatText" aria-live="polite"></p>
   </div>
   <button class="chat-next" id="chatNext" type="button" hidden aria-label="下一句">▼</button>
+  <button class="chat-back" id="chatBack" type="button" hidden>↩ 上一步</button>
 </div>
 
 <!-- 上方 doily Navigation Bar -->

@@ -3,8 +3,10 @@
    ★ 新流程：莓露露邀請你來茶會，Rabumi 陪你把煩惱一步一步做成甜點 ★
    邀請卡     invite.js：標準字 → 拆信封、抽出莓露露的邀請卡 → 收下 → 同一頁換成娃娃屋（叫這個檔案的 startHouse）
    開場       莓露露（茶會主人）：歡迎 → 問你的名字 → 說明怎麼玩 → 拉一下緞帶，打開娃娃屋
-   ① 色粉櫃   察覺情緒：像朋友閒聊（最近好嗎 → 掛心的事）→ 選心情的顏色（天然色粉，最多 3 種），撒進一碗白色鮮奶油
-   ② 包裝檯   知道在煩什麼、釐清它：鮮奶油裡拌不開的那一小團 = 最放不下的事 → 解開纏住的緞帶（想法換個說法）
+   ① 色粉櫃   察覺情緒：像朋友閒聊（最近好嗎）→ 選心情的顏色（天然色粉），撒進一碗白色鮮奶油 → 拌不勻，結成 3 顆結塊
+   ② 攪拌檯   知道在煩什麼、釐清它：聊一輪就拌開一顆結塊（在碗裡按住畫圈攪拌，滑鼠會變成攪拌棒）
+              第一輪 發生了什麼事（掛心的事）→ 第二輪 最在意的是什麼 → 第三輪 是真的發生還是擔心（再換個說法）
+              三顆都拌開 = 鮮奶油變成均勻的心情色
    ③ 廚房     和煩惱和解：用這碗有顏色的鮮奶油做甜點（學業＝舒芙蕾鬆餅、人際＝原宿可麗餅、自我＝布丁）
               鬆餅／布丁：呼吸等它做好 → 加一點甜，顏色變柔和 → 最後一步（按鬆餅／倒出布丁）→ 吃掉它
               可麗餅：呼吸把餅皮煎好、抹奶油 → 捲起來 → 放料（冰淇淋 = 心情的顏色）→ 自己淋巧克力醬、撒糖 → 吃掉它
@@ -49,7 +51,7 @@ const DEFAULT_NAME = '客人';   // 玩家不想說名字時的稱呼
 // fx = 特別動作（有 fx 的表情身體會一直抖；jump：帽子再跳起來一下）；有 fx 的圖沒畫帽子，帽子用 hat.png 另外疊上去
 // 還沒畫的表情先用 basic.png（基本），連 basic 都沒有才用 rabumi.png
 const FACE_DIR = 'img/rabumi/';
-const SHOW_FACE_TAG = true;   // 對話框名字旁邊顯示［表情］小標籤（原型用；正式版改成 false）
+const SHOW_FACE_TAG = false;   // 對話框名字旁邊顯示［表情］小標籤（測試用；改成 true 會顯示）
 const FACES = {
   微笑: { img: 'smile',     mark: '' },      // 瞇眼笑、臉紅
   好奇: { img: 'curious',   mark: '？' },    // 歪頭、一邊耳朵翹起來
@@ -76,7 +78,7 @@ const LINES = {
     noName: '[一般]不想說也沒關係，\n那今天就叫你「客人」囉。',
     howto: [
       '[一般]今天的茶會，會由廚房的糕點師 Rabumi 陪著你。',
-      '[笑臉]你們會一個房間一個房間走——\n先找到心情的顏色；再解開纏住的緞帶；最後一起把煩惱做成甜點。',
+      '[笑臉]你們會一個房間一個房間走——\n先找到心情的顏色；再把碗裡的結塊拌開；最後一起把煩惱做成甜點。',
       '[一般]玩法很簡單：點對話框，就會看到下一句。\n出現選項時，選一個最接近你的就好；都不像的話，也可以自己打字。',
       '[眨眼]還有——看到右上角垂下來的緞帶了嗎？\n每個房間結束時，往下拉一下它，就會去下一個房間。'
     ],
@@ -99,9 +101,6 @@ const LINES = {
       { t: '有點累',       re: ['[心疼]嗯……聽起來你最近一直在撐著呢。', '[微笑]那今天就慢慢來，不用急。'] },
       { t: '其實不太好',   re: ['[驚訝]欸……', '[傾聽]謝謝你願意老實說。\n沒關係，我們就從這裡開始，慢慢聊。'] }
     ],
-    askTopic: '[好奇]最近有沒有什麼事，一直掛在心上呢？',
-    topicFree: ['[傾聽]「{TYPE}」……嗯，我聽到了。'],
-    subFree: ['[傾聽]「{TYPE}」……嗯，我記住了。'],
     intro: [
       '[思考]跟你說，我做甜點的時候，很喜歡用天然的色粉。\n草莓粉、焙茶粉、蝶豆花……每一種都是食物做的顏色。',
       '[害羞]我覺得心情好像也有顏色。\n像我今天，大概是焦糖色吧……一直在小火上煮著，靜不下來。',
@@ -109,47 +108,45 @@ const LINES = {
     ],
     pick: '[微笑]今天的心情，是哪一罐呢？\n點一罐色粉，倒進鮮奶油裡吧。',
     again: '[微笑]好呀，那換一罐看看。\n今天的心情，是哪一罐呢？',
-    stir:    '[微笑]我幫你把色粉拌進鮮奶油裡——\n刷刷、刷刷♪',   // Rabumi 捧著碗攪拌
-    reflect: '[心疼]你的鮮奶油，變成了{MAINCN}的「{MAIN}」。\n心裡裝著這個顏色，一定不輕鬆吧。',
+    stir:    '[微笑]我幫你把色粉拌進鮮奶油裡——\n刷刷、刷刷♪',   // Rabumi 捧著碗攪拌（拌不勻，色粉結成 3 顆結塊）
+    lumpy:   '[驚訝]咦？怎麼拌都拌不勻……\n色粉結成一顆一顆的了。',
+    reflect: '[心疼]你的鮮奶油裡，撒進了{MAINCN}的「{MAIN}」。\n心裡裝著這個顏色，一定不輕鬆吧。',
     named:   '[明白]不過你看，顏色被說出名字之後，\n就看得清清楚楚了。',
-    brave:   '[溫柔]能看見自己是什麼顏色，已經很了不起了喔。'
+    brave:   '[溫柔]能看見自己是什麼顏色，已經很了不起了喔。',
+    later:   '[微笑]那些結塊，我們等一下去攪拌檯，\n一顆一顆慢慢拌開吧。'
   },
 
-  /* ② 包裝檯：知道在煩什麼、釐清它（像觀察家一樣慢慢看） */
+  /* ② 攪拌檯：知道在煩什麼、釐清它（聊一輪，就拌開一顆結塊；一共 3 輪） */
   bench: {
     hello: [
       '[微笑]我把剛剛那碗鮮奶油端過來了。',
-      '[驚訝]欸？你看，碗裡還有一小團{MAINCN}，\n怎麼拌都拌不開……',
-      '[好奇]心裡有時候，也會有一團拌不開的東西。\n我們來看看它是什麼吧。'
+      '[驚訝]哎呀，色粉結塊了……\n就像心裡有個結一樣。'
     ],
-    askCore: '[好奇]在「{TYPE}」這件事裡，\n那一團拌不開的，是哪一個呢？',
+    // 第一輪：發生了什麼事？（找出情境：先選大類，再選細的）
+    askTopic: '[好奇]你的結是什麼呢？\n最近有沒有什麼事，一直掛在心上？',
+    topicFree: ['[傾聽]「{TYPE}」……嗯，我聽到了。'],
+    subFree: ['[傾聽]「{TYPE}」……嗯，我記住了。'],
+    // 第二輪：你最在意的是什麼？（找出核心）
+    askCore: '[好奇]在「{TYPE}」這件事裡，\n你最在意的是哪一個呢？',
     coreFree: ['[傾聽]「{CORE}」……嗯。'],
-    coreSay: '[明白]原來拌不開的那一團，是「{CORE}」。\n謝謝你，願意看得這麼仔細。',
-    tangle: [
-      '[慌張]啊啊啊，等一下！\n包甜點用的緞帶，又被我弄得纏成一團了……',
-      '[思考]煩惱也是這樣——\n一個想法纏著另一個想法，越拉越緊。'
-    ],
-    demoKnot: '客人剩了半塊蛋糕 → 一定是我做得很難吃',
-    demo:  '[害羞]這是我昨天的結……',
-    demo2: '[思考]客人剩下半塊，是真的發生的事。\n可是「我做得很難吃」，是我自己纏上去的。',
-    demoTo: '也許只是吃飽了',
-    demo3: '[開心]所以我換個說法——\n你看，鬆開之後，就變成蝴蝶結了！',
-    pick:  '[好奇]換你看看。這些結裡，有沒有哪一個也纏在你心裡？\n點點看那個結。',
-    more:  '[好奇]還有別的結也纏著你嗎？',
-    customAsk: '[好奇]你心裡的那個結，寫的是什麼呢？',
-    real: '[思考]我們一起看看這個結——\n「{KNOT}」，這是真的發生了，還是心裡擔心會發生的呢？',
+    coreSay: '[明白]原來你最在意的，是「{CORE}」。\n謝謝你，願意看得這麼仔細。',
+    // 第三輪：這是真的發生的，還是心裡擔心的？（分辨事實和擔心 → 換個說法）
+    askThought: '[好奇]想到這件事的時候，\n心裡最常冒出來的，是哪一句話呢？',
+    real: '[思考]我們一起看看這句話——\n「{KNOT}」，這是真的發生了，還是心裡擔心會發生的呢？',
     realSay: {
       fact:   ['[傾聽]嗯，是真的發生了，難怪你會這麼在意。', '[思考]可是發生了這件事，\n不代表後面想像的那些，也一定會成真喔。'],
       worry:  ['[明白]原來是心裡擔心的。', '[溫柔]擔心很正常，可是它現在還沒有發生喔。'],
-      unsure: ['[傾聽]分不清楚也沒關係。', '[思考]很多時候，事情和想像本來就纏在一起，\n就像這團緞帶一樣。']
+      unsure: ['[傾聽]分不清楚也沒關係。', '[思考]很多時候，事情和想像本來就混在一起，\n就像這碗還沒拌勻的鮮奶油一樣。']
     },
     rewrite: '[微笑]那我們試著換個說法？\n選一個你比較願意相信的就好。',
     customRewrite: '[好奇]如果換個溫柔一點的說法，你會怎麼對自己說呢？',
-    untied: ['[開心]解開了！是個漂亮的蝴蝶結♡', '[明白]你看，鬆開之後，它就沒那麼緊了。', '[開心]又一個蝴蝶結！你越來越會解了耶。'],
-    stir: '[微笑]來，我們再拌一拌看看——',   // Rabumi 捧著碗攪拌，拌著拌著那一團就散開了
+    // 拌開結塊（每一輪聊完）
+    stirHow: '[微笑]來，在碗裡按住、畫圈圈攪拌——\n把一顆結塊拌開吧！',
+    stirAgain: '[微笑]再拌開一顆吧！',
+    mixed: ['[開心]拌開一顆了！', '[開心]又拌開一顆！\n只剩最後一顆了。'],
     done: [
-      '[溫柔]煩惱還在，可是結鬆開之後，\n它就不會越纏越緊了。',
-      '[驚訝]啊，你看碗裡——\n那一團{MAINCN}，也拌開了！',
+      '[驚訝]啊，你看碗裡——\n結塊都拌開了，變成均勻的{MAINCN}！',
+      '[溫柔]煩惱還在，可是結拌開之後，\n它就不會一直卡在那裡了。',
       '[明白]好，我們把這碗鮮奶油帶去廚房吧！'
     ]
   },
@@ -162,7 +159,10 @@ const LINES = {
       { t: '好呀',             re: ['[開心]太好了！那我們開始吧♡'] },
       { t: '可是我不太會做',   re: ['[開心]沒關係！我也常常失敗，還烤焦過好幾次呢。', '[微笑]我們一起慢慢來就好。'] }
     ],
-    breatheHow: '\n按住右邊的按鈕慢慢吸氣，圈圈滿了就放開，慢慢吐氣。',
+    // 跟著呼吸（延長吐氣：吸 4 秒、吐 6 秒，做 3 次共 30 秒；秒數在下面的 INHALE、EXHALE）
+    breatheStart: '[溫柔]接下來，跟著甜點的起伏，慢慢吸氣、慢慢吐氣，\n我們一起做三次深呼吸吧！',
+    breatheHow: '[微笑]按住右邊的按鈕，吸氣 4 秒；\n圈圈滿了就放開，慢慢吐氣 6 秒。',
+    breatheEnd: '[溫柔]現在，有沒有覺得稍微輕鬆一點了呢？\n就算煩惱還在也沒關係喔。',
     sweetAsk: '[好奇]最後，要加哪一種甜呢？\n現在的你，最想要的是……',
     sweets: [
       { t: '有人懂我',     id: 'honey', sweet: '蜂蜜',   re: ['[溫柔]那就淋上蜂蜜，\n慢慢地、暖暖地化開。'] },
@@ -214,8 +214,8 @@ const LINES = {
   }
 };
 
-// 最近發生的事（色粉櫃）：dessert = 做哪一種甜點（DESSERTS）；re = 選了之後 Rabumi 的回應
-// cores = 到包裝檯時問「拌不開的那一團是哪一個」的選項，每個也有自己的回應
+// 最近發生的事（攪拌檯第一輪）：dessert = 做哪一種甜點（DESSERTS）；re = 選了之後 Rabumi 的回應
+// cores = 攪拌檯第二輪問「最在意的是哪一個」的選項，每個也有自己的回應
 const TOPICS = [
   { id: 'people', t: '和別人之間的事', dessert: 'crepe', ask: '[好奇]是跟誰之間的事呢？',
     re: ['[驚訝]欸……是人和人之間的事嗎？', '[害羞]其實我也很容易為這種事想很多耶。'],
@@ -296,7 +296,7 @@ const FEELS = [
 ];
 const MARBLE = ['#F4A3B8', '#F2A93B', '#7FA8E0', '#8DB86B', '#CDA6DE'];   // 大理石紋用的顏色
 
-// 纏住的緞帶（包裝檯）：t = 結上寫的想法、re = 可以換成的說法
+// 心裡冒出來的那句話（攪拌檯第三輪）：t = 那句話、re = 可以換成的說法
 const KNOTS = {
   people: [
     { t: '大家一定都討厭我', re: ['有人沒回應，不代表討厭我', '我不用讓每個人都喜歡我'] },
@@ -323,14 +323,21 @@ const KNOTS = {
 // 三種甜點（廚房）：哪一種煩惱做哪一種，看上面 TOPICS 的 dessert
 // intro = 為什麼是這個甜點、color = 把鮮奶油加進去、breathe = 呼吸等它做好、formed = 做好了、act = 最後一步的按鈕、acted = 做完最後一步、desc = 甜點的意思
 const DESSERTS = {
-  pancake: {   // 學業：堆疊、壓縮、塌陷、膨脹、溫熱
+  pancake: {   // 學業：被壓著、喘不過氣、負擔一層層疊上來 → 喘口氣，就有空間了（流程在 makePancake：煎鍋＋呼吸 → 疊起來、膨起來 → 放配料）
     name: '舒芙蕾鬆餅',
-    intro: ['[思考]你的煩惱，讓我想到舒芙蕾鬆餅。', '[傾聽]事情一件一件疊上來，疊得太高，就會塌下去……\n就像現在這片扁扁的鬆餅。'],
-    color: '[微笑]這碗有顏色的鮮奶油，\n等一下要夾在鬆餅中間。',
-    breathe: '[微笑]鬆餅要用小火慢慢等，才會膨起來。',
-    formed: '[開心]你看，每吸一口氣，鬆餅就膨起來一層！',
-    actAsk: '[好奇]按按看鬆餅？', act: '👆 按一下鬆餅',
-    acted: ['[驚訝]壓下去了……', '[開心]又彈回來了！\n被壓著的時候，也可以像這樣，慢慢彈回來喔。'],
+    intro: ['[思考]你的煩惱，讓我想到舒芙蕾鬆餅。', '[傾聽]事情一件一件疊上來，壓得喘不過氣，\n鬆餅也會塌成扁扁的……'],
+    color: '[微笑]你那碗有顏色的鮮奶油，\n等一下會變成一球冰淇淋，放在鬆餅最上面喔。',
+    pour: '[微笑]麵糊倒進鍋子裡了。\n我們一起慢慢呼吸，等它煎好吧。',
+    startAct: '開始呼吸',
+    breathing: '[溫柔]跟著鍋子的節奏——\n吸氣的時候麵糊慢慢擴開，吐氣的時候看它冒泡泡。',
+    cooked: '[開心]做得很好。鬆餅煎好了，翻面囉！',
+    stackAct: '把鬆餅疊起來',
+    flat: '[傾聽]一開始扁扁的，就像被壓著的心情……\n再深呼吸一次。',
+    puffed: '[開心]你看，它慢慢膨起來了。\n喘口氣，就有空間了。',
+    ice: '[微笑]最上面這球冰淇淋，\n就是你那碗{MAINCN}的鮮奶油做的。',
+    deco: '[幹勁]最後，放上你想要的配料吧！\n選一個配料，點最上面那片鬆餅放上去；點放好的會拿掉。',
+    decoDone: '✓ 裝飾好了',
+    decoSay: '[開心]好可愛！這是只屬於你的鬆餅。', decoNone: '[微笑]原本的樣子也很好看呢。',
     desc: '[溫柔]蓬蓬的舒芙蕾鬆餅，要小火慢慢煎才好吃。\n努力也是，不用一次做完全部。'
   },
   crepe: {     // 人際：捲起來、包住、分不開，熱餅皮包冰淇淋＝忽冷忽熱（流程在 makeCrepe：攤開 → 捲起來 → 放料 → 裝飾）
@@ -361,7 +368,7 @@ const DESSERTS = {
 // 沒接 AI 或 AI 壞掉時，用這些寫好的話
 const PRESET = {
   comfort: '{NAME}，你的鮮奶油裡有「{FEEL}」的顏色，一點都不奇怪喔。\n因為你很在乎，所以才會這麼放在心上。',
-  advice:  '下次心裡又亂成一團的時候，先深呼吸，再分清楚「真的發生的事」和「心裡纏上去的結」。\n不管怎麼樣，我的廚房永遠幫你留一個位子♡'
+  advice:  '下次心裡又亂成一團的時候，先深呼吸，再分清楚「真的發生的事」和「心裡擔心的事」。\n不管怎麼樣，我的廚房永遠幫你留一個位子♡'
 };
 // 玩家打的字裡有這些詞，就馬上溫柔地提醒求助資訊
 const CRISIS_WORDS = ['想死', '去死', '自殺', '不想活', '活不下去', '傷害自己', '割腕', '結束生命', '消失就好'];
@@ -370,14 +377,21 @@ const CRISIS_AGAIN = '{NAME}，甜點快好了，我想再跟你說一次：\n�
 
 const TYPE_SPEED = 38;   // 打字速度：每個字幾毫秒
 const BREATHS = 3;       // 要跟著呼吸幾次
-const INHALE = 3000;     // 吸氣要按住幾毫秒
-const EXHALE = 4000;     // 吐氣幾毫秒
+const INHALE = 4000;     // ★ 吸氣要按住幾毫秒（4 秒）
+const EXHALE = 6000;     // ★ 吐氣幾毫秒（6 秒；吐得比吸得長 = 延長吐氣，比較放鬆；3 次共 30 秒）
 const AI_URL = 'https://tea-time.spcp94523.workers.dev';
 const WALL_URL = AI_URL + '/wall';
 /* ===== 設定到這裡為止，下面是程式 ===== */
 
 const $ = id => document.getElementById(id);
 const wait = ms => new Promise(r => setTimeout(r, ms));
+// 「↩ 上一步」：按了之後，現在在等的那句話／選項會停下來（丟出 BACK），由 11. 的 STEPS 決定回到哪一步
+// guard(p) = 等 p，可是按了上一步就不等了；answered(p) = 這一步已經回答過東西了（再按上一步 = 重做這一步）
+const BACK = 'back';
+let gate = null, onBack = [], stepMoved = false;
+function newGate(){ let r; gate = new Promise((_, rej) => { r = rej; }); gate.catch(() => {}); gate.back = r; onBack = []; }
+const guard = p => gate ? Promise.race([p, gate]) : p;
+const answered = p => p.then(v => { stepMoved = true; return v; });
 
 /* ---------- 0. 畫好的圖：有放進資料夾就用，沒有就用程式畫的 ---------- */
 const ART = {};
@@ -399,7 +413,7 @@ function setName(v){
 }
 setName(savedName);
 
-const memo = { topic: FREE_TOPIC, sub: null, type: '', core: '', feels: [], feel: '', colors: '', main: null,
+const memo = { topic: FREE_TOPIC, sub: null, type: '', core: '', feels: [], feel: '', colors: '', main: null, free: [],
                knots: [], sweet: null, words: '', next: '' };
 const extra = {};   // {KNOT}、{DESSERT}、{X} 這種只用一下的
 function fill(s){
@@ -484,7 +498,7 @@ const box = $('chatBox'), textEl = $('chatText'), nextBtn = $('chatNext'), panel
 let typing = null, finishTyping = null, waitNext = null;
 
 function type(text){
-  return new Promise(done => {
+  return guard(new Promise(done => {
     if (typing){ clearInterval(typing); typing = null; finishTyping = null; }   // 上一句還在打：直接換成這句
     const [f, line] = splitFace(text);
     const full = fill(line);
@@ -498,12 +512,19 @@ function type(text){
     textEl.textContent = '';
     finishTyping = () => { clearInterval(typing); typing = null; finishTyping = null; textEl.textContent = full; done(); };
     typing = setInterval(() => { textEl.textContent = full.slice(0, ++i); if (i >= full.length) finishTyping(); }, TYPE_SPEED);
-  });
+  }));
 }
 async function say(text){
   await type(text);
   nextBtn.hidden = false;
-  return new Promise(done => { waitNext = done; });
+  return guard(new Promise(done => { waitNext = done; }));
+}
+// 按了上一步：正在打的字、等著按 ▼ 的、選項都收掉
+function stopTalk(){
+  if (typing) clearInterval(typing);
+  typing = finishTyping = waitNext = null;
+  nextBtn.hidden = true;
+  clearPanel();
 }
 async function sayAll(list){ for (const l of [].concat(list || [])) await say(l); }
 function advance(){
@@ -535,7 +556,7 @@ function panelButtons(list){
 // 問一個問題 + 出選項；freeLabel = 最後的「自己說」按鈕（null = 不要）；回傳 { ...選項, memo, free }
 async function ask(question, options, freeLabel = '✎ 都不是，我想自己說'){
   await type(question);
-  return new Promise(done => {
+  return guard(answered(new Promise(done => {
     const show = () => {
       clearPanel();
       options.forEach((o, i) => {
@@ -553,7 +574,7 @@ async function ask(question, options, freeLabel = '✎ 都不是，我想自己�
       requestAnimationFrame(() => panel.classList.add('show'));
     };
     show();
-  });
+  })));
 }
 // 選完之後 Rabumi 先回應：選項有 re 就說 re；自己打字的就說 freeLines（沒給就用 LINES.free）
 async function react(a, freeLines){
@@ -585,8 +606,8 @@ function inputPanel(o, cb){
 }
 // 問一句、等玩家打字（single = 一行；back 按了回傳 ''；more = 其他設定，例如 value 先填好的字、max 最多幾個字）
 function askInput(question, placeholder, single = true, back = '先跳過', more = {}){
-  return type(question).then(() => new Promise(done =>
-    inputPanel({ placeholder, send: single ? '好了' : '送出 ♡', back, single, ...more }, v => done(v || ''))));
+  return type(question).then(() => guard(answered(new Promise(done =>
+    inputPanel({ placeholder, send: single ? '好了' : '送出 ♡', back, single, ...more }, v => done(v || ''))))));
 }
 
 // 玩家打的字裡有危險的詞：馬上停下來，先給求助資訊（之後不會貼到煩惱牆，也不會叫 AI）
@@ -626,7 +647,7 @@ function view(w){
   // Rabumi 只出現在她現在待的房間（一開始在色粉櫃；看整間的時候留在原本的房間）
   if (w !== 'all') document.querySelectorAll('.dh-room').forEach(r => r.classList.toggle('here', r.dataset.room === w));
   layout();
-  return wait(1700);
+  return guard(wait(1700));
 }
 addEventListener('resize', () => { house.style.transition = 'none'; layout(); void house.offsetWidth; house.style.transition = ''; });
 
@@ -710,6 +731,7 @@ class Ribbon{
     }
   }
   addCharm(emoji){ const t = svg('text', { class: 'rb-charm' }, this.charmG); t.textContent = emoji; this.charms.push(t); }
+  removeCharm(){ const t = this.charms.pop(); if (t) t.remove(); }   // 按「上一步」回到上一個房間時拿掉
 }
 const small = innerWidth < 640;
 const ribbons = [
@@ -750,7 +772,8 @@ function tug(){
 }
 function pull(){
   pullBtn.classList.add('armed'); pullHint.classList.add('show');
-  return new Promise(r => { pullDone = r; });
+  onBack.push(() => { pullDone = null; pullBtn.classList.remove('armed'); pullHint.classList.remove('show'); });
+  return guard(new Promise(r => { pullDone = r; }));
 }
 async function nextRoom(charm){
   bell.addCharm(charm);
@@ -791,10 +814,10 @@ function bowlSvg(cols, id, lump, grow){
   return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><image href="img/house/bowl.png" width="${W}" height="${H}"/>${cream}${lumpEl}</svg>`;
 }
 
-/* ---------- 7. ① 色粉櫃：點一罐色粉 → 飛到碗上倒進去 → 鮮奶油暈開成那個顏色 ---------- */
+/* ---------- 7. ① 色粉櫃：點一罐色粉 → 飛到碗上倒進去 → 色粉結成 3 顆結塊（拌不勻） ---------- */
 // 罐子擺在 cabinet.png 上的位置（原圖 663×1153 的單位）：三層架子的地板 y、每層三罐的中心 x、罐子寬（高照 jar.png 240×318 的比例）
 const CAB_W = 663, CAB_H = 1153, SHELF_Y = [486, 704, 920], SHELF_X = [165, 331, 497], JAR_W = 160, JAR_H = JAR_W * 318 / 240;
-const jarsEl = $('jars'), bowlEl = $('bowl'), topCream = bowlEl.querySelector('.dh-topcream');
+const jarsEl = $('jars'), bowlEl = $('bowl');
 let picked = [];          // 選的心情（只有一罐）
 let pickedJar = null, pouring = false, finishColors = null;
 // 一罐色粉：白色色粉疊上心情的顏色（只染 jar-powder.png 的範圍），標籤寫心情
@@ -811,21 +834,29 @@ FEELS.forEach((f, i) => {
   b.addEventListener('click', () => pour(f, b));
   jarsEl.appendChild(b);
 });
-// 俯視的鮮奶油碗：col = 鮮奶油的顏色（沒有 = 白色）；grow = 從中間暈開、一邊轉一下（像被攪開）
-function drawBowl(col, grow){
-  topCream.classList.remove('on', 'swirl');
-  if (!col){ topCream.style.removeProperty('--c'); return; }
-  topCream.style.setProperty('--c', col);
-  void topCream.offsetWidth;
-  topCream.classList.add('on');
-  if (grow) topCream.classList.add('swirl'); else topCream.classList.add('now');
+// 俯視的鮮奶油碗（色粉櫃的 #bowl、攪拌檯的 #mixBowl）
+// col = 心情色（沒有 = 白色）；t = 鮮奶油染了幾成（0 = 白、1 = 整碗心情色）；grow = 從中間暈開、一邊轉一下（像被攪過）
+const LUMPY_TINT = .18;   // ★ 拌不勻的時候，鮮奶油只染到幾成（其他的色粉都結成結塊了）
+function drawBowl(bowl, col, t = 1, grow){
+  const cream = bowl.querySelector('.dh-topcream');
+  cream.classList.remove('on', 'swirl', 'now');
+  if (!col){ cream.style.removeProperty('--c'); return; }
+  cream.style.setProperty('--c', mix('#FFFFFF', col, t));
+  void cream.offsetWidth;
+  cream.classList.add('on', grow ? 'swirl' : 'now');
+}
+// 碗裡的 3 顆色粉結塊：col = 結塊的顏色（沒有 = 收起來）
+function setLumps(bowl, col){
+  bowl.querySelectorAll('.dh-lump').forEach(l => { l.classList.remove('gone'); l.style.removeProperty('--p'); });
+  if (col) bowl.style.setProperty('--lc', col);
+  bowl.classList.toggle('lumpy', !!col);
 }
 async function pour(f, b){
   if (!jarsEl.classList.contains('live') || pouring) return;
-  pouring = true; clearPanel();
+  pouring = true; stepMoved = true; clearPanel();   // 倒過色粉了：這時按「上一步」= 重選色粉
   if (pickedJar) pickedJar.classList.remove('used');   // 換一罐：前一罐放回架上
   pickedJar = b; picked = [f];
-  drawBowl();
+  drawBowl(bowlEl); setLumps(bowlEl);
   // 複製一罐，從架上飛到碗的上方（原本那罐變半透明 = 被拿走了）
   const jr = b.getBoundingClientRect(), br = bowlEl.getBoundingClientRect();
   const w = br.width * .22, h = w * JAR_H / JAR_W;
@@ -849,7 +880,8 @@ async function pour(f, b){
     setTimeout(() => s.remove(), 1800);
   }
   await wait(250);
-  drawBowl(f.col, true);                     // 鮮奶油從中間暈開
+  drawBowl(bowlEl, f.col, LUMPY_TINT / 2, true);   // 只有一點點顏色暈開
+  setLumps(bowlEl, f.col);                         // 大部分的色粉浮在上面，結成 3 顆結塊
   await wait(450);
   fly.classList.add('gone');
   await wait(500);
@@ -868,147 +900,204 @@ function showColorChoices(){
     { t: '換一罐', free: true, on: () => {
         if (pouring) return;
         pickedJar.classList.remove('used'); pickedJar = null; picked = [];
-        drawBowl(); clearPanel(); type(LINES.color.again);
+        drawBowl(bowlEl); setLumps(bowlEl); clearPanel(); type(LINES.color.again);
       } }
   ]);
 }
 function chooseColors(){
   jarsEl.classList.add('live');
-  return new Promise(done => { finishColors = done; });
+  onBack.push(() => jarsEl.classList.remove('live'));
+  return guard(answered(new Promise(done => { finishColors = done; })));
 }
 
-async function roomColor(){
+// 色粉櫃分成兩步（11. 的 STEPS）：閒聊 → 選色粉、攪拌（拌不勻）；按「上一步」可以回來重選色粉
+async function colorChat(){
   await view('color');
   setSpeaker('rabumi');
   await sayAll(LINES.open);
   await sayAll(LINES.color.hello);
 
-  // 閒聊：最近好嗎？
-  await react(await ask(LINES.color.askHow, LINES.color.how, '✎ 我想自己說'));
-
-  // 最近掛心的事（先選大類，再選細的），每一步 Rabumi 都先回應
-  const a = await ask(LINES.color.askTopic, TOPICS.map(t => ({ t: t.t, id: t.id })));
-  if (a.free){ memo.topic = FREE_TOPIC; memo.type = a.memo; await react(a, LINES.color.topicFree); }
-  else {
-    memo.topic = TOPICS.find(t => t.id === a.id);
-    await sayAll(memo.topic.re);
-    const b = await ask(memo.topic.ask, memo.topic.subs);
-    memo.sub = b.free ? null : memo.topic.subs.find(s => s.id === b.id);
-    memo.type = b.memo;
-    await react(b, LINES.color.subFree);
-  }
-
-  // 心情的顏色
-  await sayAll(LINES.color.intro);
-  await type(LINES.color.pick);
+  // 閒聊：最近好嗎？（掛心的事到攪拌檯再問）
+  memo.free = memo.free.filter(f => f.r !== 'how');
+  const a = await ask(LINES.color.askHow, LINES.color.how, '✎ 我想自己說');
+  noteFree('how', '最近過得怎麼樣', a);
+  await react(a);
+}
+let colorSeen = false;   // 介紹色粉的話說過了沒（重選的時候不用再說一次）
+async function colorPick(){
+  // 重來：罐子都放回架上、碗變回白色、Rabumi 放下攪拌碗
+  jarsEl.querySelectorAll('.dh-jar').forEach(j => j.classList.remove('used'));
+  pickedJar = null; picked = [];
+  drawBowl(bowlEl); setLumps(bowlEl); bowlEl.classList.remove('swirl'); setStir(false);
+  await view('color');
+  if (!colorSeen){ await sayAll(LINES.color.intro); colorSeen = true; await type(LINES.color.pick); }
+  else await type(LINES.color.again);
   await chooseColors();
   memo.feels = [...picked];
   memo.main = picked[0];
   memo.feel = picked.map(f => f.name).join('、');
   memo.colors = picked.map(f => f.cn + '的「' + f.name + '」').join('、');
-  setStir(true, picked.map(f => f.col));   // Rabumi 捧著碗攪拌
+  // Rabumi 攪拌，可是拌不勻：鮮奶油只淡淡染一點，3 顆結塊還在（跟著轉一下）
+  setStir(true, [mix('#FFFFFF', memo.main.col, LUMPY_TINT)]);
+  onBack.push(() => setStir(false));
+  drawBowl(bowlEl, memo.main.col, LUMPY_TINT, true);
+  bowlEl.classList.remove('swirl'); void bowlEl.offsetWidth; bowlEl.classList.add('swirl');
   await say(LINES.color.stir);
   setStir(false);
+  await say(LINES.color.lumpy);
   await say(LINES.color.reflect);
   await say(LINES.color.named);
   await say(LINES.color.brave);
+  await say(LINES.color.later);
   await nextRoom('🎨');
 }
 
-/* ---------- 8. ② 包裝檯：拌不開的那一團 → 解開纏住的緞帶 ---------- */
-const knotsEl = $('knots');
-const TANGLE = '<svg viewBox="0 0 60 60"><path d="M8 34C12 12 46 8 48 28S18 52 16 34 42 10 52 30 30 54 20 42"/></svg>';
-let knots = [];   // [{ el, from, re, to }]
-function addKnot(from, re, cls){
-  const el = document.createElement('button');
-  el.type = 'button'; el.className = 'dh-knot' + (cls ? ' ' + cls : '');
-  el.innerHTML = `<span class="dh-tangle" aria-hidden="true">${TANGLE}</span><span class="dh-bow" aria-hidden="true">🎀</span><span class="dh-tag"><s></s><b></b></span>`;
-  el.querySelector('s').textContent = from;
-  el.setAttribute('aria-label', '解開「' + from + '」這個結');
-  knotsEl.appendChild(el);
-  const k = { el, from, re };
-  knots.push(k);
-  knots.forEach((o, i) => {   // 重新排一次位置
-    o.el.style.setProperty('--x', ((i + .5) / knots.length * 100) + '%');
-    o.el.style.setProperty('--rot', [-3, 2, -1.5, 3, -2][i % 5] + 'deg');
-  });
-  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-  return k;
-}
-function untie(k, to){
-  k.to = to;
-  k.el.querySelector('b').textContent = to;
-  k.el.classList.add('undone');
-  k.el.setAttribute('aria-label', '已經解開：' + to);
-}
-// 等玩家點一個結（或按下面的按鈕）：回傳那個結、'custom' 或 'done'
-function chooseKnot(canFinish){
-  knotsEl.classList.add('live');
-  return new Promise(done => {
-    const finish = v => { knotsEl.classList.remove('live'); knots.forEach(o => { o.el.onclick = null; }); clearPanel(); done(v); };
-    knots.forEach(o => { if (!o.to) o.el.onclick = () => finish(o); });
-    const list = [{ t: '✎ 我的結長得不一樣', free: true, on: () => finish('custom') }];
-    if (canFinish) list.unshift({ t: '這樣就好了 ♡', on: () => finish('done') });
-    panelButtons(list);
-  });
-}
-
-async function roomBench(){
-  const lumpBowl = $('lumpBowl');
-  lumpBowl.innerHTML = bowlSvg([memo.main.col], 'l', mix(memo.main.col, '#7A5A60', .35));   // 拌不開的那一團：深一點的同色
-  await view('bench');
-  await sayAll(LINES.bench.hello);
-
-  // 拌不開的那一團：最放不下的是什麼？
-  const cores = memo.sub ? memo.sub.cores : FREE_CORES;
-  const a = await ask(LINES.bench.askCore, cores);
-  memo.core = a.memo;
-  await react(a, LINES.bench.coreFree);
-  await say(LINES.bench.coreSay);
-
-  // 纏住的緞帶：Rabumi 先解一個自己的結
-  await sayAll(LINES.bench.tangle);
-  const mine = addKnot(LINES.bench.demoKnot, [], 'mine');
-  await say(LINES.bench.demo);
-  await say(LINES.bench.demo2);
-  untie(mine, LINES.bench.demoTo);
-  await say(LINES.bench.demo3);
-
-  // 換玩家
-  (KNOTS[memo.topic.id] || KNOTS.free).forEach(k => addKnot(k.t, k.re));
-  let count = 0;
-  await type(LINES.bench.pick);
-  while (true){
-    const pick = await chooseKnot(count > 0);
-    if (pick === 'done') break;
-    let k = pick;
-    if (pick === 'custom'){
-      const v = await askInput(LINES.bench.customAsk, '例如：我一定會搞砸');
-      if (!v){ await type(LINES.bench.more); continue; }
-      if (await checkCrisis(v)){ await type(LINES.bench.more); continue; }
-      k = addKnot(v, []);
-    }
-    extra.knot = k.from;
-    const r = await ask(LINES.bench.real, [ { t: '真的發生了', id: 'fact' }, { t: '是我擔心會發生的', id: 'worry' }, { t: '我也分不清楚', id: 'unsure' } ], null);
-    await sayAll(LINES.bench.realSay[r.id]);
-    let to;
-    if (k.re.length) to = (await ask(LINES.bench.rewrite, k.re.map(t => ({ t })), '✎ 我想自己寫')).memo;
-    else to = await askInput(LINES.bench.customRewrite, '例如：搞砸了也可以再試一次') || '先不急著下結論';
-    untie(k, to);
-    memo.knots.push({ from: k.from, to });
-    await say(LINES.bench.untied[count % LINES.bench.untied.length]);
-    count++;
-    if (knots.every(o => o.to)) break;
-    await type(LINES.bench.more);
+/* ---------- 8. ② 攪拌檯：聊一輪 → 拌開一顆結塊（一共 3 顆）→ 鮮奶油變成均勻的心情色 ---------- */
+const mixBowl = $('mixBowl'), whisk = $('whisk'), spinEl = mixBowl.querySelector('.dh-spin');
+const STIR_TURNS = 2;   // ★ 在碗裡畫幾圈可以拌開一顆結塊（改大 = 要拌比較久）
+let creamTurn = 0;      // 碗裡的鮮奶油現在轉到哪裡（弧度）
+// 碗下面的蕾絲杯墊：外圈波浪邊 + 兩圈小洞（N = 幾個波浪）
+(function doily(){
+  const N = 30, R = 100, xy = (a, r) => `cx="${(Math.cos(a) * r).toFixed(1)}" cy="${(Math.sin(a) * r).toFixed(1)}"`;
+  let edge = '', holes = '';
+  for (let k = 0; k < N; k++){
+    const a = k / N * Math.PI * 2;
+    edge += `<circle ${xy(a, R)} r="11.5" fill="#fff"/>`;
+    holes += `<circle ${xy(a, R + 2)} r="2.4"/><circle ${xy(a + Math.PI / N, R - 7)} r="2.6"/>`;   // 每個波浪上一個小洞 + 裡面一圈小洞
   }
-  await say(LINES.bench.done[0]);
-  setStir(true, memo.feels.map(f => f.col));   // Rabumi 捧著碗攪拌
-  await say(LINES.bench.stir);
-  lumpBowl.classList.add('mixed');   // 拌不開的那一團，拌開了
-  await wait(600);
-  setStir(false);
-  await sayAll(LINES.bench.done.slice(1));
-  await nextRoom('🎀');
+  $('doily').innerHTML = `<defs><mask id="doilyHoles"><g>${edge}<circle r="${R}" fill="#fff"/></g><g fill="#000">${holes}</g></mask></defs>
+    <circle r="${R + 12}" fill="#FFFDF9" mask="url(#doilyHoles)"/>
+    <circle r="${R - 14}" fill="none" stroke="#EFE3D8" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"/>`;
+})();
+// 拌開了 n 顆的樣子（重做這一輪的時候用）
+function resetBench(n){
+  drawBowl(mixBowl, memo.main.col, LUMPY_TINT + (1 - LUMPY_TINT) * n / 3);
+  setLumps(mixBowl, memo.main.col);
+  mixBowl.querySelectorAll('.dh-lump').forEach((l, k) => l.classList.toggle('gone', k < n));
+}
+// 攪拌棒：還沒碰碗時，停在碗中間畫圈示範（.hint）；滑鼠移到碗上 / 手指按下去，攪拌棒就跟著走（取代滑鼠游標）
+function whiskHint(){
+  const r = mixBowl.getBoundingClientRect();
+  whisk.classList.add('hint');
+  Object.assign(whisk.style, { left: r.left + r.width / 2 + 'px', top: r.top + r.height / 2 + 'px' });
+}
+// 拌開第 i 顆結塊（0、1、2）：在碗裡按住畫圈，碗不動、裡面的鮮奶油跟著你畫的方向轉，結塊慢慢化開，鮮奶油也多染一點顏色
+function stirLump(i){
+  const lump = mixBowl.querySelectorAll('.dh-lump')[i], cream = mixBowl.querySelector('.dh-topcream'), col = memo.main.col;
+  let p = 0, down = false, lastA = 0, keyHold = false, stopped = false;
+  mixBowl.classList.add('live'); mixBowl.tabIndex = 0;
+  whisk.style.width = mixBowl.offsetWidth * .72 + 'px';
+  whisk.hidden = false; whiskHint();
+  return guard(new Promise(done => {
+    const set = v => {
+      if (p >= 1) return;
+      p = Math.min(1, v);
+      lump.style.setProperty('--p', p);
+      cream.style.setProperty('--c', mix('#FFFFFF', col, LUMPY_TINT + (1 - LUMPY_TINT) * (i + p) / 3));
+      if (p >= 1){ stop(); lump.classList.add('gone'); done(); }
+    };
+    // 轉 d 弧度：鮮奶油跟著轉；轉滿 STIR_TURNS 圈 = 拌開一顆
+    const turn = d => { creamTurn += d; spinEl.style.rotate = creamTurn + 'rad'; set(p + Math.abs(d) / (STIR_TURNS * 2 * Math.PI)); };
+    const angle = e => { const r = mixBowl.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2); };
+    const follow = e => { whisk.classList.remove('hint'); whisk.style.left = e.clientX + 'px'; whisk.style.top = e.clientY + 'px'; };
+    const pdown = e => {
+      e.preventDefault(); down = true; lastA = angle(e); follow(e);
+      try { mixBowl.setPointerCapture(e.pointerId); } catch (_) {}   // 畫到碗外面也還算在攪
+      mixBowl.classList.add('stirring');
+    };
+    const pmove = e => {
+      follow(e);
+      if (!down) return;
+      const a = angle(e);
+      let d = a - lastA;
+      if (d > Math.PI) d -= 2 * Math.PI; else if (d < -Math.PI) d += 2 * Math.PI;   // 跨過 180° 的那一下
+      lastA = a;
+      turn(Math.max(-.6, Math.min(.6, d)));   // 太靠近中心時角度會亂跳：一次最多算 0.6
+    };
+    const pup = () => { down = false; mixBowl.classList.remove('stirring'); };
+    const pleave = () => { if (!down) whiskHint(); };
+    // 鍵盤：碗選到之後按住空白鍵，鮮奶油自己慢慢轉
+    const key = e => { if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); keyHold = e.type === 'keydown'; mixBowl.classList.toggle('stirring', keyHold); } };
+    const loop = () => { if (stopped) return; if (keyHold) turn(.08); requestAnimationFrame(loop); };
+    const on = [[mixBowl, 'pointerdown', pdown], [mixBowl, 'pointermove', pmove], [mixBowl, 'pointerup', pup], [mixBowl, 'pointercancel', pup],
+                [mixBowl, 'pointerleave', pleave], [mixBowl, 'keydown', key], [mixBowl, 'keyup', key], [window, 'resize', whiskHint]];
+    on.forEach(([el, ev, fn]) => el.addEventListener(ev, fn));
+    function stop(){   // 拌完了，或按了上一步
+      stopped = true;
+      on.forEach(([el, ev, fn]) => el.removeEventListener(ev, fn));
+      mixBowl.classList.remove('live', 'stirring'); mixBowl.removeAttribute('tabindex');
+      whisk.hidden = true;
+    }
+    onBack.push(stop);
+    requestAnimationFrame(loop);
+  }));
+}
+async function stirRound(i){
+  await type(i ? LINES.bench.stirAgain : LINES.bench.stirHow);
+  await stirLump(i);
+  if (i < 2) await say(LINES.bench.mixed[i]);
+}
+// 自己打字的回答記下來（第三輪聊完，Rabumi 會把它們串起來安慰你）；r = 第幾輪
+function noteFree(r, q, a){ if (a.free) memo.free.push({ r, q, a: a.t }); }
+
+// 三輪各是一步（11. 的 STEPS），按「上一步」可以重做這一輪，或回到上一輪
+async function benchRound(n){
+  memo.free = memo.free.filter(f => f.r !== n);
+  resetBench(n);
+  if (where !== 'bench'){ await view('bench'); await sayAll(LINES.bench.hello); }
+
+  if (n === 0){
+    // 第一輪：發生了什麼事？（先選大類，再選細的），每一步 Rabumi 都先回應
+    memo.sub = null;
+    const a = await ask(LINES.bench.askTopic, TOPICS.map(t => ({ t: t.t, id: t.id })));
+    noteFree(0, '最近發生的事', a);
+    if (a.free){ memo.topic = FREE_TOPIC; memo.type = a.memo; await react(a, LINES.bench.topicFree); }
+    else {
+      memo.topic = TOPICS.find(t => t.id === a.id);
+      await sayAll(memo.topic.re);
+      const b = await ask(memo.topic.ask, memo.topic.subs);
+      noteFree(0, '最近發生的事', b);
+      memo.sub = b.free ? null : memo.topic.subs.find(s => s.id === b.id);
+      memo.type = b.memo;
+      await react(b, LINES.bench.subFree);
+    }
+    await stirRound(0);
+  }
+
+  if (n === 1){
+    // 第二輪：你最在意的是什麼？
+    const c = await ask(LINES.bench.askCore, memo.sub ? memo.sub.cores : FREE_CORES);
+    noteFree(1, '最在意的', c);
+    memo.core = c.memo;
+    await react(c, LINES.bench.coreFree);
+    await say(LINES.bench.coreSay);
+    await stirRound(1);
+  }
+
+  if (n === 2){
+    // 第三輪：心裡冒出來的那句話，是真的發生的，還是擔心的？→ 換個說法
+    memo.knots = [];
+    const k = await ask(LINES.bench.askThought, KNOTS[memo.topic.id] || KNOTS.free, '✎ 我心裡的話不一樣');
+    noteFree(2, '心裡冒出來的話', k);
+    extra.knot = k.memo;
+    if (!(k.free && await checkCrisis(k.t))){
+      const r = await ask(LINES.bench.real, [ { t: '真的發生了', id: 'fact' }, { t: '是我擔心會發生的', id: 'worry' }, { t: '我也分不清楚', id: 'unsure' } ], null);
+      await sayAll(LINES.bench.realSay[r.id]);
+      let to;
+      if (k.re){ const w = await ask(LINES.bench.rewrite, k.re.map(t => ({ t })), '✎ 我想自己寫'); noteFree(2, '換個說法', w); to = w.memo; }
+      else { to = await askInput(LINES.bench.customRewrite, '例如：搞砸了也可以再試一次'); if (to) memo.free.push({ r: 2, q: '換個說法', a: to }); }
+      memo.knots.push({ from: k.memo, to: to || '先不急著下結論' });
+    }
+    // 前面有自己打字說煩惱的話：Rabumi 把它們串起來，說一段更貼近你的安慰（AI）
+    if (memo.free.some(f => f.r !== 'how') && !crisis){
+      thinking();
+      const pages = toPages(await guard(getBenchReply()));
+      for (let i = 0; i < pages.length; i++) await say((i ? '[溫柔]' : '[傾聽]') + pages[i]);
+    }
+    await stirRound(2);
+    await sayAll(LINES.bench.done);
+    await nextRoom('🎀');
+  }
 }
 
 /* ---------- 9. ③ 廚房：用有顏色的鮮奶油做甜點 → 呼吸 → 加甜變柔和 → 最後一步 → 吃掉它 ---------- */
@@ -1019,14 +1108,15 @@ function breathe(times, onStep){
     let left = times, holding = false, phase = 'in', start = 0;
     const label = t => { $('breathLabel').textContent = t; };
     const setP = p => breathBtn.style.setProperty('--p', p);
-    breathBtn.hidden = false; label('按住・吸氣');
+    const sec = (ms, p) => Math.max(1, Math.ceil(ms * (1 - p) / 1000));   // 還剩幾秒
+    breathBtn.hidden = false; label('按住・吸氣\n4 秒');
     let timer = null;
     const down = () => {
       if (phase !== 'in' || holding) return;
-      holding = true; start = performance.now(); label('吸——');
-      timer = setInterval(() => {   // 吸氣：圈圈一點一點填滿
+      holding = true; start = performance.now(); label('吸——\n4');
+      timer = setInterval(() => {   // 吸氣：圈圈一點一點填滿（倒數秒數）
         const p = Math.min(1, (performance.now() - start) / INHALE);
-        setP(p);
+        setP(p); label('吸——\n' + sec(INHALE, p));
         if (p >= 1){ clearInterval(timer); exhale(); }
       }, 30);
     };
@@ -1036,17 +1126,17 @@ function breathe(times, onStep){
       if (phase === 'in'){ clearInterval(timer); setP(0); label('再按久一點點～'); }
     };
     const exhale = () => {
-      phase = 'out'; label('放開・慢慢吐——');
+      phase = 'out'; label('放開・慢慢吐——\n6');
       left--;
       onStep(times - left);
       const s = performance.now();
-      timer = setInterval(() => {   // 吐氣：圈圈慢慢退回去
+      timer = setInterval(() => {   // 吐氣：圈圈慢慢退回去（倒數秒數）
         const p = 1 - (performance.now() - s) / EXHALE;
         setP(Math.max(0, p));
-        if (p > 0) return;
+        if (p > 0){ label('放開・慢慢吐——\n' + sec(EXHALE, 1 - p)); return; }
         clearInterval(timer);
         if (!left){ cleanup(); breathBtn.hidden = true; done(); return; }
-        phase = 'in'; holding = false; label(`按住・吸氣\n（還有 ${left} 次）`);
+        phase = 'in'; holding = false; label(`按住・吸氣 4 秒\n（還有 ${left} 次）`);
       }, 30);
     };
     const key = e => { if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); if (e.type === 'keydown'){ if (!e.repeat) down(); } else up(); } };
@@ -1064,7 +1154,42 @@ function breathe(times, onStep){
   });
 }
 
+// 一起做三次深呼吸：開始前說明 → 跟著按鈕呼吸（甜點跟著起伏）→ 做好了 → 問問現在的感覺
+async function breatheTogether(T, onStep){
+  await say(T.breathe);
+  await say(LINES.bake.breatheStart);
+  await type(LINES.bake.breatheHow);
+  await breathe(BREATHS, onStep);
+  await say(T.formed);
+  await say(LINES.bake.breatheEnd);
+}
+
 function presetReply(){ return { comfort: fill(PRESET.comfort), advice: fill(PRESET.advice) }; }
+// 攪拌檯第三輪後：玩家有自己打字的話，Rabumi 把前面打的話串起來，說幾句更貼近他煩惱的安慰（AI；不能用就用寫好的句子拼）
+function presetBench(){
+  const said = memo.free.filter(f => f.r !== 'how' && f.q !== '換個說法').map(f => '「' + f.a + '」');
+  const to = memo.knots[0] && memo.knots[0].to;
+  return fill((said.length ? `{NAME}，你跟我說了${said.join('、')}……\n` : '{NAME}，謝謝你用自己的話告訴我這些。\n') +
+    '一件事牽著另一件事，難怪心裡會這麼滿。' + (to ? `\n不過你也找到了「${to}」這句話，真的很棒。` : '') +
+    '\n謝謝你一句一句說出來，我都有好好聽到喔♡');
+}
+async function getBenchReply(){
+  if (!AI_URL) return presetBench();
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+    const res = await fetch(AI_URL, {
+      method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chara: 'house', stage: 'bench', name: nameQ ? playerName : '', topic: memo.topic.t || '自己說的煩惱', type: memo.type,
+                             colors: memo.colors, core: memo.core, knots: memo.knots.map(k => `「${k.from}」→「${k.to}」`).join('；'),
+                             free: memo.free.map(f => f.q + '：' + f.a).join('\n') })
+    });
+    clearTimeout(timer);
+    const data = await res.json();
+    if (!res.ok || !data.comfort){ console.warn('AI 沒有回應（改用寫好的話）：', data.error || res.status); return presetBench(); }
+    return data.comfort;
+  } catch (e){ console.warn('AI 連不上（改用寫好的話）：', e); return presetBench(); }
+}
 // AI 回應：Rabumi 的口吻（和聊天頁同一個 Worker；chara: 'house' = 用新版茶會的設定和規則，在 worker.js 的 CHARAS.house）
 async function getReply(){
   if (!AI_URL) return presetReply();
@@ -1080,9 +1205,9 @@ async function getReply(){
     });
     clearTimeout(timer);
     const data = await res.json();
-    if (!res.ok || !(data.comfort || data.reply)) return presetReply();
+    if (!res.ok || !(data.comfort || data.reply)){ console.warn('AI 沒有回應（改用寫好的話）：', data.error || res.status); return presetReply(); }
     return { comfort: data.comfort || data.reply, advice: data.advice || '' };
-  } catch (_) { return presetReply(); }
+  } catch (e){ console.warn('AI 連不上（改用寫好的話）：', e); return presetReply(); }
 }
 // 長的回應：按句號切成幾段，一段一段說
 function toPages(text){
@@ -1209,6 +1334,139 @@ function press(label){
   });
 }
 
+/* ---------- 舒芙蕾鬆餅（課業）：① 煎鍋＋跟著呼吸 → ② 疊起來、膨起來 → ③ 自己放配料 ---------- */
+// 圖層在 index.html 的 #pancake；位置照示範頁的 360×420 座標（PK_W、PK_H）換成 %；只有冰淇淋會染上心情的顏色
+const pkEl = $('pancake'), pkBatter = $('pkBatter'), pkCake = $('pkCake'), pkTools = $('pancakeTools'), pkHit = $('pkHit');
+const PK_W = 360, PK_H = 420;
+const PK_PW = 330, PK_PH = PK_PW * 615 / 1123, PK_FH = PK_PW * 530 / 1163;   // 一片鬆餅的寬、膨起來的高、扁扁的高
+// 配料：f = 圖檔、w = 寬、z = 前後（奶油永遠在水果後面）、n = 名字
+const PK_TOPS = {
+  cream: { f: 'cream-dollop', w: 56, z: 300, n: '奶油' },
+  berry: { f: 'strawberry', w: 40, z: 1300, n: '草莓' },
+  half:  { f: 'strawberry-half', w: 42, z: 1300, n: '半顆草莓' },
+  blue:  { f: 'blueberry', w: 28, z: 1300, n: '藍莓' }
+};
+const PK_MAX = 16;   // ★ 最多放幾個配料
+const PK_BITES = [[[50, 30, 13], [62, 37, 10]], [[30, 48, 14], [41, 58, 12]], [[70, 50, 14], [59, 64, 12]]];   // 吃一口咬掉的地方 [x%, y%, 半徑%]
+const pkX = v => v / PK_W * 100 + '%', pkY = v => v / PK_H * 100 + '%';
+let pkTool = 'cream', pkPcs = [], pkSheets = [], pkIce = null;
+function pkLayer(cls, src, x, w, z){
+  const d = document.createElement('div');
+  d.className = cls; d.innerHTML = `<img src="img/pancake/${src}.png" alt="">`;
+  Object.assign(d.style, { left: pkX(x), width: pkX(w), zIndex: z });
+  pkCake.appendChild(d);
+  return d;
+}
+// 重來：回到煎鍋，三片扁扁的鬆餅 + 兩層鮮奶油 + 冰淇淋（先藏著）
+function pancakeReset(){
+  pkEl.className = 'pk';
+  pkCake.innerHTML = ''; pkPcs = []; pkSheets = [];
+  pkCake.style.maskImage = pkCake.style.webkitMaskImage = '';
+  for (let i = 0; i < 3; i++){
+    pkPcs.push(pkLayer('pk-pc', 'pancake-flat', 15, PK_PW, 10 + i * 10));
+    if (i < 2) pkSheets.push(pkLayer('pk-sheet', 'cream-sheet', 45, 270, 15 + i * 10));   // 鮮奶油比鬆餅窄一點，從中間露出一圈
+  }
+  pkIce = pkLayer('pk-ice', 'icecream', 122, 116, 200);
+  pkIce.insertAdjacentHTML('beforeend', '<i></i>');
+  pkIce.style.setProperty('--c', memo.main.col);
+  pkLayout(false);
+  pkBatter.style.transitionDuration = '0s'; pkBatter.style.transform = 'translate(-50%, -50%) scale(.35)';
+}
+// 疊起來的位置：puff = 膨起來了沒（膨起來：換圖、間距拉開）
+function pkLayout(puff){
+  const st = puff ? 62 : 30, ph = puff ? PK_PH : PK_FH;
+  pkPcs.forEach((p, i) => { p.style.bottom = pkY(20 + i * st); p.querySelector('img').src = 'img/pancake/' + (puff ? 'pancake-puff' : 'pancake-flat') + '.png'; });
+  pkSheets.forEach((s, i) => { s.style.bottom = pkY(20 + i * st + ph * (puff ? .30 : .28)); });
+  pkIce.style.bottom = pkY(20 + 2 * st + ph * .42);
+}
+// 吐氣時麵糊冒泡泡：每 0.4 秒冒一顆
+function pkBubbles(){
+  for (let k = 0; k < 14; k++) setTimeout(() => {
+    const b = document.createElement('i'), a = Math.random() * 6.28, r = Math.random() * 25;   // r = 離麵糊中心幾 %（鍋子寬的 %）
+    b.className = 'pk-bub';
+    Object.assign(b.style, { left: 50 + Math.cos(a) * r + '%', top: 69.5 + Math.sin(a) * r * 240 / 384 + '%' });
+    $('pkPan').appendChild(b);
+    setTimeout(() => b.remove(), 1500);
+  }, k * 400);
+}
+// 跟著畫面呼吸（不用按住）：吸氣 INHALE、吐氣 EXHALE，做 times 次；畫面倒數秒數；可以按「跳過」
+async function guidedBreath(times, onIn, onOut){
+  const label = t => { $('pkBreath').textContent = t; }, skip = $('pkSkip');
+  let skipped = false;
+  skip.hidden = false; skip.onclick = () => { skipped = true; };
+  for (let i = 0; i < times && !skipped; i++){
+    onIn(i);
+    for (let s = INHALE / 1000; s > 0 && !skipped; s--){ label(`吸氣…… ${s}`); await wait(1000); }
+    if (skipped) break;
+    onOut(i);
+    for (let s = EXHALE / 1000; s > 0 && !skipped; s--){ label(`吐氣…… ${s}`); await wait(1000); }
+  }
+  label(''); skip.hidden = true; skip.onclick = null;
+  if (skipped) onIn(times - 1);   // 跳過：麵糊直接變成煎好的大小
+}
+async function makePancake(T){
+  // ① 煎鍋（俯視）：吸氣麵糊慢慢擴開、吐氣冒泡泡，3 輪
+  await say(T.color);
+  await say(T.pour);
+  await say(LINES.bake.breatheStart);
+  await press(T.startAct);
+  type(T.breathing);
+  await guidedBreath(BREATHS, i => {
+    pkBatter.style.transitionDuration = INHALE / 1000 + 's';
+    pkBatter.style.transform = `translate(-50%, -50%) scale(${.55 + .15 * (i + 1)})`;
+  }, pkBubbles);
+  await say(LINES.bake.breatheEnd);
+  await type(T.cooked);
+  await press(T.stackAct);
+  // ② 側面：三片扁扁的鬆餅疊在一起 → 再吸一口氣 → 膨起來 → 冰淇淋掉到最上面
+  pkEl.classList.add('stack');
+  type(T.flat);
+  await wait(800);
+  for (let s = INHALE / 1000; s > 0; s--){ $('pkBreath').textContent = `吸氣…… ${s}`; await wait(1000); }
+  $('pkBreath').textContent = '';
+  pkLayout(true);
+  await wait(1200);
+  pkIce.classList.add('show');
+  await say(T.puffed);
+  await say(T.ice);
+  // ③ 裝飾：玩家自己放配料
+  pkSetTool('cream');
+  pkTools.hidden = false;
+  pkEl.classList.add('decorating');
+  type(T.deco);
+  await press(T.decoDone);
+  pkTools.hidden = true;
+  pkEl.classList.remove('decorating');
+  const used = Object.keys(PK_TOPS).filter(k => pkCake.querySelector(`.pk-item[data-t="${k}"]`)).map(k => PK_TOPS[k].n).join('、');
+  memo.sweet = { t: used || '原味', sweet: used || '冰淇淋' };   // 鬆餅的「加進去的甜」= 玩家放的配料
+  await say(used ? T.decoSay : T.decoNone);
+}
+function pkSetTool(t){
+  pkTool = t;
+  pkTools.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t));
+}
+pkTools.querySelectorAll('button').forEach(b => { b.onclick = () => pkSetTool(b.dataset.t); });
+// 點最上面那片鬆餅的頂面：放一個配料；點到已經放好的：拿掉
+pkHit.addEventListener('pointerdown', e => {
+  const r = pkEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * PK_W, y = (e.clientY - r.top) / r.height * PK_H;
+  for (const it of [...pkCake.querySelectorAll('.pk-item')].reverse()){
+    const b = it.getBoundingClientRect();
+    if (e.clientX >= b.left && e.clientX <= b.right && e.clientY >= b.top && e.clientY <= b.bottom){ it.remove(); return; }
+  }
+  const cy = PK_H - (20 + 2 * 62 + PK_PH) + PK_PH * .40;   // 頂面（橢圓）的中心
+  if (((x - PK_W / 2) / 110) ** 2 + ((y - cy) / 34) ** 2 > 1) return;
+  if (pkCake.querySelectorAll('.pk-item').length >= PK_MAX) return;
+  const t = PK_TOPS[pkTool];
+  const d = pkLayer('pk-item', t.f, x - t.w / 2, t.w, t.z + Math.round(y));
+  d.dataset.t = pkTool; d.style.top = pkY(y - t.w * .9);
+});
+// 吃掉鬆餅：一口一個洞（radial-gradient 疊起來當遮罩），最後一口整個不見
+function pancakeBite(n){
+  if (n >= PK_BITES.length){ pkEl.classList.add('gone'); return; }
+  const holes = PK_BITES.slice(0, n + 1).flat().map(([x, y, r]) => `radial-gradient(${r}% ${r * PK_W / PK_H}% at ${x}% ${y}%, transparent 97%, #000 100%)`).join(', ');
+  Object.assign(pkCake.style, { maskImage: holes, webkitMaskImage: holes, maskComposite: 'intersect', webkitMaskComposite: 'source-in' });
+}
+
 /* ---------- 原宿可麗餅（人際）：① 攤開 → ② 捲起來 → ③ 放料 → ④ 裝飾 ---------- */
 // 圖層在 index.html 的 #crepe；只有冰淇淋會染上心情的顏色，其他都是原本的顏色
 const crepeEl = $('crepe'), crepeRolled = $('crepeRolled'), crepeBase = $('crepeBase'), crepeTools = $('crepeTools'), crepeHit = $('crepeHit'), crepeSpr = $('crepeSpr');
@@ -1244,9 +1502,7 @@ function crepeReset(){
 async function makeCrepe(T){
   // ① 攤開：跟著呼吸把餅皮煎到金黃 → 抹上奶油
   await say(T.color);
-  await type(T.breathe + LINES.bake.breatheHow);
-  await breathe(BREATHS, k => crepeEl.style.setProperty('--g', k / BREATHS));
-  await say(T.formed);
+  await breatheTogether(T, k => crepeEl.style.setProperty('--g', k / BREATHS));
   crepeEl.classList.add('spread');
   await type(T.spread);
   await press(T.act);
@@ -1340,7 +1596,7 @@ const BITES = [
   [[120, 120, 90]]
 ];
 function eatAll(){
-  const isCrepe = D.type === 'crepe', target = isCrepe ? crepeEl : dessertEl;
+  const isCrepe = D.type === 'crepe', isPk = D.type === 'pancake', target = isCrepe ? crepeEl : isPk ? pkEl : dessertEl;
   return new Promise(done => {
     let bites = 0, chewing = false;
     const bite = async () => {
@@ -1349,6 +1605,7 @@ function eatAll(){
       spoon.classList.remove('scoop'); void spoon.offsetWidth; spoon.classList.add('scoop');
       await wait(420);
       if (isCrepe) crepeBite(bites);
+      else if (isPk) pancakeBite(bites);
       else {
         const mask = $('dhBite');
         BITES[bites].forEach(([x, y, r]) => svg('circle', { cx: x, cy: y, r, fill: '#000' }, mask));
@@ -1373,10 +1630,10 @@ let reply = null;
 async function roomBake(){
   const T = DESSERTS[memo.topic.dessert] || DESSERTS.crepe;
   Object.assign(D, { type: memo.topic.dessert || 'crepe', cols: memo.feels.map(f => f.col), colored: false, form: 0, top: null, done: false });
-  const isCrepe = D.type === 'crepe';   // 可麗餅用畫好的圖層（makeCrepe），鬆餅和布丁還是原本的做法
+  const isCrepe = D.type === 'crepe', isPk = D.type === 'pancake';   // 可麗餅、鬆餅用畫好的圖層（makeCrepe、makePancake），布丁還是原本的做法
   extra.dessert = isCrepe ? T.name : memo.main.src + T.name;
-  dessertEl.hidden = isCrepe; crepeEl.hidden = !isCrepe;
-  if (isCrepe) crepeReset(); else render();
+  dessertEl.hidden = isCrepe || isPk; crepeEl.hidden = !isCrepe; pkEl.hidden = !isPk;
+  if (isCrepe) crepeReset(); else if (isPk) pancakeReset(); else render();
   await view('bake');
   await sayAll(LINES.bake.invite);
   await react(await ask(LINES.bake.inviteAsk, LINES.bake.inviteOpts, null));
@@ -1384,6 +1641,7 @@ async function roomBake(){
   // 這個甜點為什麼像你的煩惱
   await sayAll(T.intro);
   if (isCrepe) await makeCrepe(T);
+  else if (isPk) await makePancake(T);
   else {
     // 把有顏色的鮮奶油加進去
     await say(T.color);
@@ -1391,9 +1649,7 @@ async function roomBake(){
     await wait(400);
 
     // 呼吸：等它做好（鬆餅膨起來／布丁凝固）
-    await type(T.breathe + LINES.bake.breatheHow);
-    await breathe(BREATHS, k => { D.form = k; render(); });
-    await say(T.formed);
+    await breatheTogether(T, k => { D.form = k; render(); });
 
     // 加一點甜（= 現在需要的東西）→ 顏色變柔和
     const s = await ask(LINES.bake.sweetAsk, LINES.bake.sweets, '✎ 我想要別的甜');
@@ -1409,9 +1665,9 @@ async function roomBake(){
   memo.words = await askInput(LINES.bake.askCard, LINES.bake.cardPh, false, '不寫了，就這樣');
   if (!await checkCrisis(memo.words)) await say(memo.words ? LINES.bake.cardSay : LINES.bake.cardSkip);
 
-  // 最後一步（等的時候，AI 在後面想要說的話）；可麗餅已經捲好了，直接等 AI
+  // 最後一步（等的時候，AI 在後面想要說的話）；可麗餅、鬆餅已經做好了，直接等 AI
   const replyP = crisis ? Promise.resolve({ comfort: fill(CRISIS_AGAIN), advice: '' }) : getReply();
-  if (!isCrepe){
+  if (!isCrepe && !isPk){
     await type(T.actAsk);
     await finishStep(T);
     await sayAll(T.acted);
@@ -1569,10 +1825,42 @@ async function run(){
   document.body.classList.add('host-gone');   // 莓露露退到旁邊
   house.classList.add('open');                 // 窗簾打開
   await wait(1400);
-  await roomColor();
-  await roomBench();
-  await roomBake();
-  await roomTable();
+  await runSteps();
+}
+// 茶會的每一步：back = 這一步可以按「↩ 上一步」（廚房、茶桌有動畫在跑，先不給回去）
+const STEPS = [
+  { run: colorChat },
+  { run: colorPick, back: true },
+  { run: () => benchRound(0), back: true },
+  { run: () => benchRound(1), back: true },
+  { run: () => benchRound(2), back: true },
+  { run: roomBake },
+  { run: roomTable }
+];
+const backBtn = $('chatBack');
+// 按「上一步」：這一步已經回答過東西 → 重做這一步；還沒回答 → 回到上一步
+backBtn.addEventListener('click', e => {
+  e.stopPropagation();   // 不要順便翻到下一句
+  if (!gate || pouring) return;
+  const g = gate; gate = null;
+  onBack.forEach(f => f());
+  stopTalk();
+  g.back(BACK);
+});
+async function runSteps(){
+  const charmsAt = [];   // 每一步開始時，緞帶上有幾個小掛飾（回到那一步時拿掉多的）
+  for (let i = 0; i < STEPS.length;){
+    newGate(); stepMoved = false;
+    charmsAt[i] = bell.charms.length;
+    backBtn.hidden = !STEPS[i].back;
+    try { await STEPS[i].run(); i++; }
+    catch (err){
+      if (err !== BACK) throw err;
+      if (!stepMoved && i > 0) i--;
+      while (bell.charms.length > charmsAt[i]) bell.removeCharm();
+    }
+  }
+  gate = null; backBtn.hidden = true;
 }
 // 收下邀請卡之後（invite.js）才開始：娃娃屋出現 → 莓露露出場
 function startHouse(){
